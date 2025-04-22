@@ -1,6 +1,6 @@
 'use client';
 
-import { getNewReleases } from '@/lib/jikan';
+import { getTrendingAnime } from '@/lib/jikan';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,21 +15,21 @@ interface Anime {
   };
 }
 
-export default function Home() {
-  const [newReleases, setNewReleases] = useState<Anime[]>([]);
+export default function Trending() {
+  const [trendingAnime, setTrendingAnime] = useState<Anime[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchNewReleases = async () => {
-      const data = await getNewReleases(page);
+    const fetchTrendingAnime = async () => {
+      const data = await getTrendingAnime(page);
       if (data) {
-        setNewReleases(data.data);
+        setTrendingAnime(data.data);
         setTotalPages(data.pagination.last_visible_page);
       }
     };
 
-    fetchNewReleases();
+    fetchTrendingAnime();
   }, [page]);
 
   const handlePageChange = (newPage: number) => {
@@ -38,9 +38,9 @@ export default function Home() {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-4">Newly Released Anime</h1>
+      <h1 className="text-2xl font-bold mb-4">Trending Anime</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {newReleases.map((anime) => (
+        {trendingAnime.map((anime) => (
           <Link href={`/anime/${anime.mal_id}`} key={anime.mal_id} className="border rounded-md p-4">
             <Image src={anime.images.jpg.image_url} alt={anime.title} width={200} height={300} className="w-full h-48 object-cover mb-2" />
             <h2 className="text-lg font-semibold">{anime.title}</h2>
