@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Anime World',
+  title: 'Otaku.Realm',
   description: 'Discover and explore anime series from around the world',
   icons: {
     icon: '/zoro2.png',
