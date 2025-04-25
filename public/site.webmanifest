@@ -1,0 +1,28 @@
+{
+  "name": "Otaku.Realm - Discover Anime",
+  "short_name": "Otaku.Realm",
+  "description": "Discover and explore anime series from around the world. Find popular, trending, and upcoming anime with reviews, ratings, and detailed information.",
+  "icons": [
+    {
+      "src": "",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/maskable-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#1E293B",
+  "background_color": "#0F172A",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+} 
