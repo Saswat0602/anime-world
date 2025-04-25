@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -17,66 +18,67 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90">
-      <div className="container-custom">
+      <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-sky-500 dark:text-sky-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path
-                  fillRule="evenodd"
-                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="text-xl font-bold text-slate-900 dark:text-white">
-                Otaku.Realm
-              </span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 text-sky-500 dark:text-sky-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+              <path
+                fillRule="evenodd"
+                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="text-xl font-bold text-slate-900 dark:text-white">
+              Otaku.Realm
+            </span>
+          </Link>
 
-          <div className="hidden md:flex md:flex-1 md:items-center md:justify-center">
-            <div className="flex space-x-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  className={`relative rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                    pathname === link.path
-                      ? "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                  }`}
-                >
-                  {link.name}
-                  {pathname === link.path && (
-                    <span className="absolute inset-x-0 -bottom-px h-0.5 bg-sky-500 dark:bg-sky-400" />
-                  )}
-                </Link>
-              ))}
-            </div>
+          <div className="hidden md:flex md:items-center md:space-x-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                href={link.path}
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${
+                  pathname === link.path
+                    ? "text-sky-700 dark:text-sky-300"
+                    : "text-slate-700 hover:scale-105 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                }`}
+              >
+                {link.name}
+                {pathname === link.path && (
+                  <motion.span
+                    layoutId="underline"
+                    className="absolute inset-x-0 -bottom-1 h-0.5 bg-sky-500 dark:bg-sky-400"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </Link>
+            ))}
           </div>
 
           <div className="flex items-center space-x-4">
             <Link
               href="/anime/random"
-              className="hidden md:flex items-center space-x-1 text-sm font-medium text-slate-700 hover:text-sky-600 dark:text-slate-300 dark:hover:text-sky-400"
+              className="hidden md:flex items-center space-x-1 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-500 dark:active:bg-sky-700"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
               <span>Random</span>
             </Link>
-            
+
             <ThemeToggle />
-            
-            <button 
-              className="md:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
+
+            <button
+              className="md:hidden rounded-full p-2 text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-700 active:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white dark:active:bg-slate-700"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMenuOpen ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -94,38 +96,47 @@ export function Navbar() {
           </div>
         </div>
       </div>
-      
-      {/* Mobile navigation */}
-      {isMenuOpen && (
-        <div className="border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 md:hidden">
-          <div className="container mx-auto py-2">
-            {navLinks.map((link) => (
+
+      {/* Mobile menu with fade animation */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-16 bottom-0 z-50 overflow-y-auto bg-white dark:bg-slate-900 md:hidden"
+          >
+            <div className="border-t border-slate-200 dark:border-slate-700">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-4 py-3 text-sm font-medium transition-transform duration-200 ${
+                    pathname === link.path
+                      ? "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+                      : "text-slate-700 hover:scale-105 hover:bg-slate-100 active:scale-95 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
               <Link
-                key={link.path}
-                href={link.path}
+                href="/anime/random"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block px-4 py-3 text-sm font-medium ${
-                  pathname === link.path
-                    ? "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
-                    : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                }`}
+                className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-100 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700"
               >
-                {link.name}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Random Anime</span>
               </Link>
-            ))}
-            <Link
-              href="/anime/random"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              <span>Random Anime</span>
-            </Link>
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
-} 
+}
