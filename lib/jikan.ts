@@ -4,9 +4,9 @@ import { AnimeResponse, AnimeDetailsResponse, Anime } from './types';
 const BASE_URL = 'https://api.jikan.moe/v4';
 
 const MAX_RETRIES = 3;
-const BASE_DELAY = 1000; 
-const MAX_DELAY = 10000; 
-const DEFAULT_COOLDOWN = 1000; 
+const BASE_DELAY = 1000;
+const MAX_DELAY = 10000;
+const DEFAULT_COOLDOWN = 1000;
 
 const requestQueue: Array<() => Promise<unknown>> = [];
 let isProcessingQueue = false;
@@ -20,9 +20,9 @@ const calculateBackoff = (attempt: number) => {
 
 async function processQueue() {
   if (isProcessingQueue || requestQueue.length === 0) return;
-  
+
   isProcessingQueue = true;
-  
+
   while (requestQueue.length > 0) {
     const request = requestQueue.shift();
     if (request) {
@@ -34,7 +34,7 @@ async function processQueue() {
       await delay(DEFAULT_COOLDOWN);
     }
   }
-  
+
   isProcessingQueue = false;
 }
 
@@ -48,23 +48,23 @@ function queueRequest<T>(requestFn: () => Promise<T>): Promise<T> {
         reject(error);
       }
     });
-    
+
     processQueue();
   });
 }
 
 async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<unknown> {
   let lastError;
-  
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const response = await axios.get(url);
-      
+
       if (response.status === 429) {
         const retryAfter = response.headers['retry-after'];
         const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : calculateBackoff(attempt);
-        
-        console.log(`Rate limited. Retrying in ${waitTime/1000} seconds...`);
+
+        console.log(`Rate limited. Retrying in ${waitTime / 1000} seconds...`);
         await delay(waitTime);
         continue;
       }
@@ -74,22 +74,22 @@ async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<unkno
       if (axios.isAxiosError(error) && error.response?.status === 429) {
         const retryAfter = error.response.headers['retry-after'];
         const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : calculateBackoff(attempt);
-        
-        console.log(`Rate limited. Retrying in ${waitTime/1000} seconds...`);
+
+        console.log(`Rate limited. Retrying in ${waitTime / 1000} seconds...`);
         await delay(waitTime);
         continue;
       }
-      
+
       if (attempt < retries) {
         const waitTime = calculateBackoff(attempt);
-        console.log(`Request failed. Retrying in ${waitTime/1000} seconds...`);
+        console.log(`Request failed. Retrying in ${waitTime / 1000} seconds...`);
         await delay(waitTime);
       } else {
         throw error;
       }
     }
   }
-  
+
   throw lastError || new Error('Maximum retries reached');
 }
 
@@ -107,17 +107,17 @@ const filterDuplicates = (animeList: Anime[]): Anime[] => {
 export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     console.log(`Fetching new releases for page ${page}`);
-    
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await queueRequest<any>(() => 
+    const response = await queueRequest<any>(() =>
       fetchWithRetry(`${BASE_URL}/anime?order_by=start_date&sort=desc&page=${page}`)
     ) as AnimeResponse;
-    
+
     // Filter out duplicates before returning
     if (response.data) {
       response.data = filterDuplicates(response.data);
     }
-    
+
     return response;
   } catch (error) {
     console.error('Error fetching new releases:', error);
@@ -128,15 +128,15 @@ export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | 
 export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await queueRequest<any>(() => 
+    const response = await queueRequest<any>(() =>
       fetchWithRetry(`${BASE_URL}/top/anime?filter=airing&page=${page}`)
     ) as AnimeResponse;
-    
+
     // Filter out duplicates before returning
     if (response.data) {
       response.data = filterDuplicates(response.data);
     }
-    
+
     return response;
   } catch (error) {
     console.error('Error fetching trending anime:', error);
@@ -147,15 +147,15 @@ export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse 
 export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await queueRequest<any>(() => 
+    const response = await queueRequest<any>(() =>
       fetchWithRetry(`${BASE_URL}/anime?order_by=start_date&sort=asc&status=upcoming&page=${page}`)
     ) as AnimeResponse;
-    
+
     // Filter out duplicates before returning
     if (response.data) {
       response.data = filterDuplicates(response.data);
     }
-    
+
     return response;
   } catch (error) {
     console.error('Error fetching upcoming anime:', error);
@@ -166,10 +166,10 @@ export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse 
 export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse | null> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await queueRequest<any>(() => 
+    const response = await queueRequest<any>(() =>
       fetchWithRetry(`${BASE_URL}/anime/${id}/full`)
     ) as AnimeDetailsResponse;
-    
+
     return response;
   } catch (error) {
     console.error('Error fetching anime details:', error);
@@ -180,17 +180,124 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
 export const searchAnime = async (query: string, page: number = 1): Promise<AnimeResponse | null> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await queueRequest<any>(() => 
+    const response = await queueRequest<any>(() =>
       fetchWithRetry(`${BASE_URL}/anime?q=${encodeURIComponent(query)}&page=${page}`)
     ) as AnimeResponse;
-    
+
     if (response.data) {
       response.data = filterDuplicates(response.data);
     }
-    
+
     return response;
   } catch (error) {
     console.error('Error searching anime:', error);
+    return null;
+  }
+};
+
+export const getMostFavoritedAnime = async (): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/top/anime?order_by=favorites&sort=desc&limit=10`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error('Error fetching most favorited anime:', error);
+    return null;
+  }
+};
+
+export const getSeasonalAnime = async (year: number, season: 'winter' | 'spring' | 'summer' | 'fall', page = 1): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/seasons/${year}/${season}?page=${page}`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching anime for ${season} ${year}:`, error);
+    return null;
+  }
+};
+
+export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/seasons/${year}?page=${page}`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching anime for year ${year}:`, error);
+    return null;
+  }
+};
+
+export const getAllGenres = async (): Promise<any | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/genres/anime`)
+    );
+    return response;
+  } catch (error) {
+    console.error('Error fetching genres:', error);
+    return null;
+  }
+};
+
+export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/anime?genres=${genreId}&page=${page}`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching anime by genre ID ${genreId}:`, error);
+    return null;
+  }
+};
+
+export const getMostPopularAnime = async (): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/top/anime?filter=bypopularity&limit=10`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error('Error fetching most popular anime:', error);
+    return null;
+  }
+};
+
+export const getAnimeStudios = async (animeId: string): Promise<number[]> => {
+  try {
+    const data = await getAnimeDetails(animeId);
+    const studios = data?.data?.studios || [];
+    return studios.map((studio: { mal_id: number }) => studio.mal_id);
+  } catch (error) {
+    console.error('Error fetching studios:', error);
+    return [];
+  }
+};
+
+export const getAnimeByStudio = async (studioId: number, page = 1): Promise<AnimeResponse | null> => {
+  try {
+    const response = await queueRequest<any>(() =>
+      fetchWithRetry(`${BASE_URL}/anime?producers=${studioId}&page=${page}`)
+    ) as AnimeResponse;
+
+    if (response.data) response.data = filterDuplicates(response.data);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching anime by studio ID ${studioId}:`, error);
     return null;
   }
 };
