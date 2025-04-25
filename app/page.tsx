@@ -9,31 +9,13 @@ import { motion } from "framer-motion";
 import { Anime } from "@/lib/types";
 import Link from "next/link";
 import { AnimeCardSkeleton } from "@/components/loaders";
-
-// Improved Error Message
-const ErrorMessage = ({ message }: { message: string }) => (
-  <div className="flex flex-col items-center justify-center py-16 px-4">
-    <div className="mb-4 text-red-500 dark:text-red-400">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-    </div>
-    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Something went wrong</h3>
-    <p className="text-slate-600 dark:text-slate-400 text-center mb-6">{message}</p>
-    <button 
-      onClick={() => window.location.reload()}
-      className="btn-primary"
-    >
-      Try Again
-    </button>
-  </div>
-);
+import { ErrorMessage } from "@/components/ui/error-message";
 
 // Search input component
-const SearchBar = ({ 
-  onSearch 
-}: { 
-  onSearch: (query: string) => void 
+const SearchBar = ({
+  onSearch
+}: {
+  onSearch: (query: string) => void
 }) => {
   const [query, setQuery] = useState('');
 
@@ -57,8 +39,8 @@ const SearchBar = ({
                   transition-colors"
         aria-label="Search anime"
       />
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center
                    text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
         aria-label="Submit search"
@@ -97,28 +79,28 @@ const SectionHeader = ({ title, icon, viewAllLink }: SectionHeaderProps) => (
 export default function HomePage() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Memoize the fetch functions to prevent them from changing on every render
   const fetchLatestAnime = useCallback((p: number) => {
     return fetchAnime(p, searchQuery);
   }, [searchQuery]);
-  
+
   const fetchPopular = useCallback((p: number) => {
     return fetchPopularAnime(p);
   }, []);
-  
+
   // Fetch latest anime
-  const { 
-    data: latestData, 
-    isLoading: latestLoading, 
-    error: latestError 
+  const {
+    data: latestData,
+    isLoading: latestLoading,
+    error: latestError
   } = usePagination(fetchLatestAnime, page);
-  
+
   // Fetch popular anime
-  const { 
-    data: popularData, 
-    isLoading: popularLoading, 
-    error: popularError 
+  const {
+    data: popularData,
+    isLoading: popularLoading,
+    error: popularError
   } = usePagination(fetchPopular, 1);
 
   const handlePageChange = (newPage: number) => {
@@ -145,7 +127,7 @@ export default function HomePage() {
             Discover Amazing Anime
           </h1>
           <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Explore thousands of anime titles, stay updated with the latest releases, 
+            Explore thousands of anime titles, stay updated with the latest releases,
             and find your next favorite series.
           </p>
         </motion.div>
@@ -155,8 +137,8 @@ export default function HomePage() {
 
       {/* Latest releases section */}
       <section className="mb-16">
-        <SectionHeader 
-          title={searchQuery ? `Search results for "${searchQuery}"` : "Latest Releases"} 
+        <SectionHeader
+          title={searchQuery ? `Search results for "${searchQuery}"` : "Latest Releases"}
           icon={
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
@@ -177,17 +159,17 @@ export default function HomePage() {
                 </p>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {latestData?.data?.map((anime: Anime, index: number) => (
-                <AnimeCard 
-                  key={anime.mal_id} 
-                  anime={anime} 
+                <AnimeCard
+                  key={anime.mal_id}
+                  anime={anime}
                   index={index}
                 />
               ))}
             </div>
-            
+
             {latestData?.pagination && latestData.pagination.last_visible_page > 1 && (
               <div className="mt-12">
                 <Pagination
@@ -204,8 +186,8 @@ export default function HomePage() {
       {/* Popular anime section (only show if not searching) */}
       {!searchQuery && (
         <section className="mb-16">
-          <SectionHeader 
-            title="Popular Anime" 
+          <SectionHeader
+            title="Popular Anime"
             icon={
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
@@ -221,9 +203,9 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {popularData?.data?.slice(0, 10).map((anime: Anime, index: number) => (
-                <AnimeCard 
-                  key={anime.mal_id} 
-                  anime={anime} 
+                <AnimeCard
+                  key={anime.mal_id}
+                  anime={anime}
                   index={index}
                 />
               ))}

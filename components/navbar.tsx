@@ -44,11 +44,10 @@ export function Navbar() {
               <Link
                 key={link.path}
                 href={link.path}
-                className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${
-                  pathname === link.path
-                    ? "text-sky-700 dark:text-sky-300"
-                    : "text-slate-700 hover:scale-105 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                }`}
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${pathname === link.path
+                  ? "text-sky-700 dark:text-sky-300"
+                  : "text-slate-700 hover:scale-105 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                  }`}
               >
                 {link.name}
                 {pathname === link.path && (
@@ -63,18 +62,7 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link
-              href="/anime/random"
-              className="hidden md:flex items-center space-x-1 rounded-full bg-sky-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-500 dark:active:bg-sky-700"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              <span>Random</span>
-            </Link>
-
             <ThemeToggle />
-
             <button
               className="md:hidden rounded-full p-2 text-slate-500 transition-all duration-200 hover:bg-slate-100 hover:text-slate-700 active:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white dark:active:bg-slate-700"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -114,25 +102,14 @@ export function Navbar() {
                   key={link.path}
                   href={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block px-4 py-3 text-sm font-medium transition-transform duration-200 ${
-                    pathname === link.path
-                      ? "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
-                      : "text-slate-700 hover:scale-105 hover:bg-slate-100 active:scale-95 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700"
-                  }`}
+                  className={`block px-4 py-3 text-sm font-medium transition-transform duration-200 ${pathname === link.path
+                    ? "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+                    : "text-slate-700 hover:scale-105 hover:bg-slate-100 active:scale-95 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700"
+                    }`}
                 >
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="/anime/random"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center space-x-2 px-4 py-3 text-sm font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-100 active:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                <span>Random Anime</span>
-              </Link>
             </div>
           </motion.div>
         )}
