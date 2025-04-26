@@ -15,8 +15,8 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   // Handle possible undefined image URLs
-  const imageUrl = anime?.images?.jpg?.image_url || '/placeholder.jpg';
-  
+  const imageUrl = anime?.images?.jpg?.large_image_url || '/placeholder.jpg';
+  console.log(anime,"anime")
   // Format anime title
   const title = anime?.title || 'Unknown Title';
 
