@@ -2,9 +2,12 @@ import { HeroSection } from '@/components/Home/hero-section'
 import React from 'react'
 
 const Landing = () => {
+  const handleSearch =()=>{
+
+  }
   return (
     <div>
-      <HeroSection/>
+      <HeroSection onSearch={handleSearch}/>
     </div>
   )
 }
