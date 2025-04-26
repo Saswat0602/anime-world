@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchTrendingAnimeAniList, fetchSeasonalAnimeAniList } from "@/lib/api-anilist";
 import Link from "next/link";
-import { AnimeCard } from "@/components/Home/anime-card-hover";
+import { AnimeCard } from "@/components/Home/AnimeCard";
 
 // Get current season
 const getCurrentSeason = () => {
