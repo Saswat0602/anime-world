@@ -4,19 +4,12 @@ import { AnimeResponse, AnimeDetailsResponse, Anime } from './types';
 const BASE_URL = 'https://api.jikan.moe/v4';
 
 const MAX_RETRIES = 3;
-const BASE_DELAY = 1000;
-const MAX_DELAY = 10000;
 const DEFAULT_COOLDOWN = 1000;
 
 const requestQueue: Array<() => Promise<unknown>> = [];
 let isProcessingQueue = false;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-const calculateBackoff = (attempt: number) => {
-  const exponentialDelay = Math.min(MAX_DELAY, BASE_DELAY * Math.pow(2, attempt));
-  return Math.floor(Math.random() * exponentialDelay);
-};
 
 async function processQueue() {
   if (isProcessingQueue || requestQueue.length === 0) return;
@@ -62,28 +55,29 @@ async function fetchWithRetry<T>(url: string, retries = MAX_RETRIES): Promise<T>
 
       if (response.status === 429) {
         const retryAfter = response.headers['retry-after'];
-        const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : calculateBackoff(attempt);
+        const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 0;
 
-        console.log(`Rate limited. Retrying in ${waitTime / 1000} seconds...`);
-        await delay(waitTime);
+        console.log(`Rate limited. Retrying ${waitTime > 0 ? `in ${waitTime / 1000} seconds` : 'immediately'}...`);
+        if (waitTime > 0) await delay(waitTime);
         continue;
       }
+
       return response.data as T;
     } catch (error) {
       lastError = error;
+
       if (axios.isAxiosError(error) && error.response?.status === 429) {
         const retryAfter = error.response.headers['retry-after'];
-        const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : calculateBackoff(attempt);
+        const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 0;
 
-        console.log(`Rate limited. Retrying in ${waitTime / 1000} seconds...`);
-        await delay(waitTime);
+        console.log(`Rate limited. Retrying ${waitTime > 0 ? `in ${waitTime / 1000} seconds` : 'immediately'}...`);
+        if (waitTime > 0) await delay(waitTime);
         continue;
       }
 
       if (attempt < retries) {
-        const waitTime = calculateBackoff(attempt);
-        console.log(`Request failed. Retrying in ${waitTime / 1000} seconds...`);
-        await delay(waitTime);
+        console.log(`Request failed. Retrying in ${DEFAULT_COOLDOWN / 1000} seconds...`);
+        await delay(DEFAULT_COOLDOWN);
       } else {
         throw error;
       }
@@ -92,6 +86,7 @@ async function fetchWithRetry<T>(url: string, retries = MAX_RETRIES): Promise<T>
 
   throw lastError || new Error('Maximum retries reached');
 }
+
 
 const filterDuplicates = (animeList: Anime[]): Anime[] => {
   const seen = new Set<number>();
@@ -103,6 +98,7 @@ const filterDuplicates = (animeList: Anime[]): Anime[] => {
     return true;
   });
 };
+
 
 export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
