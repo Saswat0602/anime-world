@@ -13,20 +13,15 @@ interface AnimeCardProps {
 
 export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  
-  // Handle possible undefined image URLs
-  const imageUrl = anime?.images?.jpg?.large_image_url || '/placeholder.jpg';
-  console.log(anime,"anime")
-  // Format anime title
-  const title = anime?.title || 'Unknown Title';
 
-  // Get studios if available
+  const imageUrl = anime?.images?.jpg?.large_image_url || '/placeholder.jpg';
+  const title = anime?.title || 'Unknown Title';
   const animeAsDetails = anime as unknown as AnimeDetails;
   const studioName = animeAsDetails?.studios?.[0]?.name;
   const hasStudio = !!studioName;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.5) }}
@@ -44,46 +39,55 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
               className="object-cover transition-transform duration-300 group-hover:scale-110"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
             />
-            
-            {/* Hover Info */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-75 transition-opacity duration-300 flex items-end">
-              <div className="p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {anime.score && (
-                  <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full px-2 py-1 text-xs font-bold">
-                    {anime.score.toFixed(1)}
-                  </div>
-                )}
-                <h3 className="text-sm font-semibold line-clamp-2">{title}</h3>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {anime.type && (
-                    <span className="text-xs bg-blue-600 px-1.5 py-0.5 rounded">{anime.type}</span>
-                  )}
-                  {anime.episodes && (
-                    <span className="text-xs bg-gray-600 px-1.5 py-0.5 rounded">{anime.episodes} eps</span>
-                  )}
-                </div>
-                
-                {/* Additional info like air date */}
-                {anime.aired && anime.aired.string && (
-                  <div className="mt-1 text-xs text-gray-300">{anime.aired.string}</div>
-                )}
-                
-                {/* Studios info if available */}
-                {hasStudio && (
-                  <div className="mt-1 text-xs text-gray-300">
-                    {studioName}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </Link>
-      
+
+      {/* Floating Hover Card */}
+      {isHovered && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.2 }}
+          className="absolute z-20 w-64 p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg top-[-10px] left-1/2 transform -translate-x-1/2 translate-y-[-100%]"
+        >
+          <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="flex items-center justify-between mb-2">
+              <span>Ep {anime.episodes || '-'} airing soon</span>
+              {anime.score && (
+                <span className="flex items-center gap-1 text-orange-500 font-bold">
+                  {anime.score}%
+                </span>
+              )}
+            </div>
+            {hasStudio && (
+              <div className="font-semibold text-gray-900 dark:text-white">
+                {studioName}
+              </div>
+            )}
+            <div className="text-xs mb-2 text-gray-500">{anime.type} • {anime.status}</div>
+
+            {/* Genre tags */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {(animeAsDetails?.genres || []).slice(0, 3).map((genre, idx) => (
+                <span 
+                  key={idx}
+                  className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full"
+                >
+                  {genre.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Title below */}
       <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{title}</h3>
       <p className="text-xs text-gray-500 dark:text-gray-400">
         {anime.type} {anime.status ? `• ${anime.status === 'Currently Airing' ? 'Airing' : anime.status}` : ''}
       </p>
     </motion.div>
   );
-} 
+}
