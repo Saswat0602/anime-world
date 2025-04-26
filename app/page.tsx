@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { fetchAnime, fetchPopularAnime } from "@/lib/api";
 import { usePagination } from "@/lib/hooks/use-pagination";
-import { HeroSection } from "@/components/ui/hero-section";
+import { HeroSection } from "@/components/Home/hero-section";
 import { AnimeSection } from "@/components/Home/AnimeSection";
 
 export default function HomePage() {
