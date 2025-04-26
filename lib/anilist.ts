@@ -111,7 +111,7 @@ const convertPagination = (pageInfo: any) => {
 
 export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       NEW_RELEASES_QUERY,
       { page, perPage }
@@ -135,7 +135,7 @@ export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | 
 
 export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       TRENDING_ANIME_QUERY,
       { page, perPage }
@@ -159,7 +159,7 @@ export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse 
 
 export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       UPCOMING_ANIME_QUERY,
       { page, perPage }
@@ -244,7 +244,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
 
 export const searchAnime = async (query: string, page: number = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       SEARCH_ANIME_QUERY,
       { page, perPage, search: query }
@@ -296,7 +296,7 @@ export const getSeasonalAnime = async (
   page = 1
 ): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     // Convert to AniList season format (uppercase)
     const anilistSeason = season.toUpperCase();
     
@@ -323,7 +323,7 @@ export const getSeasonalAnime = async (
 
 export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       YEARLY_ANIME_QUERY,
       { page, perPage, year }
@@ -384,7 +384,7 @@ export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeR
       throw new Error(`Genre with ID ${genreId} not found`);
     }
     
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       ANIME_BY_GENRE_QUERY,
       { page, perPage, genre: genre.name }
@@ -450,7 +450,7 @@ export const getAnimeStudios = async (animeId: string): Promise<number[]> => {
 
 export const getAnimeByStudio = async (studioId: number, page = 1): Promise<AnimeResponse | null> => {
   try {
-    const perPage = 20;
+    const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse>(
       ANIME_BY_STUDIO_QUERY,
       { page, perPage, studioId }

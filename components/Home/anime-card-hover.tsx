@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Anime, AnimeDetails } from "@/lib/types";
 import Image from "next/image";
@@ -13,9 +13,10 @@ interface AnimeCardProps {
 
 export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  console.log(anime, "anime");
 
-  const imageUrl = anime?.images?.jpg?.large_image_url || '/placeholder.jpg';
-  const title = anime?.title || 'Unknown Title';
+  const imageUrl = anime?.images?.jpg?.large_image_url || "/placeholder.jpg";
+  const title = anime?.title || "Unknown Title";
   const animeAsDetails = anime as unknown as AnimeDetails;
   const studioName = animeAsDetails?.studios?.[0]?.name;
   const hasStudio = !!studioName;
@@ -32,8 +33,8 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
       <Link href={`/anime/${anime.mal_id}`}>
         <div className="overflow-hidden rounded-lg">
           <div className="relative aspect-[3/4] w-full">
-            <Image 
-              src={imageUrl} 
+            <Image
+              src={imageUrl}
               alt={title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -54,24 +55,40 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
         >
           <div className="text-sm text-gray-700 dark:text-gray-300">
             <div className="flex items-center justify-between mb-2">
-              <span>Ep {anime.episodes || '-'} airing soon</span>
+              <span>Ep {anime.episodes || "-"} airing soon</span>
               {anime.score && (
-                <span className="flex items-center gap-1 text-orange-500 font-bold">
-                  {anime.score}%
+                <span
+                  className={`flex items-center gap-1 font-bold ${
+                    anime.score * 10 >= 80
+                      ? "text-green-500"
+                      : anime.score * 10 >= 50
+                      ? "text-orange-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {anime.score * 10 >= 80
+                    ? "😄"
+                    : anime.score * 10 >= 50
+                    ? "😐"
+                    : "😢"}
+                  {Math.round(anime.score * 10)}%
                 </span>
               )}
             </div>
+
             {hasStudio && (
               <div className="font-semibold text-gray-900 dark:text-white">
                 {studioName}
               </div>
             )}
-            <div className="text-xs mb-2 text-gray-500">{anime.type} • {anime.status}</div>
+            <div className="text-xs mb-2 text-gray-500">
+              {anime.type} • {anime.status}
+            </div>
 
             {/* Genre tags */}
             <div className="flex flex-wrap gap-2 mt-2">
               {(animeAsDetails?.genres || []).slice(0, 3).map((genre, idx) => (
-                <span 
+                <span
                   key={idx}
                   className="px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full"
                 >
@@ -84,9 +101,14 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
       )}
 
       {/* Title below */}
-      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{title}</h3>
+      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white line-clamp-2">
+        {title}
+      </h3>
       <p className="text-xs text-gray-500 dark:text-gray-400">
-        {anime.type} {anime.status ? `• ${anime.status === 'Currently Airing' ? 'Airing' : anime.status}` : ''}
+        {anime.type}{" "}
+        {anime.status
+          ? `• ${anime.status === "Currently Airing" ? "Airing" : anime.status}`
+          : ""}
       </p>
     </motion.div>
   );
