@@ -46,7 +46,7 @@ export function HeroSection({ onSearch }: HeroSectionProps) {
             <span>Attack on Titan,</span>
             <span>Solo Leveling Season 2,</span>
             <span>Overlord: The Sacred Kingdom,</span>
-            <span>KonoSuba: God's Blessing,</span>
+            <span>KonoSuba: God&apos;s Blessing,</span>
             <span>The Super Cube,</span>
             <span>Please Put Them On, Takamine-san</span>
           </div>
