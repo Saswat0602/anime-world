@@ -1,6 +1,7 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { SearchBar } from "./search-bar";
+import Link from "next/link";
+import Image from "next/image";
+import { SearchBar } from "@/components/Home/search-bar"; 
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -8,23 +9,61 @@ interface HeroSectionProps {
 
 export function HeroSection({ onSearch }: HeroSectionProps) {
   return (
-    <section className="mb-16">
-      <motion.div
-        className="text-center mb-8"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
-          Discover Amazing Anime
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-          Explore thousands of anime titles, stay updated with the latest releases, 
-          and find your next favorite series.
-        </p>
-      </motion.div>
+    <section className="relative mb-16 rounded-3xl overflow-hidden bg-slate-900 text-white p-8 md:p-16">
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-900 to-slate-900/10 z-0"></div>
+      
+      <div className="absolute right-0 top-0 h-full w-1/2 z-0">
+        <div className="relative w-full h-full">
+          <Image 
+            src="/heroImage.webp" 
+            alt="Anime characters" 
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center right' }}
+            priority
+          />
+        </div>
+      </div>
 
-      <SearchBar onSearch={onSearch} />
+      <div className="relative z-10 max-w-xl">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold">
+            Otaku.<span className="text-blue-500">Realm</span>
+          </h1>
+        </div>
+
+        <div className="mb-6">
+          <SearchBar onSearch={onSearch} placeholder="Search anime..." />
+        </div>
+
+        {/* Top search items */}
+        <div className="mb-8">
+          <div className="text-sm font-medium mb-2">Top search:</div>
+          <div className="flex flex-wrap gap-2 text-sm text-slate-300">
+            <span>One Piece,</span>
+            <span>The Apothecary Diaries,</span>
+            <span>Wind Breaker Season 2,</span>
+            <span>Fire Force Season 3,</span>
+            <span>Attack on Titan,</span>
+            <span>Solo Leveling Season 2,</span>
+            <span>Overlord: The Sacred Kingdom,</span>
+            <span>KonoSuba: God's Blessing,</span>
+            <span>The Super Cube,</span>
+            <span>Please Put Them On, Takamine-san</span>
+          </div>
+        </div>
+
+        {/* Read manga button */}
+        <Link 
+          href="/manga" 
+          className="inline-flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white font-medium py-3 px-6 rounded-full transition-colors"
+        >
+          Read manga
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </Link>
+      </div>
     </section>
   );
-} 
+}
