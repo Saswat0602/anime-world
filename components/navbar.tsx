@@ -12,7 +12,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "New Releases", path: "/" },
+    { name: "Home", path: "/Home" },
     { name: "Trending", path: "/trending" },
     { name: "Upcoming", path: "/upcoming" },
   ];
