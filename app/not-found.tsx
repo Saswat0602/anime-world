@@ -1,5 +1,7 @@
+// not-found.tsx
 import Link from 'next/link';
 import { Metadata, Viewport } from 'next';
+import LottieAnimation from '@/components/LottieAnimation';
 
 export const metadata: Metadata = {
   title: 'Not Found | Otaku.Realm',
@@ -12,13 +14,10 @@ export const viewport: Viewport = {
 
 export default function NotFound() {
   return (
-    <div className="container-custom flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-      <h1 className="mb-2 text-6xl font-extrabold text-slate-900 dark:text-white lg:text-8xl">
-        404
-      </h1>
-      <h2 className="mb-6 text-xl font-semibold text-slate-700 dark:text-slate-300 lg:text-2xl">
-        Page Not Found
-      </h2>
+    <div className="container-custom flex min-h-[70vh] flex-col items-center justify-center py-10 text-center">
+      <div className="w-full max-w-md mb-4">
+        <LottieAnimation />
+      </div>
       <p className="mb-8 max-w-md text-slate-600 dark:text-slate-400">
         The page you are looking for might have been removed, had its name
         changed, or is temporarily unavailable.
@@ -31,4 +30,4 @@ export default function NotFound() {
       </Link>
     </div>
   );
-} 
+}
