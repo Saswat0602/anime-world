@@ -55,7 +55,7 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
         >
           <div className="text-sm text-gray-700 dark:text-gray-300">
             <div className="flex items-center justify-between mb-2">
-              <span>Ep {anime.episodes || "-"} airing soon</span>
+              <span>Ep {anime.episodes || "-"} {anime.aired?.from}</span>
               {anime.score && (
                 <span
                   className={`flex items-center gap-1 font-bold ${
