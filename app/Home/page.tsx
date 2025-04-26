@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { fetchTrendingAnimeAniList, fetchSeasonalAnimeAniList } from "@/lib/api-anilist";
+import { useTrendingAnimeQuery, useSeasonalAnimeQuery } from '@/redux/api/animeApi';
 import Link from "next/link";
 import { AnimeCard } from "@/components/Home/AnimeCard";
 import { Anime } from "@/lib/types";
@@ -19,40 +18,16 @@ const getCurrentSeason = () => {
 const getCurrentYear = () => new Date().getFullYear();
 
 export default function HomePage() {
-  const [trendingAnime, setTrendingAnime] = useState<Anime[]>([]);
-  const [popularThisSeason, setPopularThisSeason] = useState<Anime[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  
   const currentSeason = getCurrentSeason();
   const currentYear = getCurrentYear();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch trending anime
-        const trendingData = await fetchTrendingAnimeAniList(1);
-        if (trendingData && trendingData.data) {
-          setTrendingAnime(trendingData.data.slice(0, 6));
-        }
-        
-        // Fetch popular anime this season
-        const seasonalData = await fetchSeasonalAnimeAniList(currentYear, currentSeason, 1);
-        if (seasonalData && seasonalData.data) {
-          setPopularThisSeason(seasonalData.data.slice(0, 6));
-        }
-      } catch (error) {
-        console.error('Error fetching anime:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [currentSeason, currentYear]);
-  
+  const { data: trendingAnimeData, isLoading: trendingLoading } = useTrendingAnimeQuery(1);
+  const { data: seasonalAnimeData, isLoading: seasonalLoading } = useSeasonalAnimeQuery({ year: currentYear, season: currentSeason, page: 1 });
+
+  const trendingAnime = trendingAnimeData?.data?.slice(0, 6) || [];
+  const popularThisSeason = seasonalAnimeData?.data?.slice(0, 6) || [];
+  const loading = trendingLoading || seasonalLoading;
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Trending Now Section */}
@@ -63,7 +38,6 @@ export default function HomePage() {
             View All
           </Link>
         </div>
-        
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {Array(6).fill(0).map((_, index) => (
