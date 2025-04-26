@@ -4,7 +4,7 @@ import type { AnimeResponse } from '@/lib/types';
 
 export const animeApi = createApi({
   reducerPath: 'animeApi',
-  baseQuery: fakeBaseQuery<never>(),
+  baseQuery: fakeBaseQuery<unknown>(),
   endpoints: (builder) => ({
     trendingAnime: builder.query<AnimeResponse | null, number>({
       async queryFn(page = 1) {

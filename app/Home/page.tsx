@@ -40,7 +40,7 @@ export default function HomePage() {
         </div>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {Array(6).fill(0).map((_, index) => (
+            {Array(6).fill(0).map((_, index: number) => (
               <div key={index} className="animate-pulse">
                 <div className="bg-gray-300 dark:bg-gray-700 rounded-lg aspect-[3/4] w-full mb-2"></div>
                 <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
@@ -50,7 +50,7 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {trendingAnime.map((anime, index) => (
+            {trendingAnime.map((anime: Anime, index: number) => (
               <AnimeCard key={anime.mal_id} anime={anime} index={index} />
             ))}
           </div>
@@ -68,7 +68,7 @@ export default function HomePage() {
         
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {Array(6).fill(0).map((_, index) => (
+            {Array(6).fill(0).map((_, index: number) => (
               <div key={index} className="animate-pulse">
                 <div className="bg-gray-300 dark:bg-gray-700 rounded-lg aspect-[3/4] w-full mb-2"></div>
                 <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
@@ -78,7 +78,7 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {popularThisSeason.map((anime, index) => (
+            {popularThisSeason.map((anime: Anime, index: number) => (
               <AnimeCard key={anime.mal_id} anime={anime} index={index} />
             ))}
           </div>

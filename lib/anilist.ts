@@ -71,8 +71,17 @@ const formatAiredString = (
   return `${start} to ${end}`;
 };
 
+// Define a type for pageInfo
+type PageInfo = {
+  currentPage: number;
+  hasNextPage: boolean;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
 
-async function executeGraphQLQuery<T>(query: string, variables: any): Promise<T> {
+// Update executeGraphQLQuery to use a generic type for variables
+async function executeGraphQLQuery<T, V extends Record<string, unknown>>(query: string, variables: V): Promise<T> {
   try {
     const response = await axios.post(
       BASE_URL,
@@ -95,8 +104,8 @@ async function executeGraphQLQuery<T>(query: string, variables: any): Promise<T>
   }
 }
 
-// Convert AniList pagination to our format
-const convertPagination = (pageInfo: any) => {
+// Update convertPagination to use PageInfo type
+const convertPagination = (pageInfo: PageInfo) => {
   return {
     last_visible_page: pageInfo.lastPage,
     has_next_page: pageInfo.hasNextPage,
@@ -109,10 +118,44 @@ const convertPagination = (pageInfo: any) => {
   };
 };
 
+// Define a type for the anime details object
+type AnimeDetailsWithExtras = Anime & {
+  genres?: Array<{
+    mal_id: number;
+    type: string;
+    name: string;
+    url: string;
+  }>;
+  studios?: Array<{
+    mal_id: number;
+    type: string;
+    name: string;
+    url: string;
+  }>;
+  relations?: Array<{
+    relation: string;
+    entry: Array<{
+      mal_id: number;
+      type: string;
+      name: string;
+      url: string;
+    }>;
+  }>;
+  streaming?: Array<{
+    name: string;
+    url: string;
+  }>;
+  trailer?: {
+    youtube_id: string;
+    url: string;
+    embed_url: string;
+  };
+};
+
 export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
       NEW_RELEASES_QUERY,
       { page, perPage }
     );
@@ -136,7 +179,7 @@ export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | 
 export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
       TRENDING_ANIME_QUERY,
       { page, perPage }
     );
@@ -160,7 +203,7 @@ export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse 
 export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
       UPCOMING_ANIME_QUERY,
       { page, perPage }
     );
@@ -183,14 +226,14 @@ export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse 
 
 export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse | null> => {
   try {
-    const response = await executeGraphQLQuery<AniListDetailsResponse>(
+    const response = await executeGraphQLQuery<AniListDetailsResponse, { id: number }>(
       ANIME_DETAILS_QUERY,
       { id: parseInt(id) }
     );
 
     if (response.data && response.data.Media) {
       const media = response.data.Media;
-      const animeDetails = convertToAnime(media) as any;
+      const animeDetails = convertToAnime(media) as AnimeDetailsWithExtras;
       
       // Add additional fields that are only in details
       animeDetails.genres = media.genres?.map((genre: string) => ({
@@ -245,7 +288,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
 export const searchAnime = async (query: string, page: number = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; search: string }>(
       SEARCH_ANIME_QUERY,
       { page, perPage, search: query }
     );
@@ -269,7 +312,7 @@ export const searchAnime = async (query: string, page: number = 1): Promise<Anim
 export const getMostFavoritedAnime = async (): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
       MOST_FAVORITED_QUERY,
       { page: 1, perPage }
     );
@@ -297,10 +340,8 @@ export const getSeasonalAnime = async (
 ): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    // Convert to AniList season format (uppercase)
     const anilistSeason = season.toUpperCase();
-    
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; season: string; year: number }>(
       SEASONAL_ANIME_QUERY,
       { page, perPage, season: anilistSeason, year }
     );
@@ -324,7 +365,7 @@ export const getSeasonalAnime = async (
 export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; year: number }>(
       YEARLY_ANIME_QUERY,
       { page, perPage, year }
     );
@@ -347,7 +388,13 @@ export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeRespo
 
 export const getAllGenres = async (): Promise<{ data: Array<{mal_id: number, name: string, type: string, url: string}> } | null> => {
   try {
-    const response = await executeGraphQLQuery<{ data: { GenreCollection: string[] } }>(
+    type GenresResponse = {
+      data: {
+        GenreCollection: string[];
+      };
+    };
+
+    const response = await executeGraphQLQuery<GenresResponse, Record<string, never>>(
       GENRES_QUERY,
       {}
     );
@@ -385,7 +432,7 @@ export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeR
     }
     
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; genre: string }>(
       ANIME_BY_GENRE_QUERY,
       { page, perPage, genre: genre.name }
     );
@@ -409,7 +456,7 @@ export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeR
 export const getMostPopularAnime = async (): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
       POPULAR_ANIME_QUERY,
       { page: 1, perPage }
     );
@@ -432,18 +479,28 @@ export const getMostPopularAnime = async (): Promise<AnimeResponse | null> => {
 
 export const getAnimeStudios = async (animeId: string): Promise<number[]> => {
   try {
-    const response = await executeGraphQLQuery<AniListDetailsResponse>(
+    type AnimeStudiosResponse = {
+      data: {
+        Media: {
+          studios: {
+            nodes: Array<{ id: number }>;
+          };
+        };
+      };
+    };
+
+    const response = await executeGraphQLQuery<AnimeStudiosResponse, { id: number }>(
       ANIME_DETAILS_QUERY,
       { id: parseInt(animeId) }
     );
 
-    if (response.data && response.data.Media && response.data.Media.studios) {
-      return response.data.Media.studios.nodes.map((studio: { id: number }) => studio.id);
+    if (response.data?.Media?.studios?.nodes) {
+      return response.data.Media.studios.nodes.map(studio => studio.id);
     }
 
     return [];
   } catch (error) {
-    console.error(`Error fetching studios for anime ID ${animeId}:`, error);
+    console.error('Error fetching anime studios:', error);
     return [];
   }
 };
@@ -451,7 +508,7 @@ export const getAnimeStudios = async (animeId: string): Promise<number[]> => {
 export const getAnimeByStudio = async (studioId: number, page = 1): Promise<AnimeResponse | null> => {
   try {
     const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse>(
+    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; studioId: number }>(
       ANIME_BY_STUDIO_QUERY,
       { page, perPage, studioId }
     );
@@ -467,7 +524,7 @@ export const getAnimeByStudio = async (studioId: number, page = 1): Promise<Anim
 
     return null;
   } catch (error) {
-    console.error(`Error fetching anime for studio ID ${studioId}:`, error);
+    console.error('Error fetching anime for studio ID:', error);
     return null;
   }
 }; 
