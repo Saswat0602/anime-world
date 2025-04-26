@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from 'next/image';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -21,19 +22,16 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-sky-500 dark:text-sky-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path
-                fillRule="evenodd"
-                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <Image
+              src="/zoro2.png"
+              alt="Otaku Realm Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+              priority
+            />
+
+            {/* Text */}
             <span className="text-xl font-bold text-slate-900 dark:text-white">
               Otaku.Realm
             </span>
