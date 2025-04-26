@@ -1,4 +1,4 @@
-import { useState, useEffect, DependencyList, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { AnimeResponse } from '../types';
 
 type FetchFunction = (page: number) => Promise<AnimeResponse | null>;
@@ -11,8 +11,7 @@ interface PaginationResult {
 
 export const usePagination = (
   fetchFn: FetchFunction, 
-  page: number,
-  deps: DependencyList = []
+  page: number
 ): PaginationResult => {
   const [data, setData] = useState<AnimeResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -50,7 +49,7 @@ export const usePagination = (
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, ...deps]);
+  }, [fetchData]);
 
   return { data, isLoading, error };
 }; 
