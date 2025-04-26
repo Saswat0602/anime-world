@@ -53,19 +53,19 @@ export const TRENDING_ANIME_QUERY = `
           type
           allTime
         }
-        studios {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
+      studios { 
+        edges { 
+          isMain 
+          node { 
+            id 
+            name 
+          } 
+        } 
+      } 
       }
     }
   }
 `;
-
 
 // GraphQL query for getting upcoming anime
 export const UPCOMING_ANIME_QUERY = `
