@@ -17,7 +17,7 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
     return "😞";
   };
 
-  console.log(anime, "anime");
+  console.log(anime.studios, "anime");
 
   return (
     <motion.div
@@ -43,10 +43,10 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
           {anime.score !== undefined && (
             <span
               className={`flex items-center gap-1 font-semibold ${anime.score >= 80
-                  ? "text-green-500"
-                  : anime.score >= 50
-                    ? "text-orange-400"
-                    : "text-red-500"
+                ? "text-green-500"
+                : anime.score >= 50
+                  ? "text-orange-400"
+                  : "text-red-500"
                 }`}
             >
               {getEmoji(anime.score)}
@@ -61,9 +61,10 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
             className="font-semibold truncate"
             style={{ color: anime.color || "#2563eb" }}
           >
-            {anime.studios.join(", ")}
+            {anime.studios.map((studio) => studio.name).join(", ")}
           </div>
         )}
+
 
         {/* Type and episodes */}
         <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
@@ -80,10 +81,10 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
                 color: anime.color || "#2563eb",
                 backgroundColor: anime.color
                   ? anime.color + "22"
-                  : "#bfdbfe", 
+                  : "#bfdbfe",
               }}
             >
-              {genre}
+              {genre.name}
             </span>
           ))}
         </div>

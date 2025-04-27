@@ -9,6 +9,11 @@ export interface Pagination {
   };
 }
 
+type StudioNode = {
+  id: number;
+  name: string;
+};
+
 export interface AnimeImage {
   jpg: {
     image_url: string;
@@ -53,8 +58,21 @@ export interface Anime {
   year?: number;
   images: AnimeImage;
   color:string,
-  studios?:string[],
-  genres?: string[];
+  bannerImage?: string;
+  studios?: {
+    mal_id: number;
+    type: string;
+    name: string;
+    url: string;
+  }[];
+  genres?: {
+    mal_id: number;
+    type: string;
+    name: string;
+    url: string;
+  }[];
+  isAdult?: boolean;
+  nextAiringEpisode?: { title: string; url: string; site: string; };
 }
 
 export interface AnimeResponse {
@@ -169,9 +187,9 @@ export interface AniListMedia {
     allTime: boolean;
   }[] | null;
   studios?: {
+    isMain: boolean;
     edges: {
-      id: number;
-      name: string;
+      node: StudioNode;
     }[];
   };
   relations?: {

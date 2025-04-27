@@ -13,6 +13,7 @@ import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRE
 const BASE_URL = 'https://graphql.anilist.co';
 
 const convertToAnime = (media: AniListMedia): Anime => {
+  console.log(media.studios?.edges,"media.studios?.edges")
   const mainStudios = media.studios?.edges
     .filter(edge => edge.isMain)
     .map(edge => edge.node.name) || [];
@@ -54,11 +55,20 @@ const convertToAnime = (media: AniListMedia): Anime => {
       }
     },
     bannerImage: media.bannerImage || "",
-    genres: media.genres || [],
-    studios: mainStudios,
+    genres: (media.genres || []).map(genre => ({
+      mal_id: 0, // AniList doesn't have IDs for genres
+      type: 'anime',
+      name: genre,
+      url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
+    })),
+    studios: mainStudios.map(studio => ({
+      mal_id: 0, 
+      type: 'anime',
+      name: studio,
+      url: `https://anilist.co/search/studio?name=${encodeURIComponent(studio)}`
+    })),
     isAdult: media.isAdult || false,
-    favourites: media.favourites || 0,
-    nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined, // Checking if there's a next airing episode
+    nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined,
   };
 };
 
