@@ -6,7 +6,9 @@ interface CardHoverProps {
   anime: Anime;
 }
 
+
 const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
+  console.log(anime,"anime.studios?")
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -24,26 +26,25 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
           {anime.score && (
             <span
               className={`flex items-center gap-1 font-bold ${
-                anime.score * 10 >= 80
+                anime.score  >= 80
                   ? "text-green-500"
-                  : anime.score * 10 >= 50
+                  : anime.score  >= 50
                   ? "text-yellow-500"
                   : "text-red-500"
               }`}
             >
-              {anime.score * 10 >= 80
+              {anime.score  >= 80
                 ? "😄"
-                : anime.score * 10 >= 50
+                : anime.score >= 50
                 ? "😐"
                 : "😢"}
-              {Math.round(anime.score * 10)}%
+              {anime.score }%
             </span>
           )}
         </div>
-
-        {/* {anime.studios?.[0]?.name && (
+         {anime.studios?.[0]?.name && (
           <div className="font-semibold">{anime.studios[0].name}</div>
-        )} */}
+        )} 
         <div className="text-xs mb-2 text-gray-600 dark:text-gray-400">
           {anime.type} • {anime.status}
         </div>

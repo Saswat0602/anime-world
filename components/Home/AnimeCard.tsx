@@ -17,7 +17,6 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
 
   const imageUrl = anime?.images?.jpg?.large_image_url || "/placeholder.jpg";
   const title =anime?.title_english ?anime?.title_english: anime?.title || "Unknown Title";
-console.log(anime)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

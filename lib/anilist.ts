@@ -12,7 +12,6 @@ import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRE
 
 const BASE_URL = 'https://graphql.anilist.co';
 
-// Helper function to convert AniList media to our app's Anime format
 const convertToAnime = (media: AniListMedia): Anime => {
   return {
     mal_id: media.id, // Using AniList ID instead of MAL ID
@@ -33,7 +32,7 @@ const convertToAnime = (media: AniListMedia): Anime => {
     },
     duration: media.duration ? `${media.duration} min per ep` : 'Unknown',
     rating: media.isAdult ? 'R+ - Mild Nudity' : 'PG-13 - Teens 13 or older',
-    score: media.averageScore ? media.averageScore / 10 : undefined, // AniList scores are 0-100
+    score: media.averageScore ||  0, // AniList scores are 0-100
     scored_by: media.popularity || undefined,
     rank: media.rankings?.find((r: { type: string }) => r.type === 'RATED')?.rank || undefined,
     popularity: media.popularity || undefined,
@@ -49,9 +48,17 @@ const convertToAnime = (media: AniListMedia): Anime => {
         small_image_url: media.coverImage.medium || undefined,
         large_image_url: media.coverImage.large || undefined
       }
-    }
+    },
+    bannerImage: media.bannerImage || undefined,
+    genres: media.genres || [],
+    studios: media.studios?.edges, 
+    isAdult: media.isAdult || false,
+    favourites: media.favourites || 0,
+    nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined, // Checking if there's a next airing episode
   };
 };
+
+
 
 // Helper to format aired string similar to Jikan
 const formatAiredString = (
@@ -183,6 +190,7 @@ export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse 
       TRENDING_ANIME_QUERY,
       { page, perPage }
     );
+    console.log(response.data.Page.media[0],"response.data.Page.media")
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
@@ -243,7 +251,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
         url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
       }));
       
-      animeDetails.studios = media.studios?.nodes.map((studio: { id: number; name: string }) => ({
+      animeDetails.studios = media.studios?.edges.map((studio: { id: number; name: string }) => ({
         mal_id: studio.id,
         type: 'anime',
         name: studio.name,

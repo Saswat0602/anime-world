@@ -166,7 +166,7 @@ export interface AniListMedia {
     allTime: boolean;
   }[] | null;
   studios?: {
-    nodes: {
+    edges: {
       id: number;
       name: string;
     }[];
