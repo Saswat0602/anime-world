@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { 
-  AnimeResponse, 
-  AnimeDetailsResponse, 
-  Anime, 
+import {
+  AnimeResponse,
+  AnimeDetailsResponse,
+  Anime,
   AniListAnimeResponse,
   AniListMedia,
   AniListDetailsResponse
@@ -13,6 +13,9 @@ import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRE
 const BASE_URL = 'https://graphql.anilist.co';
 
 const convertToAnime = (media: AniListMedia): Anime => {
+  const mainStudios = media.studios?.edges
+    .filter(edge => edge.isMain)
+    .map(edge => edge.node.name) || [];
   return {
     mal_id: media.id, // Using AniList ID instead of MAL ID
     url: `https://anilist.co/anime/${media.id}`,
@@ -32,7 +35,7 @@ const convertToAnime = (media: AniListMedia): Anime => {
     },
     duration: media.duration ? `${media.duration} min per ep` : 'Unknown',
     rating: media.isAdult ? 'R+ - Mild Nudity' : 'PG-13 - Teens 13 or older',
-    score: media.averageScore ||  0, // AniList scores are 0-100
+    score: media.averageScore || 0, // AniList scores are 0-100
     scored_by: media.popularity || undefined,
     rank: media.rankings?.find((r: { type: string }) => r.type === 'RATED')?.rank || undefined,
     popularity: media.popularity || undefined,
@@ -42,6 +45,7 @@ const convertToAnime = (media: AniListMedia): Anime => {
     background: media.description || undefined,
     season: media.season ? media.season.toLowerCase() : undefined,
     year: media.seasonYear || undefined,
+    color:media?.coverImage.color || "",
     images: {
       jpg: {
         image_url: media.coverImage.medium || '',
@@ -49,9 +53,9 @@ const convertToAnime = (media: AniListMedia): Anime => {
         large_image_url: media.coverImage.large || undefined
       }
     },
-    bannerImage: media.bannerImage || undefined,
+    bannerImage: media.bannerImage || "",
     genres: media.genres || [],
-    studios: media.studios?.edges, 
+    studios: mainStudios,
     isAdult: media.isAdult || false,
     favourites: media.favourites || 0,
     nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined, // Checking if there's a next airing episode
@@ -66,14 +70,14 @@ const formatAiredString = (
   endDate: { year: number | null; month: number | null; day: number | null } | null | undefined
 ): string => {
   if (!startDate || !startDate.year) return 'Not available';
-  
+
   // Convert null values to undefined for compatibility
   const start = `${startDate.year}-${String(startDate.month || 1).padStart(2, '0')}-${String(startDate.day || 1).padStart(2, '0')}`;
-  
+
   if (!endDate || !endDate.year) {
     return `${start} to ?`;
   }
-  
+
   const end = `${endDate.year}-${String(endDate.month || 1).padStart(2, '0')}-${String(endDate.day || 1).padStart(2, '0')}`;
   return `${start} to ${end}`;
 };
@@ -169,7 +173,7 @@ export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | 
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -190,11 +194,11 @@ export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse 
       TRENDING_ANIME_QUERY,
       { page, perPage }
     );
-    console.log(response.data.Page.media[0],"response.data.Page.media")
+    console.log(response.data.Page?.media[0]?.coverImage, "response.data.Page.media")
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -218,7 +222,7 @@ export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse 
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -242,7 +246,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
     if (response.data && response.data.Media) {
       const media = response.data.Media;
       const animeDetails = convertToAnime(media) as AnimeDetailsWithExtras;
-      
+
       // Add additional fields that are only in details
       animeDetails.genres = media.genres?.map((genre: string) => ({
         mal_id: 0, // AniList doesn't have IDs for genres
@@ -250,14 +254,14 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
         name: genre,
         url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
       }));
-      
+
       animeDetails.studios = media.studios?.edges.map((studio: { id: number; name: string }) => ({
         mal_id: studio.id,
         type: 'anime',
         name: studio.name,
         url: `https://anilist.co/studio/${studio.id}`
       }));
-      
+
       animeDetails.relations = media.relations?.edges.map((edge: { relationType: string; node: { id: number; title: { userPreferred: string }; type: string } }) => ({
         relation: edge.relationType,
         entry: [
@@ -269,18 +273,18 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
           }
         ]
       }));
-      
+
       animeDetails.streaming = media.streamingEpisodes?.map((episode: { site: string; url: string }) => ({
         name: episode.site,
         url: episode.url
       }));
-      
+
       animeDetails.trailer = media.trailer ? {
         youtube_id: media.trailer.id,
         url: media.trailer.site === 'youtube' ? `https://www.youtube.com/watch?v=${media.trailer.id}` : `https://www.${media.trailer.site}.com/watch?v=${media.trailer.id}`,
         embed_url: media.trailer.site === 'youtube' ? `https://www.youtube.com/embed/${media.trailer.id}` : `https://www.${media.trailer.site}.com/embed/${media.trailer.id}`
       } : undefined;
-      
+
       return {
         data: animeDetails
       };
@@ -303,7 +307,7 @@ export const searchAnime = async (query: string, page: number = 1): Promise<Anim
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -327,7 +331,7 @@ export const getMostFavoritedAnime = async (): Promise<AnimeResponse | null> => 
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -356,7 +360,7 @@ export const getSeasonalAnime = async (
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -380,7 +384,7 @@ export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeRespo
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -394,7 +398,7 @@ export const getYearlyAnime = async (year: number, page = 1): Promise<AnimeRespo
   }
 };
 
-export const getAllGenres = async (): Promise<{ data: Array<{mal_id: number, name: string, type: string, url: string}> } | null> => {
+export const getAllGenres = async (): Promise<{ data: Array<{ mal_id: number, name: string, type: string, url: string }> } | null> => {
   try {
     type GenresResponse = {
       data: {
@@ -415,7 +419,7 @@ export const getAllGenres = async (): Promise<{ data: Array<{mal_id: number, nam
         type: 'anime',
         url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
       }));
-      
+
       return { data: genres };
     }
 
@@ -433,12 +437,12 @@ export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeR
     if (!allGenres || !allGenres.data || allGenres.data.length === 0) {
       throw new Error('Could not fetch genres');
     }
-    
+
     const genre = allGenres.data.find(g => g.mal_id === genreId);
     if (!genre) {
       throw new Error(`Genre with ID ${genreId} not found`);
     }
-    
+
     const perPage = 10;
     const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number; genre: string }>(
       ANIME_BY_GENRE_QUERY,
@@ -447,7 +451,7 @@ export const getAnimeByGenre = async (genreId: number, page = 1): Promise<AnimeR
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -471,7 +475,7 @@ export const getMostPopularAnime = async (): Promise<AnimeResponse | null> => {
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)
@@ -523,7 +527,7 @@ export const getAnimeByStudio = async (studioId: number, page = 1): Promise<Anim
 
     if (response.data && response.data.Page) {
       const animeList = response.data.Page.media.map(convertToAnime);
-      
+
       return {
         data: animeList,
         pagination: convertPagination(response.data.Page.pageInfo)

@@ -52,6 +52,9 @@ export interface Anime {
   season?: string;
   year?: number;
   images: AnimeImage;
+  color:string,
+  studios?:string[],
+  genres?: string[];
 }
 
 export interface AnimeResponse {
@@ -192,6 +195,7 @@ export interface AniListMedia {
     id: string;
     site: string;
   } | null;
+  color: string | null;
 }
 
 export interface AniListAnimeResponse {
