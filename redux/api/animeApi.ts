@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AnimeResponse, AniListAnimeResponse } from '@/lib/types';
-import { TRENDING_ANIME_QUERY, SEASONAL_ANIME_QUERY } from '@/lib/graphQlQuerry';
+import { TRENDING_ANIME_QUERY, SEASONAL_ANIME_QUERY } from '@/lib/queries/trendingQueries';
 import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
 
 

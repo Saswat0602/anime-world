@@ -1,12 +1,23 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { animeApi } from './api/animeApi';
+import { detailsApi } from './api/detailsApi';
+import { searchApi } from './api/searchApi';
+import { genresApi } from './api/genresApi';
 
 export const store = configureStore({
   reducer: {
     [animeApi.reducerPath]: animeApi.reducer,
+    [detailsApi.reducerPath]: detailsApi.reducer,
+    [searchApi.reducerPath]: searchApi.reducer,
+    [genresApi.reducerPath]: genresApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(animeApi.middleware),
+    getDefaultMiddleware().concat(
+      animeApi.middleware,
+      detailsApi.middleware,
+      searchApi.middleware,
+      genresApi.middleware
+    ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -2,12 +2,10 @@ import axios from 'axios';
 import {
   AnimeResponse,
   AnimeDetailsResponse,
-  Anime,
   AniListAnimeResponse,
-  AniListMedia,
   AniListDetailsResponse
 } from './types';
-import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRES_QUERY, MOST_FAVORITED_QUERY, NEW_RELEASES_QUERY, POPULAR_ANIME_QUERY, SEARCH_ANIME_QUERY, SEASONAL_ANIME_QUERY, TRENDING_ANIME_QUERY, UPCOMING_ANIME_QUERY, YEARLY_ANIME_QUERY } from './graphQlQuerry';
+import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRES_QUERY, MOST_FAVORITED_QUERY, NEW_RELEASES_QUERY, POPULAR_ANIME_QUERY, SEARCH_ANIME_QUERY, SEASONAL_ANIME_QUERY, UPCOMING_ANIME_QUERY, YEARLY_ANIME_QUERY } from './graphQlQuerry';
 import { AnimeDetailsWithExtras, PageInfo } from './anilistTypes';
 import { convertToAnime } from '@/utils/apiHelpers';
 
@@ -15,24 +13,6 @@ import { convertToAnime } from '@/utils/apiHelpers';
 const BASE_URL = 'https://graphql.anilist.co';
 
 
-
-
-const formatAiredString = (
-  startDate: { year: number | null; month: number | null; day: number | null } | null | undefined,
-  endDate: { year: number | null; month: number | null; day: number | null } | null | undefined
-): string => {
-  if (!startDate || !startDate.year) return 'Not available';
-
-  // Convert null values to undefined for compatibility
-  const start = `${startDate.year}-${String(startDate.month || 1).padStart(2, '0')}-${String(startDate.day || 1).padStart(2, '0')}`;
-
-  if (!endDate || !endDate.year) {
-    return `${start} to ?`;
-  }
-
-  const end = `${endDate.year}-${String(endDate.month || 1).padStart(2, '0')}-${String(endDate.day || 1).padStart(2, '0')}`;
-  return `${start} to ${end}`;
-};
 
 
 // Update executeGraphQLQuery to use a generic type for variables
@@ -99,30 +79,7 @@ export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | 
   }
 };
 
-export const getTrendingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
-  try {
-    const perPage = 10;
-    const response = await executeGraphQLQuery<AniListAnimeResponse, { page: number; perPage: number }>(
-      TRENDING_ANIME_QUERY,
-      { page, perPage }
-    );
-    console.log(response.data.Page?.media[0]?.coverImage, "response.data.Page.media")
 
-    if (response.data && response.data.Page) {
-      const animeList = response.data.Page.media.map(convertToAnime);
-
-      return {
-        data: animeList,
-        pagination: convertPagination(response.data.Page.pageInfo)
-      };
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Error fetching trending anime:', error);
-    return null;
-  }
-};
 
 export const getUpcomingAnime = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
