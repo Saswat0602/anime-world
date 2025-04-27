@@ -8,12 +8,13 @@ import {
   AniListDetailsResponse
 } from './types';
 import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRES_QUERY, MOST_FAVORITED_QUERY, NEW_RELEASES_QUERY, POPULAR_ANIME_QUERY, SEARCH_ANIME_QUERY, SEASONAL_ANIME_QUERY, TRENDING_ANIME_QUERY, UPCOMING_ANIME_QUERY, YEARLY_ANIME_QUERY } from './graphQlQuerry';
+import { AnimeDetailsWithExtras, PageInfo } from './anilistTypes';
 
 
 const BASE_URL = 'https://graphql.anilist.co';
 
 const convertToAnime = (media: AniListMedia): Anime => {
-  console.log(media.studios?.edges,"media.studios?.edges")
+  console.log(media.studios?.edges, "media.studios?.edges")
   const mainStudios = media.studios?.edges
     .filter(edge => edge.isMain)
     .map(edge => edge.node.name) || [];
@@ -46,7 +47,7 @@ const convertToAnime = (media: AniListMedia): Anime => {
     background: media.description || undefined,
     season: media.season ? media.season.toLowerCase() : undefined,
     year: media.seasonYear || undefined,
-    color:media?.coverImage.color || "",
+    color: media?.coverImage.color || "",
     images: {
       jpg: {
         image_url: media.coverImage.medium || '',
@@ -62,7 +63,7 @@ const convertToAnime = (media: AniListMedia): Anime => {
       url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
     })),
     studios: mainStudios.map(studio => ({
-      mal_id: 0, 
+      mal_id: 0,
       type: 'anime',
       name: studio,
       url: `https://anilist.co/search/studio?name=${encodeURIComponent(studio)}`
@@ -92,14 +93,6 @@ const formatAiredString = (
   return `${start} to ${end}`;
 };
 
-// Define a type for pageInfo
-type PageInfo = {
-  currentPage: number;
-  hasNextPage: boolean;
-  lastPage: number;
-  perPage: number;
-  total: number;
-};
 
 // Update executeGraphQLQuery to use a generic type for variables
 async function executeGraphQLQuery<T, V extends Record<string, unknown>>(query: string, variables: V): Promise<T> {
@@ -139,39 +132,7 @@ const convertPagination = (pageInfo: PageInfo) => {
   };
 };
 
-// Define a type for the anime details object
-type AnimeDetailsWithExtras = Anime & {
-  genres?: Array<{
-    mal_id: number;
-    type: string;
-    name: string;
-    url: string;
-  }>;
-  studios?: Array<{
-    mal_id: number;
-    type: string;
-    name: string;
-    url: string;
-  }>;
-  relations?: Array<{
-    relation: string;
-    entry: Array<{
-      mal_id: number;
-      type: string;
-      name: string;
-      url: string;
-    }>;
-  }>;
-  streaming?: Array<{
-    name: string;
-    url: string;
-  }>;
-  trailer?: {
-    youtube_id: string;
-    url: string;
-    embed_url: string;
-  };
-};
+
 
 export const getNewReleases = async (page: number = 1): Promise<AnimeResponse | null> => {
   try {
@@ -257,7 +218,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
       const media = response.data.Media;
       const animeDetails = convertToAnime(media) as AnimeDetailsWithExtras;
 
-      // Add additional fields that are only in details
+      // Correct genres
       animeDetails.genres = media.genres?.map((genre: string) => ({
         mal_id: 0, // AniList doesn't have IDs for genres
         type: 'anime',
@@ -265,14 +226,16 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
         url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
       }));
 
-      animeDetails.studios = media.studios?.edges.map((studio: { id: number; name: string }) => ({
-        mal_id: studio.id,
+      // Correct studios
+      animeDetails.studios = media.studios?.edges.map((edge) => ({
+        mal_id: 0, // No direct MAL id
         type: 'anime',
-        name: studio.name,
-        url: `https://anilist.co/studio/${studio.id}`
-      }));
+        name: edge.node.name,
+        url: `https://anilist.co/studio/${edge.node.id}`
+      })) || [];
 
-      animeDetails.relations = media.relations?.edges.map((edge: { relationType: string; node: { id: number; title: { userPreferred: string }; type: string } }) => ({
+      // Correct relations
+      animeDetails.relations = media.relations?.edges.map((edge) => ({
         relation: edge.relationType,
         entry: [
           {
@@ -282,17 +245,23 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
             url: `https://anilist.co/${edge.node.type.toLowerCase()}/${edge.node.id}`
           }
         ]
-      }));
+      })) || [];
 
-      animeDetails.streaming = media.streamingEpisodes?.map((episode: { site: string; url: string }) => ({
+      // Correct streaming
+      animeDetails.streaming = media.streamingEpisodes?.map((episode) => ({
         name: episode.site,
         url: episode.url
-      }));
+      })) || [];
 
+      // Correct trailer
       animeDetails.trailer = media.trailer ? {
         youtube_id: media.trailer.id,
-        url: media.trailer.site === 'youtube' ? `https://www.youtube.com/watch?v=${media.trailer.id}` : `https://www.${media.trailer.site}.com/watch?v=${media.trailer.id}`,
-        embed_url: media.trailer.site === 'youtube' ? `https://www.youtube.com/embed/${media.trailer.id}` : `https://www.${media.trailer.site}.com/embed/${media.trailer.id}`
+        url: media.trailer.site === 'youtube'
+          ? `https://www.youtube.com/watch?v=${media.trailer.id}`
+          : `https://www.${media.trailer.site}.com/watch?v=${media.trailer.id}`,
+        embed_url: media.trailer.site === 'youtube'
+          ? `https://www.youtube.com/embed/${media.trailer.id}`
+          : `https://www.${media.trailer.site}.com/embed/${media.trailer.id}`
       } : undefined;
 
       return {
@@ -306,6 +275,7 @@ export const getAnimeDetails = async (id: string): Promise<AnimeDetailsResponse 
     return null;
   }
 };
+
 
 export const searchAnime = async (query: string, page: number = 1): Promise<AnimeResponse | null> => {
   try {

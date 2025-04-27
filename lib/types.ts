@@ -14,6 +14,10 @@ type StudioNode = {
   name: string;
 };
 
+type StudioEdge = {
+  isMain: boolean;
+  node: StudioNode;
+};
 export interface AnimeImage {
   jpg: {
     image_url: string;
@@ -57,7 +61,7 @@ export interface Anime {
   season?: string;
   year?: number;
   images: AnimeImage;
-  color:string,
+  color: string,
   bannerImage?: string;
   studios?: {
     mal_id: number;
@@ -187,10 +191,7 @@ export interface AniListMedia {
     allTime: boolean;
   }[] | null;
   studios?: {
-    isMain: boolean;
-    edges: {
-      node: StudioNode;
-    }[];
+    edges: StudioEdge[];
   };
   relations?: {
     edges: {
