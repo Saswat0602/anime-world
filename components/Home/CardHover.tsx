@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Anime } from "@/lib/types";
+import { Anime } from "@/types/types";
 
 interface CardHoverProps {
   anime: Anime;

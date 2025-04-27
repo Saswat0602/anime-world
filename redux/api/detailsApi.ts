@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { AnimeDetailsResponse, AniListDetailsResponse } from '@/lib/types';
+import type { AnimeDetailsResponse, AniListDetailsResponse } from '@/types/types';
 import { ANIME_DETAILS_QUERY } from '@/lib/queries/detailsQueries';
-import { convertToAnime } from '@/utils/apiHelpers';
+import { convertPagination, convertToAnime } from '../utils/apiHelpers';
 
 export const detailsApi = createApi({
   reducerPath: 'detailsApi',

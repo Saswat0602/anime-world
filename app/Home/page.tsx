@@ -3,7 +3,7 @@
 import { useTrendingAnimeQuery, useSeasonalAnimeQuery } from '@/redux/api/animeApi';
 import Link from "next/link";
 import { AnimeCard } from "@/components/Home/AnimeCard";
-import { Anime } from "@/lib/types";
+import { Anime } from "@/types/types";
 
 // Get current season
 const getCurrentSeason = () => {

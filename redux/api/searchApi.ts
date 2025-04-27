@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { AnimeResponse, AniListAnimeResponse } from '@/lib/types';
+import type { AnimeResponse, AniListAnimeResponse } from '@/types/types';
 import { SEARCH_ANIME_QUERY } from '@/lib/queries/searchQueries';
-import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
+import { convertPagination, convertToAnime } from '../utils/apiHelpers';
 
 export const searchApi = createApi({
   reducerPath: 'searchApi',

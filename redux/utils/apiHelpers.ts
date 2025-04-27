@@ -1,5 +1,5 @@
-import { PageInfo } from "@/lib/anilistTypes";
-import { AniListMedia, Anime } from "@/lib/types";
+import { PageInfo } from "@/types/anilistTypes";
+import { AniListMedia, Anime } from "@/types/types";
 
 
 export const convertToAnime = (media: AniListMedia): Anime => {
