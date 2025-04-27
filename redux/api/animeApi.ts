@@ -1,29 +1,68 @@
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getTrendingAnime, getSeasonalAnime } from '@/lib/anilist';
-import type { AnimeResponse } from '@/lib/types';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { AnimeResponse, AniListAnimeResponse } from '@/lib/types';
+import { TRENDING_ANIME_QUERY, SEASONAL_ANIME_QUERY } from '@/lib/graphQlQuerry';
+import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
+
+
+
+
 
 export const animeApi = createApi({
   reducerPath: 'animeApi',
-  baseQuery: fakeBaseQuery<unknown>(),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://graphql.anilist.co' }),
   endpoints: (builder) => ({
     trendingAnime: builder.query<AnimeResponse | null, number>({
-      async queryFn(page = 1) {
-        try {
-          const data = await getTrendingAnime(page);
-          return { data };
-        } catch (error) {
-          return { error };
+      query: (page = 1) => ({
+        url: '',
+        method: 'POST',
+        body: {
+          query: TRENDING_ANIME_QUERY,
+          variables: { page, perPage: 10 }
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      }),
+      transformResponse: (response: AniListAnimeResponse) => {
+        if (response.data && response.data.Page) {
+          const animeList = response.data.Page.media.map(convertToAnime);
+          return {
+            data: animeList,
+            pagination: convertPagination(response.data.Page.pageInfo)
+          };
         }
+        return null;
       },
     }),
     seasonalAnime: builder.query<AnimeResponse | null, { year: number; season: 'winter' | 'spring' | 'summer' | 'fall'; page?: number }>({
-      async queryFn({ year, season, page = 1 }) {
-        try {
-          const data = await getSeasonalAnime(year, season, page);
-          return { data };
-        } catch (error) {
-          return { error };
+      query: ({ year, season, page = 1 }) => ({
+        url: '',
+        method: 'POST',
+        body: {
+          query: SEASONAL_ANIME_QUERY,
+          variables: { 
+            page, 
+            perPage: 10,
+            season: season.toUpperCase(),
+            seasonYear: year
+          }
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      }),
+      transformResponse: (response: AniListAnimeResponse) => {
+        if (response.data && response.data.Page) {
+          console.log(response.data.Page.media, "response.data.Page.media");
+          const animeList = response.data.Page.media.map(convertToAnime);
+          return {
+            data: animeList,
+            pagination: convertPagination(response.data.Page.pageInfo)
+          };
         }
+        return null;
       },
     }),
   }),

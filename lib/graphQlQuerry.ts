@@ -387,16 +387,16 @@ export const MOST_FAVORITED_QUERY = `
 
 // Query for getting seasonal anime
 export const SEASONAL_ANIME_QUERY = `
-  query ($page: Int, $perPage: Int, $season: MediaSeason, $year: Int) {
-    Page(page: $page, perPage: $perPage) {
-      pageInfo {
-        total
-        currentPage
-        lastPage
-        hasNextPage
-        perPage
-      }
-      media(type: ANIME, season: $season, seasonYear: $year) {
+query ($page: Int, $perPage: Int, $season: MediaSeason, $seasonYear: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      total
+      currentPage
+      lastPage
+      hasNextPage
+      perPage
+    }
+    media(type: ANIME, season: $season, seasonYear: $seasonYear) {
         id
         title {
           romaji

@@ -20,6 +20,8 @@ const getCurrentYear = () => new Date().getFullYear();
 export default function HomePage() {
   const currentSeason = getCurrentSeason();
   const currentYear = getCurrentYear();
+  console.log(currentYear,"currentYearcurrentYear");
+  console.log(currentSeason,"currentSeasoncurrentSeason");
 
   const { data: trendingAnimeData, isLoading: trendingLoading } = useTrendingAnimeQuery(1);
   const { data: seasonalAnimeData, isLoading: seasonalLoading } = useSeasonalAnimeQuery({ year: currentYear, season: currentSeason, page: 1 });

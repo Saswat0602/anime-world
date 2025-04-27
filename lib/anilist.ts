@@ -9,73 +9,14 @@ import {
 } from './types';
 import { ANIME_BY_GENRE_QUERY, ANIME_BY_STUDIO_QUERY, ANIME_DETAILS_QUERY, GENRES_QUERY, MOST_FAVORITED_QUERY, NEW_RELEASES_QUERY, POPULAR_ANIME_QUERY, SEARCH_ANIME_QUERY, SEASONAL_ANIME_QUERY, TRENDING_ANIME_QUERY, UPCOMING_ANIME_QUERY, YEARLY_ANIME_QUERY } from './graphQlQuerry';
 import { AnimeDetailsWithExtras, PageInfo } from './anilistTypes';
+import { convertToAnime } from '@/utils/apiHelpers';
 
 
 const BASE_URL = 'https://graphql.anilist.co';
 
-const convertToAnime = (media: AniListMedia): Anime => {
-  console.log(media.studios?.edges, "media.studios?.edges")
-  const mainStudios = media.studios?.edges
-    .filter(edge => edge.isMain)
-    .map(edge => edge.node.name) || [];
-  return {
-    mal_id: media.id, // Using AniList ID instead of MAL ID
-    url: `https://anilist.co/anime/${media.id}`,
-    title: media.title.userPreferred || media.title.english || media.title.romaji || '',
-    title_english: media.title.english || undefined,
-    title_japanese: media.title.native || undefined,
-    title_synonyms: media.synonyms || [],
-    type: media.format || 'Unknown',
-    source: media.source || 'Unknown',
-    episodes: media.episodes || undefined,
-    status: media.status || 'Unknown',
-    airing: media.status === 'RELEASING',
-    aired: {
-      from: media.startDate ? `${media.startDate.year}-${media.startDate.month}-${media.startDate.day}` : '',
-      to: media.endDate && media.endDate.year ? `${media.endDate.year}-${media.endDate.month}-${media.endDate.day}` : undefined,
-      string: formatAiredString(media.startDate, media.endDate)
-    },
-    duration: media.duration ? `${media.duration} min per ep` : 'Unknown',
-    rating: media.isAdult ? 'R+ - Mild Nudity' : 'PG-13 - Teens 13 or older',
-    score: media.averageScore || 0, // AniList scores are 0-100
-    scored_by: media.popularity || undefined,
-    rank: media.rankings?.find((r: { type: string }) => r.type === 'RATED')?.rank || undefined,
-    popularity: media.popularity || undefined,
-    members: media.popularity || undefined,
-    favorites: media.favourites || undefined,
-    synopsis: media.description || undefined,
-    background: media.description || undefined,
-    season: media.season ? media.season.toLowerCase() : undefined,
-    year: media.seasonYear || undefined,
-    color: media?.coverImage.color || "",
-    images: {
-      jpg: {
-        image_url: media.coverImage.medium || '',
-        small_image_url: media.coverImage.medium || undefined,
-        large_image_url: media.coverImage.large || undefined
-      }
-    },
-    bannerImage: media.bannerImage || "",
-    genres: (media.genres || []).map(genre => ({
-      mal_id: 0, // AniList doesn't have IDs for genres
-      type: 'anime',
-      name: genre,
-      url: `https://anilist.co/search/anime?genres=${encodeURIComponent(genre)}`
-    })),
-    studios: mainStudios.map(studio => ({
-      mal_id: 0,
-      type: 'anime',
-      name: studio,
-      url: `https://anilist.co/search/studio?name=${encodeURIComponent(studio)}`
-    })),
-    isAdult: media.isAdult || false,
-    nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined,
-  };
-};
 
 
 
-// Helper to format aired string similar to Jikan
 const formatAiredString = (
   startDate: { year: number | null; month: number | null; day: number | null } | null | undefined,
   endDate: { year: number | null; month: number | null; day: number | null } | null | undefined
