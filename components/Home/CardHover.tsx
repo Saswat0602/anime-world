@@ -17,7 +17,6 @@ const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
     return "😞";
   };
 
-  console.log(anime.studios, "anime");
 
   return (
     <motion.div

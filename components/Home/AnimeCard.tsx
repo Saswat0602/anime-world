@@ -15,6 +15,7 @@ interface AnimeCardProps {
 export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+
   const imageUrl = anime?.images?.jpg?.large_image_url || "/placeholder.jpg";
   const title =anime?.title_english ?anime?.title_english: anime?.title || "Unknown Title";
   return (
