@@ -1,137 +1,113 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  useTrendingAnimeQuery, 
-  useSeasonalAnimeQuery,
-  useAnimeDetailsQuery,
-  useSearchAnimeQuery,
-  useGetAllGenresQuery,
-  useGetAnimeByGenreQuery,
-  useGetAnimeByStudioQuery
+import { useState, useEffect, useRef } from 'react';
+import {
+  useTrendingAnimeQuery,
+  useSeasonalAnimeQuery
 } from '@/redux/hooks';
 
-export default function TestPage() {
-  const [testResults, setTestResults] = useState<{ name: string; success: boolean; error?: string }[]>([]);
-  
-  // Set up query parameters for testing
-  const [seasonalParams] = useState({ year: 2023, season: 'winter' as const, page: 1 });
-  const [genreParams] = useState({ genreId: 'Action', page: 1 });
-  const [studioParams] = useState({ studioId: 1, page: 1 });
-  const [searchParams] = useState({ query: 'Naruto', page: 1 });
-  
-  // Initialize RTK Query hooks with skip: true so they don't run immediately
-  const { refetch: refetchTrending } = useTrendingAnimeQuery(1, { skip: true });
-  const { refetch: refetchSeasonal } = useSeasonalAnimeQuery(seasonalParams, { skip: true });
-  const { refetch: refetchDetails } = useAnimeDetailsQuery('1', { skip: true });
-  const { refetch: refetchSearch } = useSearchAnimeQuery(searchParams, { skip: true });
-  const { refetch: refetchGenres } = useGetAllGenresQuery(undefined, { skip: true });
-  const { refetch: refetchAnimeByGenre } = useGetAnimeByGenreQuery(genreParams, { skip: true });
-  const { refetch: refetchAnimeByStudio } = useGetAnimeByStudioQuery(studioParams, { skip: true });
 
-  const runTest = async (name: string, testFn: () => Promise<unknown>) => {
-    try {
-      const result = await testFn();
-      setTestResults(prev => [...prev, { name, success: true }]);
-      console.log(`Test "${name}" passed:`, result);
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setTestResults(prev => [...prev, { name, success: false, error: errorMessage }]);
-      console.error(`Test "${name}" failed:`, error);
-    }
-  };
+export default function TestPage() {
+  const [selectedTest, setSelectedTest] = useState<'trending' | 'seasonal' | null>(null);
+  const [page, setPage] = useState(1);
+  const [seasonalParams] = useState({ year: 2025, season: 'summer' as const, page: 1 });
+
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const { data: trendingData, isLoading: trendingLoading, isFetching: trendingFetching } = useTrendingAnimeQuery(page, { skip: selectedTest !== 'trending' });
+  const { data: seasonalData, isLoading: seasonalLoading, isFetching: seasonalFetching } = useSeasonalAnimeQuery({ ...seasonalParams, page }, { skip: selectedTest !== 'seasonal' });
+
+  const data = selectedTest === 'trending' ? trendingData : seasonalData;
+  const isLoading = selectedTest === 'trending' ? trendingLoading : seasonalLoading;
+  const isFetching = selectedTest === 'trending' ? trendingFetching : seasonalFetching;
+  const hasMore = data?.pagination?.has_next_page ?? false;
+
+  // Reset page when test changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedTest]);
+
+  // Infinite scroll
+  useEffect(() => {
+    if (!selectedTest) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading && !isFetching && hasMore) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const node = loadMoreRef.current;
+    if (node) observer.observe(node);
+
+    return () => {
+      if (node) observer.unobserve(node);
+      observer.disconnect();
+    };
+  }, [isLoading, isFetching, hasMore, selectedTest]);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">API Tests (RTK Query)</h1>
-      <div className="grid gap-4">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch Trending Anime', async () => {
-            const result = await refetchTrending();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch Trending Anime
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch Seasonal Anime', async () => {
-            const result = await refetchSeasonal();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch Seasonal Anime
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch Anime Details', async () => {
-            const result = await refetchDetails();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch Anime Details
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Search Anime', async () => {
-            const result = await refetchSearch();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Search Anime
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch All Genres', async () => {
-            const result = await refetchGenres();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch All Genres
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch Anime by Genre', async () => {
-            const result = await refetchAnimeByGenre();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch Anime by Genre
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => runTest('Fetch Anime by Studio', async () => {
-            const result = await refetchAnimeByStudio();
-            if (result.error) throw result.error;
-            return result.data;
-          })}
-        >
-          Test Fetch Anime by Studio
-        </button>
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-bold mb-4">Test Results</h2>
-        <div className="space-y-2">
-          {testResults.map((result, index) => (
-            <div
-              key={index}
-              className={`p-4 rounded ${
-                result.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}
-            >
-              <p className="font-bold">{result.name}: {result.success ? 'Passed' : 'Failed'}</p>
-              {result.error && <p className="mt-2">{result.error}</p>}
-            </div>
-          ))}
+    <div className="flex h-screen">
+
+      <div className="w-1/5 bg-gray-100 p-4 overflow-y-auto">
+        <h2 className="text-xl font-bold mb-6">API Tests</h2>
+
+        <div className="flex flex-col gap-4">
+          <button
+            className={`py-2 px-4 rounded font-semibold text-white ${selectedTest === 'trending' ? 'bg-blue-800' : 'bg-blue-600 hover:bg-blue-800'}`}
+            onClick={() => setSelectedTest('trending')}
+          >
+            Test Trending Anime
+          </button>
+          <button
+            className={`py-2 px-4 rounded font-semibold text-white ${selectedTest === 'seasonal' ? 'bg-green-800' : 'bg-green-600 hover:bg-green-800'}`}
+            onClick={() => setSelectedTest('seasonal')}
+          >
+            Test Seasonal Anime
+          </button>
         </div>
       </div>
+
+      <div className="w-4/5 p-6 overflow-y-auto">
+
+        {!selectedTest && (
+          <p className="text-gray-500 text-lg">Click a test button to start fetching API data.</p>
+        )}
+
+        {selectedTest && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">{selectedTest === 'trending' ? 'Trending Anime' : 'Seasonal Anime'} Result</h2>
+
+            {isLoading && (
+              <p className="text-gray-700 text-lg mb-4">Loading page {page}...</p>
+            )}
+
+            {data && (
+              <div className="border rounded-md bg-black p-4 overflow-x-auto max-h-[500px]">
+                <pre className="text-sm whitespace-pre-wrap">
+                  {JSON.stringify(data, null, 2)}
+                </pre>
+              </div>
+            )}
+            {!isLoading && !data && (
+              <p className="text-red-600 text-lg">No data available.</p>
+            )}
+
+            {/* Load More trigger */}
+            <div ref={loadMoreRef} className="h-10 mt-8" />
+            {isFetching && (
+              <p className="text-gray-500 text-center mt-4">Loading more...</p>
+            )}
+            {!hasMore && data && (
+              <p className="text-gray-400 text-center mt-4">No more pages to load.</p>
+            )}
+          </>
+        )}
+      </div>
+
     </div>
   );
 }
