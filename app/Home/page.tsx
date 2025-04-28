@@ -35,7 +35,7 @@ export default function HomePage() {
       <div className="mb-12">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">TRENDING NOW</h2>
-          <Link href="/trending" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+          <Link href="/anime/trending" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
             View All
           </Link>
         </div>
@@ -62,7 +62,7 @@ export default function HomePage() {
       <div className="mb-12">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">POPULAR THIS SEASON</h2>
-          <Link href="/seasonal" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+          <Link href="/anime/seasonal" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
             View All
           </Link>
         </div>
