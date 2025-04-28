@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Anime } from "@/types/types";
 import CardHover from "./CardHover";
 import { motion } from "framer-motion";
+import { ROUTES } from '@/routes';
 
 interface AnimeCardProps {
   anime: Anime;
@@ -36,7 +37,7 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`/anime/${anime.mal_id}`}>
+      <Link href={ROUTES.ANIME.DETAIL(anime.mal_id)}>
         <div className="overflow-hidden rounded-lg">
           <div className="relative aspect-[3/4] w-full">
             <Image

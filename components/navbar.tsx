@@ -6,15 +6,18 @@ import { ThemeToggle } from "./theme-toggle";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from 'next/image';
+import { ROUTES } from "@/routes";
 
 export function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Trending", path: "anime/trending" },
-    { name: "Upcoming", path: "anime/upcoming" },
+    { name: "Home", path: ROUTES.HOME },
+    { name: "Trending", path: ROUTES.ANIME.TRENDING },
+    { name: "Upcoming", path: ROUTES.ANIME.UPCOMING },
+    { name: "Seasonal", path: ROUTES.ANIME.SEASONAL },
+    { name: "Top 100", path: ROUTES.ANIME.TOP_100 },
   ];
 
   return (

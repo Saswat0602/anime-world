@@ -57,7 +57,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
-      
+
       {/* Popular This Season Section */}
       <div className="mb-12">
         <div className="flex justify-between items-center mb-4">
@@ -66,7 +66,7 @@ export default function HomePage() {
             View All
           </Link>
         </div>
-        
+
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {Array(6).fill(0).map((_, index: number) => (

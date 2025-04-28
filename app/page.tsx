@@ -7,10 +7,10 @@ const Landing = () => {
   const handleSearch = () => {
     // Handle search logic here
   }
-  
+
   return (
     <div>
-      <HeroSection onSearch={handleSearch}/>
+      <HeroSection onSearch={handleSearch} />
     </div>
   )
 }
