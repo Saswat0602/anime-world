@@ -43,7 +43,7 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
               src={imageUrl}
               alt={title}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-110"
+              className={`object-cover transition-transform duration-300 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
               priority={index < 6}
               onLoadingComplete={handleImageLoad}
