@@ -1,62 +1,43 @@
-
-
+// AnimeCard.tsx
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Anime } from "@/types/types";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import CardHover from "./CardHover";
 
 interface AnimeCardProps {
   anime: Anime;
-  index?: number;
+  index: number;
+  onLoad?: () => void; // Add this callback prop
 }
 
-export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    if (onLoad) {
+      onLoad();
+    }
+  };
 
-  const imageUrl = anime?.images?.jpg?.large_image_url || "/placeholder.jpg";
-  const title =anime?.title_english ?anime?.title_english: anime?.title || "Unknown Title";
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.5) }}
-      className="relative group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Link href={`/anime/${anime.mal_id}`}>
-        <div className="overflow-hidden rounded-lg">
-          <div className="relative aspect-[3/4] w-full">
-            <Image
-              src={imageUrl}
-              alt={title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-110"
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
-              style={{
-                transform: isHovered
-                  ? `rotateX(${15}deg) rotateY(${15}deg)`
-                  : "rotateX(0) rotateY(0)",
-              }}
-            />
-          </div>
+    <Link href={`/anime/${anime.mal_id}`}>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full">
+        <div className="relative aspect-[3/4] w-full">
+          <Image
+            src={anime.images.jpg.large_image_url || anime.images.jpg.image_url}
+            alt={anime.title}
+            fill
+            className={`object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+            priority={index < 6}
+            onLoadingComplete={handleImageLoad}
+          />
         </div>
-      </Link>
-
-      {isHovered && <CardHover anime={anime} />}
-
-      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white line-clamp-2">
-        {title}
-      </h3>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
-        {anime.type}{" "}
-        {anime.status
-          ? `• ${anime.status === "Currently Airing" ? "Airing" : anime.status}`
-          : ""}
-      </p>
-    </motion.div>
+        <div className="p-3">
+          <h3 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-2">{anime.title}</h3>
+        </div>
+      </div>
+    </Link>
   );
-}
+};

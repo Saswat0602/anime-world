@@ -4,9 +4,8 @@ import { useSeasonalAnimeQuery } from '@/redux/api/animeApi';
 import { AnimeCard } from "@/components/Home/AnimeCard";
 import { AnimeCardSkeleton } from "@/components/Home/AnimeCardSkeleton";
 import { Anime } from "@/types/types";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-// Get current season
 const getCurrentSeason = () => {
   const month = new Date().getMonth();
   if (month >= 0 && month <= 2) return 'winter';
@@ -15,14 +14,13 @@ const getCurrentSeason = () => {
   return 'fall';
 };
 
-// Get current year
 const getCurrentYear = () => new Date().getFullYear();
 
 export default function SeasonalPage() {
   const [page, setPage] = useState(1);
   const [allAnime, setAllAnime] = useState<Anime[]>([]);
+  const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
   const [hasMore, setHasMore] = useState(true);
-  const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   
   const currentSeason = getCurrentSeason();
@@ -34,29 +32,29 @@ export default function SeasonalPage() {
     page 
   });
   
-  // Update allAnime when new data is fetched
+  const handleAnimeLoaded = useCallback((animeId: number) => {
+    setLoadedAnimeIds(prev => {
+      const updated = new Set(prev);
+      updated.add(animeId);
+      return updated;
+    });
+  }, []);
+  
   useEffect(() => {
     if (seasonalAnimeData?.data) {
       setAllAnime(prev => {
-        // Avoid duplicates by checking if the anime already exists
         const newAnime = seasonalAnimeData.data.filter(
           anime => !prev.some(existing => existing.mal_id === anime.mal_id)
         );
         return [...prev, ...newAnime];
       });
       
-      // Update hasMore based on pagination info
       setHasMore(seasonalAnimeData.pagination?.has_next_page || false);
     }
-  }, [seasonalAnimeData]);
-  
-  // Set up intersection observer for infinite scrolling
-  useEffect(() => {
-    if (isLoading || isFetching || !hasMore) return;
     
-    observerRef.current = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !isLoading && !isFetching && hasMore) {
           setPage(prev => prev + 1);
         }
       },
@@ -64,37 +62,51 @@ export default function SeasonalPage() {
     );
     
     if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
+      observer.observe(loadMoreRef.current);
     }
     
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+      observer.disconnect();
     };
-  }, [isLoading, isFetching, hasMore]);
+  }, [seasonalAnimeData, isLoading, isFetching, hasMore]);
+  
+  const pendingItemsCount = isFetching || isLoading ? 6 : 0;
+  
+  const capitalizedSeason = currentSeason.charAt(0).toUpperCase() + currentSeason.slice(1);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
-        Popular {currentSeason.charAt(0).toUpperCase() + currentSeason.slice(1)} {currentYear} Anime
+        Popular {capitalizedSeason} {currentYear} Anime
       </h1>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative">
+        {/* Actual anime cards with individual loading state */}
         {allAnime.map((anime: Anime, index: number) => (
-          <AnimeCard key={anime.mal_id} anime={anime} index={index} />
+          <div key={anime.mal_id} className="relative">
+            <div className={loadedAnimeIds.has(anime.mal_id) ? "block" : "invisible"}>
+              <AnimeCard 
+                anime={anime} 
+                index={index} 
+                onLoad={() => handleAnimeLoaded(anime.mal_id)} 
+              />
+            </div>
+            
+            {!loadedAnimeIds.has(anime.mal_id) && (
+              <div className="absolute inset-0">
+                <AnimeCardSkeleton />
+              </div>
+            )}
+          </div>
         ))}
         
-        {/* Show skeleton loading for each card while fetching more data */}
-        {isFetching && Array(12).fill(0).map((_, index) => (
+        {Array(pendingItemsCount).fill(0).map((_, index) => (
           <AnimeCardSkeleton key={`skeleton-${index}`} />
         ))}
       </div>
       
-      {/* Invisible element for intersection observer */}
       <div ref={loadMoreRef} className="h-10 mt-8" />
       
-      {/* Show message when no more data */}
       {!hasMore && allAnime.length > 0 && (
         <div className="text-center mt-8 text-gray-500 dark:text-gray-400">
           No more anime to load
@@ -102,4 +114,4 @@ export default function SeasonalPage() {
       )}
     </div>
   );
-} 
+}
