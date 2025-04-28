@@ -17,7 +17,7 @@ export const animeApi = createApi({
         method: 'POST',
         body: {
           query: TRENDING_ANIME_QUERY,
-          variables: { page, perPage: 10 }
+          variables: { page, perPage: 12 }
         },
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const animeApi = createApi({
           query: SEASONAL_ANIME_QUERY,
           variables: { 
             page, 
-            perPage: 10,
+            perPage: 12,
             season: season.toUpperCase(),
             seasonYear: year
           }
