@@ -12,9 +12,9 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", path: "/Home" },
-    { name: "Trending", path: "/trending" },
-    { name: "Upcoming", path: "/upcoming" },
+    { name: "Home", path: "/" },
+    { name: "Trending", path: "anime/trending" },
+    { name: "Upcoming", path: "anime/upcoming" },
   ];
 
   return (
@@ -31,7 +31,6 @@ export function Navbar() {
               priority
             />
 
-            {/* Text */}
             <span className="text-xl font-bold text-slate-900 dark:text-white">
               Otaku.Realm
             </span>
