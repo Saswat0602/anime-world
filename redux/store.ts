@@ -3,7 +3,7 @@ import { animeApi } from './api/animeApi';
 import { detailsApi } from './api/detailsApi';
 import { searchApi } from './api/searchApi';
 import { genresApi } from './api/genresApi';
-import { upcomingAnimeApi } from './api/upcomingAnimeApi'; 
+import { upcomingAnimeApi } from './api/upComingAnimeApi'; 
 
 export const store = configureStore({
   reducer: {

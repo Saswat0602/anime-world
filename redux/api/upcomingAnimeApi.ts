@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AnimeResponse, AniListAnimeResponse } from '@/types/types';
-import { UPCOMING_ANIME_QUERY } from '@/lib/queries/fetchAnime';
+import { UPCOMING_NEXT_SEASON_QUERY } from '@/lib/queries/upComingNextSeason';
 import { convertPagination, convertToAnime } from '../utils/apiHelpers';
 
 const token = process.env.NEXT_PUBLIC_TOKEN;
@@ -24,7 +24,7 @@ export const upcomingAnimeApi = createApi({
         url: '',
         method: 'POST',
         body: {
-          query: UPCOMING_ANIME_QUERY,
+          query: UPCOMING_NEXT_SEASON_QUERY,
           variables: { page, perPage: 12 },
         },
       }),

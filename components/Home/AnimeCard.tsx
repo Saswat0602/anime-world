@@ -1,4 +1,3 @@
-// AnimeCard.tsx
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -57,13 +56,25 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
           </div>
         </div>
       </Link>
-
       {isHovered && <CardHover anime={anime} />}
-
-      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white line-clamp-2">
+      <h3
+        className="mt-2 text-sm font-medium line-clamp-2 transition-colors duration-300"
+        style={{
+          color: isHovered
+            ? anime.color || '#2563eb'
+            : 'var(--tw-text-opacity, 1) var(--tw-text-neutral-900, #111827)',
+        }}
+      >
         {title}
       </h3>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p
+        className="text-xs transition-colors duration-300"
+        style={{
+          color: isHovered
+            ? anime.color || '#2563eb'
+            : 'var(--tw-text-opacity, 1) var(--tw-text-gray-500, #6b7280)',
+        }}
+      >
         {anime.type}{" "}
         {anime.status
           ? `• ${anime.status === "Currently Airing" ? "Airing" : anime.status}`
