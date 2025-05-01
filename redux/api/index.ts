@@ -3,3 +3,4 @@ export * from './animeApi';
 export * from './detailsApi';
 export * from './searchApi';
 export * from './genresApi'; 
+export * from './upComingAnimeApi';

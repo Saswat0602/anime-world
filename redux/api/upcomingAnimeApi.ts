@@ -5,8 +5,8 @@ import { convertPagination, convertToAnime } from '../utils/apiHelpers';
 
 const token = process.env.NEXT_PUBLIC_TOKEN;
 
-export const upcomingAnimeApi = createApi({
-  reducerPath: 'upcomingAnimeApi',
+export const upComingAnimeApi = createApi({
+  reducerPath: 'upComingAnimeApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://graphql.anilist.co',
     prepareHeaders: (headers) => {
@@ -42,4 +42,4 @@ export const upcomingAnimeApi = createApi({
   }),
 });
 
-export const { useUpcomingAnimeQuery } = upcomingAnimeApi;
+export const { useUpcomingAnimeQuery } = upComingAnimeApi;
