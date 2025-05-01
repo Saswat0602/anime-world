@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   useTrendingAnimeQuery,
-  useSeasonalAnimeQuery
+  useSeasonalAnimeQuery,
+  useUpcomingAnimeQuery
 } from '@/redux/hooks';
 
-
 export default function TestPage() {
-  const [selectedTest, setSelectedTest] = useState<'trending' | 'seasonal' | null>(null);
+  const [selectedTest, setSelectedTest] = useState<'trending' | 'seasonal' | 'upcoming' | null>(null);
   const [page, setPage] = useState(1);
   const [seasonalParams] = useState({ year: 2025, season: 'summer' as const, page: 1 });
 
@@ -16,10 +16,29 @@ export default function TestPage() {
 
   const { data: trendingData, isLoading: trendingLoading, isFetching: trendingFetching } = useTrendingAnimeQuery(page, { skip: selectedTest !== 'trending' });
   const { data: seasonalData, isLoading: seasonalLoading, isFetching: seasonalFetching } = useSeasonalAnimeQuery({ ...seasonalParams, page }, { skip: selectedTest !== 'seasonal' });
+  const { data: upcomingData, isLoading: upcomingLoading, isFetching: upcomingFetching } = useUpcomingAnimeQuery(page, { skip: selectedTest !== 'upcoming' });
 
-  const data = selectedTest === 'trending' ? trendingData : seasonalData;
-  const isLoading = selectedTest === 'trending' ? trendingLoading : seasonalLoading;
-  const isFetching = selectedTest === 'trending' ? trendingFetching : seasonalFetching;
+  const data =
+    selectedTest === 'trending'
+      ? trendingData
+      : selectedTest === 'seasonal'
+      ? seasonalData
+      : upcomingData;
+
+  const isLoading =
+    selectedTest === 'trending'
+      ? trendingLoading
+      : selectedTest === 'seasonal'
+      ? seasonalLoading
+      : upcomingLoading;
+
+  const isFetching =
+    selectedTest === 'trending'
+      ? trendingFetching
+      : selectedTest === 'seasonal'
+      ? seasonalFetching
+      : upcomingFetching;
+
   const hasMore = data?.pagination?.has_next_page ?? false;
 
   // Reset page when test changes
@@ -51,7 +70,6 @@ export default function TestPage() {
 
   return (
     <div className="flex h-screen">
-
       <div className="w-1/5 bg-gray-100 p-4 overflow-y-auto">
         <h2 className="text-xl font-bold mb-6">API Tests</h2>
 
@@ -68,18 +86,29 @@ export default function TestPage() {
           >
             Test Seasonal Anime
           </button>
+          <button
+            className={`py-2 px-4 rounded font-semibold text-white ${selectedTest === 'upcoming' ? 'bg-purple-800' : 'bg-purple-600 hover:bg-purple-800'}`}
+            onClick={() => setSelectedTest('upcoming')}
+          >
+            Test Upcoming Anime
+          </button>
         </div>
       </div>
 
       <div className="w-4/5 p-6 overflow-y-auto">
-
         {!selectedTest && (
           <p className="text-gray-500 text-lg">Click a test button to start fetching API data.</p>
         )}
 
         {selectedTest && (
           <>
-            <h2 className="text-2xl font-bold mb-4">{selectedTest === 'trending' ? 'Trending Anime' : 'Seasonal Anime'} Result</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedTest === 'trending'
+                ? 'Trending Anime'
+                : selectedTest === 'seasonal'
+                ? 'Seasonal Anime'
+                : 'Upcoming Anime'} Result
+            </h2>
 
             {isLoading && (
               <p className="text-gray-700 text-lg mb-4">Loading page {page}...</p>
@@ -87,11 +116,12 @@ export default function TestPage() {
 
             {data && (
               <div className="border rounded-md bg-black p-4 overflow-x-auto max-h-[500px]">
-                <pre className="text-sm whitespace-pre-wrap">
+                <pre className="text-sm text-white whitespace-pre-wrap">
                   {JSON.stringify(data, null, 2)}
                 </pre>
               </div>
             )}
+
             {!isLoading && !data && (
               <p className="text-red-600 text-lg">No data available.</p>
             )}
@@ -107,7 +137,6 @@ export default function TestPage() {
           </>
         )}
       </div>
-
     </div>
   );
 }
