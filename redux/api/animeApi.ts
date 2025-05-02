@@ -3,7 +3,7 @@ import type { AnimeResponse, AniListAnimeResponse } from '@/types/types';
 import { TRENDING_ANIME_QUERY, SEASONAL_ANIME_QUERY } from '@/lib/queries/fetchAnime';
 import { convertPagination, convertToAnime } from '../utils/apiHelpers';
 
-const token = process.env.NEXT_PUBLIC_TOKEN; 
+const token = process.env.NEXT_PUBLIC_TOKEN;
 
 export const animeApi = createApi({
   reducerPath: 'animeApi',
@@ -11,7 +11,7 @@ export const animeApi = createApi({
     baseUrl: 'https://graphql.anilist.co',
     prepareHeaders: (headers) => {
       if (token) {
-        headers.set('Authorization', `Bearer ${token}`); 
+        headers.set('Authorization', `Bearer ${token}`);
       }
       headers.set('Content-Type', 'application/json');
       headers.set('Accept', 'application/json');
@@ -30,7 +30,10 @@ export const animeApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
-          const animeList = response.data.Page.media.map(convertToAnime);
+          const animeList = response.data.Page.media
+            .filter(anime => !(anime.genres?.includes("Hentai")))
+            .map(convertToAnime);
+
           return {
             data: animeList,
             pagination: convertPagination(response.data.Page.pageInfo)
@@ -45,8 +48,8 @@ export const animeApi = createApi({
         method: 'POST',
         body: {
           query: SEASONAL_ANIME_QUERY,
-          variables: { 
-            page, 
+          variables: {
+            page,
             perPage: 12,
             season: season.toUpperCase(),
             seasonYear: year
@@ -55,8 +58,10 @@ export const animeApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
-          console.log(response.data.Page.media, "response.data.Page.media");
-          const animeList = response.data.Page.media.map(convertToAnime);
+          const animeList = response.data.Page.media
+            .filter(anime => !(anime.genres?.includes("Hentai")))
+            .map(convertToAnime);
+
           return {
             data: animeList,
             pagination: convertPagination(response.data.Page.pageInfo)
