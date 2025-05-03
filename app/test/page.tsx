@@ -1,72 +1,41 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import {
   useTrendingAnimeQuery,
   useSeasonalAnimeQuery,
-  useUpcomingAnimeQuery
+  useUpcomingAnimeQuery,
+  useTop100AnimeQuery
 } from '@/redux/hooks';
 
 export default function TestPage() {
-  const [selectedTest, setSelectedTest] = useState<'trending' | 'seasonal' | 'upcoming' | null>(null);
-  const [page, setPage] = useState(1);
+  const [selectedTest, setSelectedTest] = useState<'trending' | 'seasonal' | 'upcoming' | 'top100' | null>(null);
+  const [page] = useState(1);
   const [seasonalParams] = useState({ year: 2025, season: 'summer' as const, page: 1 });
+  const [copied, setCopied] = useState(false);
 
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const trending = useTrendingAnimeQuery(page, { skip: selectedTest !== 'trending' });
+  const seasonal = useSeasonalAnimeQuery({ ...seasonalParams, page }, { skip: selectedTest !== 'seasonal' });
+  const upcoming = useUpcomingAnimeQuery(page, { skip: selectedTest !== 'upcoming' });
+  const top100 = useTop100AnimeQuery(page, { skip: selectedTest !== 'top100' });
 
-  const { data: trendingData, isLoading: trendingLoading, isFetching: trendingFetching } = useTrendingAnimeQuery(page, { skip: selectedTest !== 'trending' });
-  const { data: seasonalData, isLoading: seasonalLoading, isFetching: seasonalFetching } = useSeasonalAnimeQuery({ ...seasonalParams, page }, { skip: selectedTest !== 'seasonal' });
-  const { data: upcomingData, isLoading: upcomingLoading, isFetching: upcomingFetching } = useUpcomingAnimeQuery(page, { skip: selectedTest !== 'upcoming' });
+  const queryMap = {
+    trending,
+    seasonal,
+    upcoming,
+    top100,
+  };
 
-  const data =
-    selectedTest === 'trending'
-      ? trendingData
-      : selectedTest === 'seasonal'
-      ? seasonalData
-      : upcomingData;
+  const selectedQuery = selectedTest ? queryMap[selectedTest] : null;
+  const data = selectedQuery?.data ?? null;
+  const isLoading = selectedQuery?.isLoading ?? false;
 
-  const isLoading =
-    selectedTest === 'trending'
-      ? trendingLoading
-      : selectedTest === 'seasonal'
-      ? seasonalLoading
-      : upcomingLoading;
-
-  const isFetching =
-    selectedTest === 'trending'
-      ? trendingFetching
-      : selectedTest === 'seasonal'
-      ? seasonalFetching
-      : upcomingFetching;
-
-  const hasMore = data?.pagination?.has_next_page ?? false;
-
-  // Reset page when test changes
-  useEffect(() => {
-    setPage(1);
-  }, [selectedTest]);
-
-  // Infinite scroll
-  useEffect(() => {
-    if (!selectedTest) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isLoading && !isFetching && hasMore) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const node = loadMoreRef.current;
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-      observer.disconnect();
-    };
-  }, [isLoading, isFetching, hasMore, selectedTest]);
+  const handleCopy = () => {
+    if (!data) return;
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="flex h-screen">
@@ -92,6 +61,12 @@ export default function TestPage() {
           >
             Test Upcoming Anime
           </button>
+          <button
+            className={`py-2 px-4 rounded font-semibold text-white ${selectedTest === 'top100' ? 'bg-yellow-800' : 'bg-yellow-600 hover:bg-yellow-800'}`}
+            onClick={() => setSelectedTest('top100')}
+          >
+            Test Top 100 Anime
+          </button>
         </div>
       </div>
 
@@ -102,16 +77,22 @@ export default function TestPage() {
 
         {selectedTest && (
           <>
-            <h2 className="text-2xl font-bold mb-4">
-              {selectedTest === 'trending'
-                ? 'Trending Anime'
-                : selectedTest === 'seasonal'
-                ? 'Seasonal Anime'
-                : 'Upcoming Anime'} Result
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold capitalize">
+                {selectedTest.replace(/([a-z])([A-Z])/g, '$1 $2')} Anime Result
+              </h2>
+              {data && (
+                <button
+                  onClick={handleCopy}
+                  className="text-sm bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-700"
+                >
+                  {copied ? 'Copied!' : 'Copy JSON'}
+                </button>
+              )}
+            </div>
 
             {isLoading && (
-              <p className="text-gray-700 text-lg mb-4">Loading page {page}...</p>
+              <p className="text-gray-700 text-lg mb-4">Loading...</p>
             )}
 
             {data && (
@@ -124,15 +105,6 @@ export default function TestPage() {
 
             {!isLoading && !data && (
               <p className="text-red-600 text-lg">No data available.</p>
-            )}
-
-            {/* Load More trigger */}
-            <div ref={loadMoreRef} className="h-10 mt-8" />
-            {isFetching && (
-              <p className="text-gray-500 text-center mt-4">Loading more...</p>
-            )}
-            {!hasMore && data && (
-              <p className="text-gray-400 text-center mt-4">No more pages to load.</p>
             )}
           </>
         )}

@@ -3,6 +3,7 @@ import { useTrendingAnimeQuery, useSeasonalAnimeQuery } from './api/animeApi';
 import { useAnimeDetailsQuery } from './api/detailsApi';
 import { useSearchAnimeQuery } from './api/searchApi';
 import { useUpcomingAnimeQuery } from './api/upComingAnimeApi';
+import { useTop100AnimeQuery } from './api/top100AnimeApi';
 import { 
   useGetAllGenresQuery, 
   useGetAnimeByGenreQuery, 
@@ -22,6 +23,7 @@ export {
   useGetAnimeByGenreQuery,
   useGetAnimeByStudioQuery,
   useUpcomingAnimeQuery,
+  useTop100AnimeQuery,
   
   // Types
   RootState,
