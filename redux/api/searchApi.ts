@@ -13,10 +13,10 @@ export const searchApi = createApi({
         method: 'POST',
         body: {
           query: SEARCH_ANIME_QUERY,
-          variables: { 
+          variables: {
             search: query,
-            page, 
-            perPage: 10 
+            page,
+            perPage: 10
           }
         },
         headers: {
@@ -26,7 +26,9 @@ export const searchApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
-          const animeList = response.data.Page.media.map(convertToAnime);
+          const animeList = response.data.Page.media
+            .filter(anime => !(anime.genres?.includes("Hentai")))
+            .map(convertToAnime);
           return {
             data: animeList,
             pagination: convertPagination(response.data.Page.pageInfo)

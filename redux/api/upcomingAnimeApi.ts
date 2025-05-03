@@ -30,7 +30,9 @@ export const upComingAnimeApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
-          const animeList = response.data.Page.media.map(convertToAnime);
+          const animeList = response.data.Page.media
+            .filter(anime => !(anime.genres?.includes("Hentai")))
+            .map(convertToAnime);
           return {
             data: animeList,
             pagination: convertPagination(response.data.Page.pageInfo),
