@@ -13,7 +13,7 @@ export default function TrendingPage() {
   const [hasMore, setHasMore] = useState(true);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   
-  const { data: trendingAnimeData, isLoading, isFetching } = useTrendingAnimeQuery(page);
+  const { data: trendingAnimeData, isLoading, isFetching, error } = useTrendingAnimeQuery(page);
   
   const handleAnimeLoaded = useCallback((animeId: number) => {
     setLoadedAnimeIds(prev => {
@@ -24,34 +24,31 @@ export default function TrendingPage() {
   }, []);
   
   useEffect(() => {
-    if (trendingAnimeData?.data) {
-      setAllAnime(prev => {
-        const newAnime = trendingAnimeData.data.filter(
-          anime => !prev.some(existing => existing.mal_id === anime.mal_id)
-        );
-        return [...prev, ...newAnime];
-      });
-      
-      setHasMore(trendingAnimeData.pagination?.has_next_page || false);
-    }
-    
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading && !isFetching && hasMore) {
-          setPage(prev => prev + 1);
+        if (
+          entries[0].isIntersecting &&
+          !isLoading &&
+          !isFetching &&
+          hasMore &&
+          !error &&
+          navigator.onLine
+        ) {
+          setPage((prev) => prev + 1);
         }
       },
       { threshold: 0.1 }
     );
-    
+  
     if (loadMoreRef.current) {
       observer.observe(loadMoreRef.current);
     }
-    
+  
     return () => {
       observer.disconnect();
     };
-  }, [trendingAnimeData, isLoading, isFetching, hasMore]);
+  }, [isLoading, isFetching, hasMore, error]);
+  
   
   const pendingItemsCount = isFetching || isLoading ? 6 : 0;
   
