@@ -23,6 +23,7 @@ export const convertToAnime = (media: AniListMedia): Anime => {
             to: media.endDate && media.endDate.year ? `${media.endDate.year}-${media.endDate.month}-${media.endDate.day}` : undefined,
             string: formatAiredString(media.startDate, media.endDate)
         },
+        nextAiringEpisode: media.nextAiringEpisode || undefined,
         duration: media.duration ? `${media.duration} min per ep` : 'Unknown',
         rating: media.isAdult ? 'R+ - Mild Nudity' : 'PG-13 - Teens 13 or older',
         score: media.averageScore || 0, // AniList scores are 0-100
@@ -57,7 +58,6 @@ export const convertToAnime = (media: AniListMedia): Anime => {
             url: `https://anilist.co/search/studio?name=${encodeURIComponent(studio)}`
         })),
         isAdult: media.isAdult || false,
-        nextAiringEpisode: media.streamingEpisodes ? media.streamingEpisodes[0] : undefined,
     };
 };
 

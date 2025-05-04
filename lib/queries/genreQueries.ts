@@ -68,7 +68,12 @@ export const ANIME_BY_GENRE_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
@@ -137,7 +142,12 @@ export const ANIME_BY_STUDIO_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }

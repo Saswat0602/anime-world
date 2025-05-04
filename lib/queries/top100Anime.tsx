@@ -60,7 +60,12 @@ export const TOP100_ANIME_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }  
       }
     }
   }

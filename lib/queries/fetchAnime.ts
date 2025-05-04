@@ -62,10 +62,16 @@ export const TRENDING_ANIME_QUERY = `
             } 
           } 
         } 
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }
       }
     }
   }
 `;
+
 
 // GraphQL query for getting upcoming anime
 export const UPCOMING_ANIME_QUERY = `
@@ -131,6 +137,11 @@ export const UPCOMING_ANIME_QUERY = `
             } 
           } 
         } 
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }
       }
     }
   }
@@ -199,7 +210,12 @@ export const NEW_RELEASES_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
@@ -268,7 +284,12 @@ export const SEASONAL_ANIME_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
@@ -337,7 +358,12 @@ export const YEARLY_ANIME_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
@@ -406,7 +432,12 @@ export const POPULAR_ANIME_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
@@ -475,7 +506,12 @@ export const MOST_FAVORITED_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }

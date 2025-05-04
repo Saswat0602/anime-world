@@ -76,7 +76,11 @@ export interface Anime {
     url: string;
   }[];
   isAdult?: boolean;
-  nextAiringEpisode?: { title: string; url: string; site: string; };
+  nextAiringEpisode?: {
+    airingAt: number;
+    timeUntilAiring: number;
+    episode: number;
+  } | null;
 }
 
 export interface AnimeResponse {
@@ -215,6 +219,12 @@ export interface AniListMedia {
     site: string;
   } | null;
   color: string | null;
+
+  nextAiringEpisode?: {
+    airingAt: number;
+    timeUntilAiring: number;
+    episode: number;
+  } | null;
 }
 
 export interface AniListAnimeResponse {

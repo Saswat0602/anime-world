@@ -30,6 +30,7 @@ export const animeApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
+          console.log(response.data,"response.data.Page");        
           const animeList = response.data.Page.media
             .filter(anime => !(anime.genres?.includes("Hentai")))
             .map(convertToAnime);

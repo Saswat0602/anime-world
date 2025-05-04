@@ -61,6 +61,11 @@ export const UPCOMING_NEXT_SEASON_QUERY = `
             }
           }
         }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }          
       }
     }
   }

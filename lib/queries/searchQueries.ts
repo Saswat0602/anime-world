@@ -61,7 +61,12 @@ export const SEARCH_ANIME_QUERY = `
               name 
             } 
           } 
-        } 
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }           
       }
     }
   }
