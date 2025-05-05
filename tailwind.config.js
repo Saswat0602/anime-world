@@ -10,19 +10,32 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#3b82f6', 
-          dark: '#2563eb',    
-          light: '#60a5fa',  
+          DEFAULT: 'rgb(56, 189, 248)',  // --primary
+          dark: 'rgb(14, 165, 233)',     // --primary-dark
+          light: '#60a5fa',
         },
         secondary: {
-          DEFAULT: '#ec4899', 
-          dark: '#db2777',    
-          light: '#f472b6',   
+          DEFAULT: 'rgb(236, 72, 153)',  // --secondary
+          dark: '#db2777',
+          light: '#f472b6',
         },
         accent: {
-          DEFAULT: '#8b5cf6', 
-          dark: '#7c3aed',    
-          light: '#a78bfa',   
+          DEFAULT: 'rgb(139, 92, 246)',  // --accent
+          dark: '#7c3aed',
+          light: '#a78bfa',
+        },
+        foreground: {
+          DEFAULT: 'rgb(15, 23, 42)',    // --foreground-rgb
+          muted: 'rgb(71, 85, 105)',     // --foreground-muted
+        },
+        background: {
+          DEFAULT: 'rgb(255, 255, 255)', // --background-start-rgb
+          end: 'rgb(248, 250, 252)',     // --background-end-rgb
+        },
+        card: {
+          bg: 'rgb(255, 255, 255)',      // --card-bg
+          border: 'rgb(226, 232, 240)',  // --card-border
+          hover: 'rgb(241, 245, 249)',   // --card-hover
         },
       },
       animation: {
@@ -49,7 +62,35 @@ module.exports = {
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
+      darkMode: {
+        foreground: {
+          DEFAULT: 'rgb(248, 250, 252)',   // dark --foreground-rgb
+          muted: 'rgb(148, 163, 184)',     // dark --foreground-muted
+        },
+        background: {
+          DEFAULT: 'rgb(15, 23, 42)',      // dark --background-start-rgb
+          end: 'rgb(30, 41, 59)',          // dark --background-end-rgb
+        },
+        card: {
+          bg: 'rgb(30, 41, 59)',           // dark --card-bg
+          border: 'rgb(51, 65, 85)',       // dark --card-border
+          hover: 'rgb(51, 65, 85)',        // dark --card-hover
+        },
+      },
     },
   },
-  plugins: [],
-} 
+  plugins: [
+    function({ addBase, theme }) {
+      addBase({
+        'body': {
+          color: theme('colors.foreground.DEFAULT'),
+          background: `linear-gradient(to bottom, transparent, ${theme('colors.background.end')}) ${theme('colors.background.DEFAULT')}`,
+        },
+        '.dark body': {
+          color: theme('darkMode.foreground.DEFAULT'),
+          background: 'linear-gradient(to bottom, #000000, #151514)',
+        },
+      });
+    },
+  ],
+}
