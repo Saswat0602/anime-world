@@ -4,50 +4,30 @@
 
 :root {
   --primary: 56, 189, 248;
-  /* sky-400 */
   --primary-dark: 14, 165, 233;
-  /* sky-500 */
   --secondary: 236, 72, 153;
-  /* pink-500 */
   --accent: 139, 92, 246;
-  /* violet-500 */
   --foreground-rgb: 15, 23, 42;
-  /* slate-900 */
   --foreground-muted: 71, 85, 105;
-  /* slate-600 */
   --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 248, 250, 252;
-  /* slate-50 */
   --card-bg: 255, 255, 255;
   --card-border: 226, 232, 240;
-  /* slate-200 */
   --card-hover: 241, 245, 249;
-  /* slate-100 */
 }
 
 .dark {
   --primary: 56, 189, 248;
-  /* sky-400 */
   --primary-dark: 14, 165, 233;
-  /* sky-500 */
   --secondary: 236, 72, 153;
-  /* pink-500 */
   --accent: 139, 92, 246;
-  /* violet-500 */
   --foreground-rgb: 248, 250, 252;
-  /* slate-50 */
   --foreground-muted: 148, 163, 184;
-  /* slate-400 */
   --background-start-rgb: 15, 23, 42;
-  /* slate-900 */
   --background-end-rgb: 30, 41, 59;
-  /* slate-800 */
   --card-bg: 30, 41, 59;
-  /* slate-800 */
   --card-border: 51, 65, 85;
-  /* slate-700 */
   --card-hover: 51, 65, 85;
-  /* slate-700 */
 }
 
 @layer base {

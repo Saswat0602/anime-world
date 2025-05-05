@@ -10,19 +10,19 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#3b82f6', // blue-500
-          dark: '#2563eb',    // blue-600
-          light: '#60a5fa',   // blue-400
+          DEFAULT: '#3b82f6', 
+          dark: '#2563eb',    
+          light: '#60a5fa',  
         },
         secondary: {
-          DEFAULT: '#ec4899', // pink-500
-          dark: '#db2777',    // pink-600
-          light: '#f472b6',   // pink-400
+          DEFAULT: '#ec4899', 
+          dark: '#db2777',    
+          light: '#f472b6',   
         },
         accent: {
-          DEFAULT: '#8b5cf6', // violet-500
-          dark: '#7c3aed',    // violet-600
-          light: '#a78bfa',   // violet-400
+          DEFAULT: '#8b5cf6', 
+          dark: '#7c3aed',    
+          light: '#a78bfa',   
         },
       },
       animation: {
