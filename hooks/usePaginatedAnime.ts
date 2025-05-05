@@ -1,23 +1,21 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Anime } from '@/types/types';
+import { QueryDefinition, BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
+import { AnimeResponse } from '@/types/types';
 
 type QueryResult = {
-  data?: {
-    data: Anime[];
-    pagination?: { has_next_page: boolean };
-  };
+  data?: AnimeResponse | null;
   isLoading: boolean;
   isFetching: boolean;
-  error?: any;
+  error?: unknown;
 };
 
 type PaginationParams = {
   page: number;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 type UsePaginatedAnimeProps<T extends PaginationParams> = {
-  // ❗ Accept the actual RTK hook
   useQueryHook: (params: T) => QueryResult;
   baseQueryParams: Omit<T, 'page'>;
   initialPage?: number;
@@ -32,7 +30,7 @@ export function usePaginatedAnime<T extends PaginationParams>({
   const [allAnime, setAllAnime] = useState<Anime[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const queryParams = {
@@ -40,7 +38,6 @@ export function usePaginatedAnime<T extends PaginationParams>({
     page,
   } as T;
 
-  // ✅ Use the passed-in RTK hook here
   const { data, isLoading, isFetching, error } = useQueryHook(queryParams);
 
   const handleAnimeLoaded = useCallback((animeId: number) => {

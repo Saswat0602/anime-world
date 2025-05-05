@@ -3,7 +3,7 @@
 import { Anime } from '@/types/types';
 import { AnimeCard } from '@/components/Home/AnimeCard';
 import { AnimeCardSkeleton } from '@/components/Home/AnimeCardSkeleton';
-import { ReactNode, RefObject } from 'react';
+import { RefObject } from 'react';
 
 type AnimeListLayoutProps = {
   title: string;
@@ -11,7 +11,7 @@ type AnimeListLayoutProps = {
   loadedAnimeIds: Set<number>;
   handleAnimeLoaded: (animeId: number) => void;
   pendingItemsCount: number;
-  loadMoreRef: RefObject<HTMLDivElement>;
+  loadMoreRef: RefObject<HTMLDivElement | null>;
   hasMore: boolean;
 };
 
