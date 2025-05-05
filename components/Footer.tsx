@@ -62,7 +62,7 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-gradient-to-tr from-gray-900 to-gray-800 dark:from-black dark:to-gray-900 text-white py-12">
+        <footer className="bg-gradient-to-tr from-gray-900 to-gray-800 dark:from-black dark:to-gray-900  text-white py-12">
             <div className="relative w-full overflow-hidden">
                 <svg className="absolute bottom-0 left-0 w-full transform rotate-180 translate-y-px"
                     viewBox="0 0 1200 120" preserveAspectRatio="none">

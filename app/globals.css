@@ -51,6 +51,10 @@
         rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
   }
 
+  .dark body {
+    background: linear-gradient(to bottom, #000000, #151514);
+  }
+
   body::-webkit-scrollbar {
     display: none;
     /* Chrome, Safari, Opera */
