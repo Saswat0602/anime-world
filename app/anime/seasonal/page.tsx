@@ -4,6 +4,12 @@ import { useSeasonalAnimeQuery } from '@/redux/api/animeApi';
 import { usePaginatedAnime } from '@/hooks/usePaginatedAnime';
 import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
 
+type SeasonalQueryParams = {
+  year: number;
+  season: 'winter' | 'spring' | 'summer' | 'fall';
+  page: number;
+};
+
 const getCurrentSeason = () => {
   const month = new Date().getMonth();
   if (month >= 0 && month <= 2) return 'winter';
@@ -27,8 +33,8 @@ export default function SeasonalPage() {
     isLoading,
     isFetching,
     handleAnimeLoaded
-  } = usePaginatedAnime({
-    queryFn: useSeasonalAnimeQuery,
+  } = usePaginatedAnime<SeasonalQueryParams>({
+    useQueryHook: useSeasonalAnimeQuery,
     baseQueryParams: { 
       year: currentYear, 
       season: currentSeason
