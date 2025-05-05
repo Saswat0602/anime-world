@@ -19,8 +19,8 @@ export const animeApi = createApi({
     }
   }),
   endpoints: (builder) => ({
-    trendingAnime: builder.query<AnimeResponse | null, number>({
-      query: (page = 1) => ({
+    trendingAnime: builder.query<AnimeResponse | null, { page: number }>({
+      query: ({ page }) => ({
         url: '',
         method: 'POST',
         body: {
@@ -30,7 +30,6 @@ export const animeApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         if (response.data && response.data.Page) {
-          console.log(response.data,"response.data.Page");        
           const animeList = response.data.Page.media
             .filter(anime => !(anime.genres?.includes("Hentai")))
             .map(convertToAnime);
@@ -43,7 +42,11 @@ export const animeApi = createApi({
         return null;
       },
     }),
-    seasonalAnime: builder.query<AnimeResponse | null, { year: number; season: 'winter' | 'spring' | 'summer' | 'fall'; page?: number }>({
+
+    seasonalAnime: builder.query<
+      AnimeResponse | null,
+      { year: number; season: 'winter' | 'spring' | 'summer' | 'fall'; page?: number }
+    >({
       query: ({ year, season, page = 1 }) => ({
         url: '',
         method: 'POST',
@@ -71,6 +74,7 @@ export const animeApi = createApi({
         return null;
       },
     }),
+
   }),
 });
 

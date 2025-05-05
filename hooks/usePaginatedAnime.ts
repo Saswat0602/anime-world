@@ -1,54 +1,84 @@
-'use client';
-
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Anime } from '@/types/types';
 
-type UsePaginatedAnimeProps<T> = {
-  queryFn: (arg: T) => { data?: any; isLoading: boolean; isFetching: boolean; error?: any };
-  queryArg: T;
+type QueryResult = {
+  data?: {
+    data: Anime[];
+    pagination?: { has_next_page: boolean };
+  };
+  isLoading: boolean;
+  isFetching: boolean;
+  error?: any;
 };
 
-export function usePaginatedAnime<T>({ queryFn, queryArg }: UsePaginatedAnimeProps<T>) {
-  const [page, setPage] = useState(1);
+type PaginationParams = {
+  page: number;
+  [key: string]: any;
+};
+
+type UsePaginatedAnimeProps<T extends PaginationParams> = {
+  // ❗ Accept the actual RTK hook
+  useQueryHook: (params: T) => QueryResult;
+  baseQueryParams: Omit<T, 'page'>;
+  initialPage?: number;
+};
+
+export function usePaginatedAnime<T extends PaginationParams>({
+  useQueryHook,
+  baseQueryParams,
+  initialPage = 1,
+}: UsePaginatedAnimeProps<T>) {
+  const [page, setPage] = useState(initialPage);
   const [allAnime, setAllAnime] = useState<Anime[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const queryResult = queryFn(queryArg);
+  const queryParams = {
+    ...baseQueryParams,
+    page,
+  } as T;
 
-  const { data, isLoading, isFetching, error } = queryResult;
+  // ✅ Use the passed-in RTK hook here
+  const { data, isLoading, isFetching, error } = useQueryHook(queryParams);
 
   const handleAnimeLoaded = useCallback((animeId: number) => {
-    setLoadedAnimeIds((prev) => {
-      const updated = new Set(prev);
-      updated.add(animeId);
-      return updated;
-    });
+    setLoadedAnimeIds((prev) => new Set(prev).add(animeId));
   }, []);
 
   useEffect(() => {
-    if (data?.data) {
-      setAllAnime((prev) => {
-        const newAnime = data.data.filter(
-          (anime: Anime) => !prev.some((existing) => existing.mal_id === anime.mal_id)
-        );
-        return [...prev, ...newAnime];
-      });
+    if (!data?.data) return;
 
-      setHasMore(data.pagination?.has_next_page ?? false);
+    setAllAnime((prev) => {
+      const newAnimeMap = new Map(prev.map((anime) => [anime.mal_id, anime]));
+      for (const anime of data.data) {
+        if (!newAnimeMap.has(anime.mal_id)) {
+          newAnimeMap.set(anime.mal_id, anime);
+        }
+      }
+      return Array.from(newAnimeMap.values());
+    });
+
+    setHasMore(!!data.pagination?.has_next_page);
+  }, [data]);
+
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
     }
 
-    const observer = new IntersectionObserver(
+    observerRef.current = new IntersectionObserver(
       (entries) => {
-        if (
+        const shouldLoadMore =
           entries[0].isIntersecting &&
           !isLoading &&
           !isFetching &&
           hasMore &&
           navigator.onLine &&
-          !error
-        ) {
+          !error;
+
+        if (shouldLoadMore) {
           setPage((prev) => prev + 1);
         }
       },
@@ -56,12 +86,12 @@ export function usePaginatedAnime<T>({ queryFn, queryArg }: UsePaginatedAnimePro
     );
 
     const current = loadMoreRef.current;
-    if (current) observer.observe(current);
+    if (current) observerRef.current.observe(current);
 
     return () => {
-      if (current) observer.unobserve(current);
+      observerRef.current?.disconnect();
     };
-  }, [data, isLoading, isFetching, hasMore, error]);
+  }, [isLoading, isFetching, hasMore, error]);
 
   return {
     page,
