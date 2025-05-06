@@ -56,6 +56,40 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
     setSelectedStatus(typeof value === 'string' ? value : value[0]);
   }, []);
 
+  const handleRemoveFilter = useCallback((type: string, value: string) => {
+    switch (type) {
+      case 'genre':
+        setSelectedGenre(prev => {
+          const filtered = prev.filter(item => item !== value);
+          return filtered.length ? filtered : ['Any'];
+        });
+        break;
+      case 'year':
+        setSelectedYear('Any');
+        break;
+      case 'season':
+        setSelectedSeason('Any');
+        break;
+      case 'format':
+        setSelectedFormat(prev => {
+          const filtered = prev.filter(item => item !== value);
+          return filtered.length ? filtered : ['Any'];
+        });
+        break;
+      case 'status':
+        setSelectedStatus('Any');
+        break;
+    }
+  }, []);
+
+  const handleClearAll = useCallback(() => {
+    setSelectedGenre(['Any']);
+    setSelectedYear('Any');
+    setSelectedSeason('Any');
+    setSelectedFormat(['Any']);
+    setSelectedStatus('Any');
+  }, []);
+
   // Use useMemo to create filter state object only when dependencies change
   const filterState = useMemo<FilterState>(() => ({
     searchQuery,
@@ -73,40 +107,41 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
     }
   }, [filterState, onFilterChange]);
 
-  // Render selected filter badges
-  const renderSelectedFilters = () => {
-    const filters = [];
-    
+  // Get all active filter tags
+  const activeFilterTags = useMemo(() => {
+    const tags = [];
+
+    // Add genres
     if (selectedGenre.length > 0 && selectedGenre[0] !== 'Any') {
-      filters.push(
-        <div key="genre" className="flex flex-wrap gap-1 mt-2">
-          {selectedGenre.map(genre => (
-            <span key={genre} className="bg-blue-600 text-white text-xs px-2 py-1 rounded-md">
-              {genre}
-            </span>
-          ))}
-        </div>
-      );
+      selectedGenre.forEach(genre => {
+        tags.push({ type: 'genre', value: genre });
+      });
     }
-    
+
+    // Add year
+    if (selectedYear !== 'Any') {
+      tags.push({ type: 'year', value: selectedYear });
+    }
+
+    // Add season
+    if (selectedSeason !== 'Any') {
+      tags.push({ type: 'season', value: selectedSeason });
+    }
+
+    // Add formats
     if (selectedFormat.length > 0 && selectedFormat[0] !== 'Any') {
-      filters.push(
-        <div key="format" className="flex flex-wrap gap-1 mt-2">
-          {selectedFormat.map(format => (
-            <span key={format} className="bg-blue-600 text-white text-xs px-2 py-1 rounded-md">
-              {format}
-            </span>
-          ))}
-        </div>
-      );
+      selectedFormat.forEach(format => {
+        tags.push({ type: 'format', value: format });
+      });
     }
-    
-    return filters.length > 0 && (
-      <div className="mt-4 space-y-2">
-        {filters}
-      </div>
-    );
-  };
+
+    // Add status
+    if (selectedStatus !== 'Any') {
+      tags.push({ type: 'status', value: selectedStatus });
+    }
+
+    return tags;
+  }, [selectedGenre, selectedYear, selectedSeason, selectedFormat, selectedStatus]);
 
   return (
     <div className="mb-8">
@@ -143,7 +178,28 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
         </div>
       </div>
       
-      {renderSelectedFilters()}
+      {activeFilterTags.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {activeFilterTags.map((tag, index) => (
+            <div key={`${tag.type}-${tag.value}-${index}`} className="flex items-center bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+              {tag.value}
+              <button 
+                onClick={() => handleRemoveFilter(tag.type, tag.value)}
+                className="ml-2 text-white hover:text-gray-200"
+                aria-label={`Remove ${tag.value}`}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <button 
+            onClick={handleClearAll}
+            className="flex items-center bg-gray-700 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-600"
+          >
+            Clear All ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }
