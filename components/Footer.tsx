@@ -1,13 +1,14 @@
 import React from 'react';
 import { Heart, Twitter, Instagram, MessageCircle, ExternalLink, Mail, Code } from 'lucide-react';
 import { FooterData, FooterLinkProps, FooterListItemProps, SocialLinkProps } from '@/types/footerTypes';
+import { ROUTES } from "@/routes";
 
 
 const FOOTER_DATA: FooterData = {
     explore: [
-        { label: "Top 100 Anime", href: "/top-anime" },
-        { label: "Trending This Season", href: "/trending" },
-        { label: "Seasonal Charts", href: "/seasonal" },
+        { label: "Top 100 Anime", href: ROUTES.ANIME.TOP_100 },
+        { label: "Trending This Season", href:ROUTES.ANIME.TRENDING   },
+        { label: "Seasonal Charts", href: ROUTES.ANIME.SEASONAL },
         { label: "Browse by Genre", href: "/genres" },
         { label: "Studios", href: "/studios" }
     ],

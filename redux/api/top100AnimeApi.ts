@@ -19,8 +19,8 @@ export const top100AnimeApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    top100Anime: builder.query<AnimeResponse | null, number>({
-      query: (page = 1) => ({
+    top100Anime: builder.query<AnimeResponse | null, { page: number }>({
+      query: ({ page }) => ({
         url: '',
         method: 'POST',
         body: {
