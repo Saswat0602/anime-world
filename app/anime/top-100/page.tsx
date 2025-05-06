@@ -30,6 +30,7 @@ const Top100Anime = () => {
       pendingItemsCount={pendingItemsCount}
       loadMoreRef={loadMoreRef}
       hasMore={hasMore}
+      showRank={true}
     />
   );
 }

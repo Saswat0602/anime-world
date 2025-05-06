@@ -13,6 +13,8 @@ type AnimeListLayoutProps = {
   pendingItemsCount: number;
   loadMoreRef: RefObject<HTMLDivElement | null>;
   hasMore: boolean;
+  showRank?: boolean;
+
 };
 
 export function AnimeListLayout({
@@ -22,7 +24,8 @@ export function AnimeListLayout({
   handleAnimeLoaded,
   pendingItemsCount,
   loadMoreRef,
-  hasMore
+  hasMore,
+  showRank
 }: AnimeListLayoutProps) {
   return (
     <div className="container mx-auto px-4 py-8">
@@ -36,6 +39,7 @@ export function AnimeListLayout({
                 anime={anime}
                 index={index}
                 onLoad={() => handleAnimeLoaded(anime.mal_id)}
+                showRank={showRank}
               />
             </div>
 

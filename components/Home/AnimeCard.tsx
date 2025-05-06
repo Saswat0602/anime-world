@@ -10,9 +10,10 @@ interface AnimeCardProps {
   anime: Anime;
   index: number;
   onLoad?: () => void;
+  showRank?: boolean;
 }
 
-export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
+export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -36,6 +37,17 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {showRank && (
+        <div className="absolute top-1 left-1 z-10">
+          <div
+            className="text-sm font-bold text-white px-3 py-2 rounded-full shadow-md"
+            style={{ backgroundColor: anime.color || '#2563eb' }}
+          >
+            #{index + 1}
+          </div>
+        </div>
+      )}
+
       <Link href={ROUTES.ANIME.DETAIL(anime.mal_id)}>
         <div className="overflow-hidden rounded-lg">
           <div className="relative aspect-[3/4] w-full">
@@ -44,7 +56,7 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
               alt={title}
               fill
               className={`object-cover transition-transform duration-300 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
+              sizes="(max-width: 768px) 40vw, (max-width: 1200px) 25vw, 12vw"
               priority={index < 6}
               onLoadingComplete={handleImageLoad}
               style={{
@@ -56,7 +68,9 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
           </div>
         </div>
       </Link>
+
       {isHovered && <CardHover anime={anime} />}
+
       <h3
         className="mt-2 text-sm font-medium line-clamp-2 transition-colors duration-300"
         style={{
@@ -81,6 +95,7 @@ export const AnimeCard = ({ anime, index, onLoad }: AnimeCardProps) => {
           : ""}
       </p>
     </motion.div>
+
   );
 }
 
