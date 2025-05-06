@@ -70,6 +70,30 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
         return value === option;
     }, [multiSelect, value]);
 
+    // Memoize the options list for better performance
+    const optionsList = useMemo(() => {
+        return options.map((option) => {
+            if (option === 'Any') return null;
+            
+            return (
+                <button
+                    key={option}
+                    onClick={() => toggleOption(option)}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 focus:outline-none flex justify-between items-center text-gray-300"
+                    role="option"
+                    aria-selected={isOptionSelected(option)}
+                >
+                    <span>{option}</span>
+                    {isOptionSelected(option) && (
+                        <svg className="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                    )}
+                </button>
+            );
+        }).filter(Boolean);
+    }, [options, isOptionSelected, toggleOption]);
+
     return (
         <div id={`${label.toLowerCase()}-dropdown`} className="relative z-20">
             <button
@@ -102,24 +126,7 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     <div className="py-1">
-                        {options.map((option) => (
-                            option !== 'Any' && (
-                                <button
-                                    key={option}
-                                    onClick={() => toggleOption(option)}
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 focus:outline-none flex justify-between items-center text-gray-300"
-                                    role="option"
-                                    aria-selected={isOptionSelected(option)}
-                                >
-                                    <span>{option}</span>
-                                    {isOptionSelected(option) && (
-                                        <svg className="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                        </svg>
-                                    )}
-                                </button>
-                            )
-                        ))}
+                        {optionsList}
                     </div>
                 </div>
             )}
@@ -127,4 +134,5 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
     );
 };
 
-export default FilterDropdown
+// Use React.memo to prevent unnecessary re-renders
+export default React.memo(FilterDropdown);

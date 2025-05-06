@@ -1,13 +1,11 @@
 import { FilterComponentProps, SearchInputProps } from "@/types/filterTypes";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useCallback } from "react";
 import FilterDropdown from "./ui/FilterDropdown";
 
-
-
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
-    };
+    }, [onChange]);
 
     return (
         <div className="relative">
@@ -41,13 +39,22 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
 
 export const YearFilter = ({ value, onChange }: FilterComponentProps) => {
     const years: string[] = Array.from({ length: 2025 - 1940 + 1 }, (_, i) => String(2025 - i));
+    
+    const handleYearChange = useCallback((newValue: string | string[]) => {
+        // If clicking the already selected year, reset to Any
+        if (typeof newValue === 'string' && newValue === value) {
+            onChange('Any');
+        } else {
+            onChange(newValue);
+        }
+    }, [value, onChange]);
 
     return (
         <FilterDropdown
             label="Year"
             options={["Any", ...years]}
             value={value}
-            onChange={onChange}
+            onChange={handleYearChange}
         />
     );
 };
@@ -89,12 +96,21 @@ export const GenreFilter = ({ value, onChange }: FilterComponentProps) => {
 export const SeasonFilter = ({ value, onChange }: FilterComponentProps) => {
     const seasons: string[] = ["Any", "Winter", "Spring", "Summer", "Fall"];
 
+    const handleSeasonChange = useCallback((newValue: string | string[]) => {
+        // If clicking the already selected season, reset to Any
+        if (typeof newValue === 'string' && newValue === value) {
+            onChange('Any');
+        } else {
+            onChange(newValue);
+        }
+    }, [value, onChange]);
+
     return (
         <FilterDropdown
             label="Season"
             options={seasons}
             value={value}
-            onChange={onChange}
+            onChange={handleSeasonChange}
         />
     );
 };
@@ -131,12 +147,21 @@ export const AiringStatusFilter = ({ value, onChange }: FilterComponentProps) =>
         "Cancelled"
     ];
 
+    const handleStatusChange = useCallback((newValue: string | string[]) => {
+        // If clicking the already selected status, reset to Any
+        if (typeof newValue === 'string' && newValue === value) {
+            onChange('Any');
+        } else {
+            onChange(newValue);
+        }
+    }, [value, onChange]);
+
     return (
         <FilterDropdown
             label="Airing Status"
             options={statuses}
             value={value}
-            onChange={onChange}
+            onChange={handleStatusChange}
         />
     );
 };
