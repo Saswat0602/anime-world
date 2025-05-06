@@ -4,6 +4,7 @@ import { Anime } from '@/types/types';
 import { AnimeCard } from '@/components/Home/AnimeCard';
 import { AnimeCardSkeleton } from '@/components/Home/AnimeCardSkeleton';
 import { RefObject } from 'react';
+import { FilterBar } from '../common/FilterBar';
 
 type AnimeListLayoutProps = {
   title: string;
@@ -29,8 +30,7 @@ export function AnimeListLayout({
 }: AnimeListLayoutProps) {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{title}</h1>
-
+      <FilterBar title={title} />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative">
         {allAnime.map((anime, index) => (
           <div key={anime.mal_id} className="relative">
