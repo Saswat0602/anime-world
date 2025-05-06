@@ -1,9 +1,9 @@
-
 export type FilterDropdownProps = {
     label: string;
     options: string[];
-    value: string;
-    onChange: (value: string) => void;
+    value: string | string[];
+    onChange: (value: string | string[]) => void;
+    multiSelect?: boolean;
 };
 
 export type SearchInputProps = {
@@ -12,8 +12,9 @@ export type SearchInputProps = {
 };
 
 export type FilterComponentProps = {
-    value: string;
-    onChange: (value: string) => void;
+    value: string | string[];
+    onChange: (value: string | string[]) => void;
+    multiSelect?: boolean;
 };
 
 
@@ -24,9 +25,9 @@ export type FilterBarProps = {
 
 export type FilterState = {
     searchQuery: string;
-    genre: string;
+    genre: string[];
     year: string;
     season: string;
-    format: string;
+    format: string[];
     status: string;
 };

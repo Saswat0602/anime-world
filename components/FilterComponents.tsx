@@ -81,6 +81,7 @@ export const GenreFilter = ({ value, onChange }: FilterComponentProps) => {
             options={genres}
             value={value}
             onChange={onChange}
+            multiSelect={true}
         />
     );
 };
@@ -116,6 +117,7 @@ export const FormatFilter = ({ value, onChange }: FilterComponentProps) => {
             options={formats}
             value={value}
             onChange={onChange}
+            multiSelect={true}
         />
     );
 };

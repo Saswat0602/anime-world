@@ -30,7 +30,7 @@ export default function TestPage(): React.ReactElement {
   const trending = useTrendingAnimeQuery({ page }, { skip: testType !== 'trending' });
   const seasonal = useSeasonalAnimeQuery(seasonalParams, { skip: testType !== 'seasonal' });
   const upcoming = useUpcomingAnimeQuery(page, { skip: testType !== 'upcoming' });
-  const top100 = useTop100AnimeQuery(page, { skip: testType !== 'top100' });
+  const top100 = useTop100AnimeQuery({ page }, { skip: testType !== 'top100' });
 
   const queryMap = {
     trending,
