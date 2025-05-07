@@ -1,63 +1,53 @@
 import { FilterDropdownProps } from '@/types/filterTypes';
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }: FilterDropdownProps) => {
+const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(({
+    label,
+    options,
+    value,
+    onChange,
+    multiSelect = false
+}) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
     const displayValue = useMemo(() => {
-        if (multiSelect && Array.isArray(value) && value.length > 0 && value[0] !== 'Any') {
-            return `${label} +${value.length}`;
+        if (!multiSelect || !Array.isArray(value) || value.length === 0) {
+            return typeof value === 'string' ? value : label;
         }
-        return typeof value === 'string' ? value : label;
+        if (value[0] === 'Any') {
+            return 'Any';
+        }
+
+        if (value.length > 1) {
+            return `${value[0]}`;
+        }
+
+        return value[0];
     }, [value, multiSelect, label]);
 
-    const handleClickOutside = useCallback((event: MouseEvent) => {
-        const target = event.target as Node;
-        if (isOpen && !document.getElementById(`${label.toLowerCase()}-dropdown`)?.contains(target)) {
-            setIsOpen(false);
+    const remainderCount = useMemo(() => {
+        if (multiSelect && Array.isArray(value) && value.length > 1 && value[0] !== 'Any') {
+            return value.length - 1;
         }
-    }, [isOpen, label]);
+        return 0;
+    }, [multiSelect, value]);
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [handleClickOutside]);
-
-    const toggleOption = useCallback((option: string) => {
-        if (!multiSelect) {
-            onChange(option);
-            setIsOpen(false);
-            return;
-        }
-
-        if (!Array.isArray(value)) {
-            // If not an array, convert to array with the selected option
-            onChange([option]);
-            return;
-        }
-
-        let updatedValues;
-
-        // If this item is already selected, remove it
-        if (value.includes(option)) {
-            updatedValues = value.filter(item => item !== option);
-            // If all items are deselected, set to 'Any'
-            if (updatedValues.length === 0 || (updatedValues.length === 1 && updatedValues[0] === 'Any')) {
-                onChange(['Any']);
-                return;
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
             }
-        } else {
-            // If 'Any' is currently selected, replace it with the selected option
-            if (value.includes('Any') && value.length === 1) {
-                updatedValues = [option];
-            } else {
-                // Otherwise add the selection to existing selections
-                updatedValues = [...value, option];
-            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
         }
-        
-        onChange(updatedValues);
-    }, [multiSelect, onChange, value]);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen]);
 
     const toggleDropdown = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -70,12 +60,41 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
         return value === option;
     }, [multiSelect, value]);
 
-    // Memoize the options list for better performance
+    const toggleOption = useCallback((option: string) => {
+        if (!multiSelect) {
+            onChange(option);
+            setIsOpen(false);
+            return;
+        }
+
+        if (!Array.isArray(value)) {
+            onChange([option]);
+            return;
+        }
+
+        let updatedValues;
+
+        if (value.includes(option)) {
+            updatedValues = value.filter(item => item !== option);
+            if (updatedValues.length === 0 || (updatedValues.length === 1 && updatedValues[0] === 'Any')) {
+                onChange(['Any']);
+                return;
+            }
+        } else {
+            if (value.includes('Any') && value.length === 1) {
+                updatedValues = [option];
+            } else {
+                updatedValues = [...value, option];
+            }
+        }
+
+        onChange(updatedValues);
+    }, [multiSelect, onChange, value]);
+
     const optionsList = useMemo(() => {
-        return options.map((option) => {
-            if (option === 'Any') return null;
-            
-            return (
+        return options
+            .filter(option => option !== 'Any')
+            .map((option) => (
                 <button
                     key={option}
                     onClick={() => toggleOption(option)}
@@ -90,23 +109,24 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
                         </svg>
                     )}
                 </button>
-            );
-        }).filter(Boolean);
+            ));
     }, [options, isOptionSelected, toggleOption]);
 
+    const buttonClasses = "flex items-center justify-between w-full px-4 py-2 text-sm bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-700 focus:outline-none";
+
     return (
-        <div id={`${label.toLowerCase()}-dropdown`} className="relative z-20">
+        <div ref={dropdownRef} className="relative z-20">
             <button
                 onClick={toggleDropdown}
-                className="flex items-center justify-between w-full px-4 py-2 text-sm bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-700 focus:outline-none"
+                className={buttonClasses}
                 type="button"
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
             >
                 <span className="truncate">{displayValue}</span>
-                {multiSelect && Array.isArray(value) && value.length > 0 && value[0] !== 'Any' && (
+                {remainderCount > 0 && (
                     <div className="ml-1 text-xs bg-gray-700 px-1 rounded-sm flex items-center justify-center">
-                        {value.length}
+                        +{remainderCount}
                     </div>
                 )}
                 <svg
@@ -132,7 +152,8 @@ const FilterDropdown = ({ label, options, value, onChange, multiSelect = false }
             )}
         </div>
     );
-};
+});
 
-// Use React.memo to prevent unnecessary re-renders
-export default React.memo(FilterDropdown);
+FilterDropdown.displayName = 'FilterDropdown';
+
+export default FilterDropdown;

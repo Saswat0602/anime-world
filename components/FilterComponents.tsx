@@ -39,9 +39,8 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
 
 export const YearFilter = ({ value, onChange }: FilterComponentProps) => {
     const years: string[] = Array.from({ length: 2025 - 1940 + 1 }, (_, i) => String(2025 - i));
-    
+
     const handleYearChange = useCallback((newValue: string | string[]) => {
-        // If clicking the already selected year, reset to Any
         if (typeof newValue === 'string' && newValue === value) {
             onChange('Any');
         } else {
@@ -52,7 +51,7 @@ export const YearFilter = ({ value, onChange }: FilterComponentProps) => {
     return (
         <FilterDropdown
             label="Year"
-            options={["Any", ...years]}
+            options={[...years]}
             value={value}
             onChange={handleYearChange}
         />
@@ -61,7 +60,6 @@ export const YearFilter = ({ value, onChange }: FilterComponentProps) => {
 
 export const GenreFilter = ({ value, onChange }: FilterComponentProps) => {
     const genres: string[] = [
-        "Any",
         "Action",
         "Adventure",
         "Comedy",
@@ -94,10 +92,9 @@ export const GenreFilter = ({ value, onChange }: FilterComponentProps) => {
 };
 
 export const SeasonFilter = ({ value, onChange }: FilterComponentProps) => {
-    const seasons: string[] = ["Any", "Winter", "Spring", "Summer", "Fall"];
+    const seasons: string[] = ["Winter", "Spring", "Summer", "Fall"];
 
     const handleSeasonChange = useCallback((newValue: string | string[]) => {
-        // If clicking the already selected season, reset to Any
         if (typeof newValue === 'string' && newValue === value) {
             onChange('Any');
         } else {
@@ -117,7 +114,6 @@ export const SeasonFilter = ({ value, onChange }: FilterComponentProps) => {
 
 export const FormatFilter = ({ value, onChange }: FilterComponentProps) => {
     const formats: string[] = [
-        "Any",
         "TV Show",
         "Movie",
         "TV Short",
@@ -140,7 +136,6 @@ export const FormatFilter = ({ value, onChange }: FilterComponentProps) => {
 
 export const AiringStatusFilter = ({ value, onChange }: FilterComponentProps) => {
     const statuses: string[] = [
-        "Any",
         "Airing",
         "Finished",
         "Not Yet Aired",
@@ -148,7 +143,6 @@ export const AiringStatusFilter = ({ value, onChange }: FilterComponentProps) =>
     ];
 
     const handleStatusChange = useCallback((newValue: string | string[]) => {
-        // If clicking the already selected status, reset to Any
         if (typeof newValue === 'string' && newValue === value) {
             onChange('Any');
         } else {

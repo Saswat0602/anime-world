@@ -151,39 +151,47 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-6">
         <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Search</div>
           <SearchInput value={searchQuery} onChange={handleSearchChange} />
         </div>
 
         <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Genres</div>
           <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect={true} />
         </div>
 
         <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Year</div>
           <YearFilter value={selectedYear} onChange={handleYearChange} />
         </div>
 
         <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Season</div>
           <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
         </div>
 
         <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Format</div>
           <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect={true} />
         </div>
 
-        <div className="flex justify-between items-center lg:col-span-1">
-          <div className="flex-1 mr-2">
-            <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
+        <div className="lg:col-span-1">
+          <div className="mb-2 text-sm font-bold text-gray-300">Airing Status</div>
+          <div className="flex justify-between items-center">
+            <div className="flex-1 mr-2">
+              <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
+            </div>
+            <ViewToggle />
           </div>
-          <ViewToggle />
         </div>
       </div>
-      
+
       {activeFilterTags.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {activeFilterTags.map((tag, index) => (
             <div key={`${tag.type}-${tag.value}-${index}`} className="flex items-center bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
               {tag.value}
-              <button 
+              <button
                 onClick={() => handleRemoveFilter(tag.type, tag.value)}
                 className="ml-2 text-white hover:text-gray-200"
                 aria-label={`Remove ${tag.value}`}
@@ -192,7 +200,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
               </button>
             </div>
           ))}
-          <button 
+          <button
             onClick={handleClearAll}
             className="flex items-center bg-gray-700 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-600"
           >
