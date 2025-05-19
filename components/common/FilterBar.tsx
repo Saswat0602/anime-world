@@ -1,6 +1,5 @@
 'use client';
 
-import { FilterBarProps, FilterState } from '@/types/filterTypes';
 import { useCallback, useMemo, useState } from 'react';
 import {
   AiringStatusFilter,
@@ -10,29 +9,8 @@ import {
   SeasonFilter,
   YearFilter,
 } from '../FilterComponents';
-
-const ViewToggle = () => {
-  return (
-    <button
-      className="p-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-      aria-label="Toggle view"
-      type="button"
-    >
-      <svg
-        className="w-5 h-5 text-gray-700 dark:text-gray-300"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-      >
-        <path
-          fillRule="evenodd"
-          d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </button>
-  );
-};
+import { FilterBarProps, FilterState } from '@/types/filterTypes';
+import { List, Tag } from 'lucide-react';
 
 export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,6 +19,9 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   const [selectedSeason, setSelectedSeason] = useState('Any');
   const [selectedFormat, setSelectedFormat] = useState<string[]>(['Any']);
   const [selectedStatus, setSelectedStatus] = useState('Any');
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+
+  const toggleFiltersVisible = () => setMobileFiltersVisible((prev) => !prev);
 
   const handleSearchChange = useCallback((value: string) => setSearchQuery(value), []);
   const handleGenreChange = useCallback((value: string | string[]) => {
@@ -106,19 +87,17 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   );
 
   useMemo(() => {
-    if (onFilterChange) {
-      onFilterChange(filterState);
-    }
+    onFilterChange?.(filterState);
   }, [filterState, onFilterChange]);
 
   const activeFilterTags = useMemo(() => {
     const tags = [];
-    if (selectedGenre.length > 0 && selectedGenre[0] !== 'Any') {
+    if (selectedGenre[0] !== 'Any') {
       selectedGenre.forEach((genre) => tags.push({ type: 'genre', value: genre }));
     }
     if (selectedYear !== 'Any') tags.push({ type: 'year', value: selectedYear });
     if (selectedSeason !== 'Any') tags.push({ type: 'season', value: selectedSeason });
-    if (selectedFormat.length > 0 && selectedFormat[0] !== 'Any') {
+    if (selectedFormat[0] !== 'Any') {
       selectedFormat.forEach((format) => tags.push({ type: 'format', value: format }));
     }
     if (selectedStatus !== 'Any') tags.push({ type: 'status', value: selectedStatus });
@@ -126,50 +105,101 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   }, [selectedGenre, selectedYear, selectedSeason, selectedFormat, selectedStatus]);
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
-      </div>
+    <div className="mb-6">
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{title}</h1>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6 lg:gap-6">
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Search</div>
-          <SearchInput value={searchQuery} onChange={handleSearchChange} />
-        </div>
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:gap-6">
+          <div className="lg:col-span-1 flex items-center space-x-2">
+            <div className="w-full">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hidden sm:block">
+                Search
+              </div>
+              <SearchInput value={searchQuery} onChange={handleSearchChange} />
+            </div>
 
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Genres</div>
-          <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect />
-        </div>
+            <div className="lg:hidden flex items-end pb-1">
+              <button
+                onClick={toggleFiltersVisible}
+                className={`p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
+                  ? 'bg-blue-500 border-blue-600 text-white'
+                  : 'bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                aria-label="Toggle filters"
+                aria-expanded={mobileFiltersVisible}
+              >
+                <List className="w-5 h-5" color={mobileFiltersVisible ? "white" : "currentColor"} />
+              </button>
+            </div>
+          </div>
 
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Year</div>
-          <YearFilter value={selectedYear} onChange={handleYearChange} />
-        </div>
+          <div className="hidden lg:flex lg:col-span-5 lg:gap-6">
+            <div className="w-full lg:w-auto flex-grow px-2">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Genres</div>
+              <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect />
+            </div>
 
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Season</div>
-          <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
-        </div>
+            <div className="w-full lg:w-auto flex-grow px-2">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Year</div>
+              <YearFilter value={selectedYear} onChange={handleYearChange} />
+            </div>
 
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Format</div>
-          <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect />
-        </div>
+            <div className="w-full lg:w-auto flex-grow px-2">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Season</div>
+              <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
+            </div>
 
-        <div className="lg:col-span-1">
-          <div className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-300">Airing Status</div>
-          <div className="flex justify-between items-center">
-            <div className="flex-1 mr-2">
+            <div className="w-full lg:w-auto flex-grow px-2">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Format</div>
+              <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect />
+            </div>
+
+            <div className="w-full lg:w-auto flex-grow px-2">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Airing Status</div>
               <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
             </div>
-            <ViewToggle />
           </div>
+
+          {mobileFiltersVisible && (
+            <div
+              className="lg:hidden overflow-x-auto flex flex-row gap-4 pb-2 scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <div className="min-w-[180px]">
+                <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Genres</div>
+                <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect />
+              </div>
+
+              <div className="min-w-[140px]">
+                <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Year</div>
+                <YearFilter value={selectedYear} onChange={handleYearChange} />
+              </div>
+
+              <div className="min-w-[140px]">
+                <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Season</div>
+                <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
+              </div>
+
+              <div className="min-w-[180px]">
+                <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Format</div>
+                <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect />
+              </div>
+
+              <div className="min-w-[160px]">
+                <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Airing Status</div>
+                <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {activeFilterTags.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="flex items-center text-gray-700 dark:text-gray-300">
+            <Tag className="w-4 h-4 mr-1" />
+          </div>
+
           {activeFilterTags.map((tag, index) => (
             <div
               key={`${tag.type}-${tag.value}-${index}`}
