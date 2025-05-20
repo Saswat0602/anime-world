@@ -54,7 +54,7 @@ const AnimeDetailsPage = ({ params }: Props) => {
             <ReviewsSection reviews={animeData.reviews?.nodes || []} />
             <StatsSection stats={animeData.stats} />
             <StreamingSection episodes={(animeData.streamingEpisodes ?? []) as Episode[]} />
-            </div>
+          </div>
         </div>
       </main>
     </div>

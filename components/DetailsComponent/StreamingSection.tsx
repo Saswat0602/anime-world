@@ -65,11 +65,11 @@ const StreamingSection: React.FC<StreamingSectionProps> = ({ episodes }) => {
   return (
     <section className="mb-16">
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Watch Online</h2>
-      
+
       <div className="space-y-8">
         {Object.entries(episodesBySite).map(([site, siteEpisodes]) => (
           <div key={site} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-            <div 
+            <div
               className={`p-4 flex items-center ${siteConfig[site]?.color || siteConfig.default.color}`}
             >
               {siteConfig[site]?.logo ? (
@@ -80,11 +80,11 @@ const StreamingSection: React.FC<StreamingSectionProps> = ({ episodes }) => {
               ) : null}
               <h3 className="text-lg font-bold text-white">{site}</h3>
             </div>
-            
+
             <div className="p-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {siteEpisodes.map((episode) => (
-                  <Link 
+                  <Link
                     key={episode.id}
                     href={episode.url}
                     target="_blank"
@@ -106,7 +106,7 @@ const StreamingSection: React.FC<StreamingSectionProps> = ({ episodes }) => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="p-2">
                       <h4 className="font-medium text-sm line-clamp-2 text-gray-900 dark:text-white">
                         {episode.title}

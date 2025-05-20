@@ -17,10 +17,10 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recomme
   return (
     <section className="mb-16">
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Recommendations</h2>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {recommendations.slice(0, 10).map((node) => (
-          <Link 
+          <Link
             key={node.mediaRecommendation.id}
             href={`/anime/${node.mediaRecommendation.id}`}
             className="block bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all"
@@ -34,7 +34,7 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recomme
                 className="absolute top-0 left-0 object-cover"
               />
             </div>
-            
+
             <div className="p-2">
               <h4 className="font-medium text-sm line-clamp-2 h-10 text-gray-900 dark:text-white">
                 {node.mediaRecommendation.title.userPreferred}

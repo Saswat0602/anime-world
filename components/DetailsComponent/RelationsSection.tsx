@@ -24,10 +24,10 @@ const RelationsSection: React.FC<RelationsSectionProps> = ({ relations }) => {
   return (
     <section className="mb-16">
       <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Relations</h2>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {relations.map((edge) => (
-          <Link 
+          <Link
             key={edge.node.id}
             href={`/anime/${edge.node.id}`}
             className="block bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all"
@@ -46,7 +46,7 @@ const RelationsSection: React.FC<RelationsSectionProps> = ({ relations }) => {
                 </p>
               </div>
             </div>
-            
+
             <div className="p-2">
               <h4 className="font-medium text-sm line-clamp-2 h-10 text-gray-900 dark:text-white">
                 {edge.node.title.userPreferred}

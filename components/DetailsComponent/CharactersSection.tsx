@@ -22,11 +22,11 @@ const CharactersSection: React.FC<CharactersSectionProps> = ({ characters }) => 
           View All
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {characters.slice(0, 8).map((edge) => (
-          <div 
-            key={edge.node.id} 
+          <div
+            key={edge.node.id}
             className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex"
           >
             <div className="w-16 h-20 flex-shrink-0">
@@ -38,7 +38,7 @@ const CharactersSection: React.FC<CharactersSectionProps> = ({ characters }) => 
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             <div className="p-3 flex-grow">
               <div className="flex justify-between">
                 <div>
@@ -49,7 +49,7 @@ const CharactersSection: React.FC<CharactersSectionProps> = ({ characters }) => 
                     {edge.role.charAt(0) + edge.role.slice(1).toLowerCase()} Role
                   </p>
                 </div>
-                
+
                 {edge.voiceActors && edge.voiceActors.length > 0 && (
                   <div className="text-right">
                     <h4 className="font-medium text-gray-900 dark:text-white">
@@ -60,7 +60,7 @@ const CharactersSection: React.FC<CharactersSectionProps> = ({ characters }) => 
                 )}
               </div>
             </div>
-            
+
             {edge.voiceActors && edge.voiceActors.length > 0 && (
               <div className="w-16 h-20 flex-shrink-0">
                 <Image

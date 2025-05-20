@@ -17,7 +17,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
   const renderStars = (rating: number) => {
     const filledStars = Math.floor(rating / 20);
     const emptyStars = 5 - filledStars;
-    
+
     return (
       <>
         {Array.from({ length: filledStars }).map((_, i) => (
@@ -38,7 +38,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
           View All
         </Link>
       </div>
-      
+
       <div className="space-y-6">
         {reviews.map((review) => (
           <div key={review.id} className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
@@ -52,7 +52,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
                   className="object-cover w-full h-full"
                 />
               </div>
-              
+
               <div className="flex-grow">
                 <p className="font-medium text-gray-900 dark:text-white">{review.user.name}</p>
                 <div className="flex items-center">
@@ -65,14 +65,14 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="p-4">
               <h4 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">{review.summary}</h4>
               <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
                 {review.summary}
               </p>
-              <Link 
-                href={`/reviews/${review.id}`} 
+              <Link
+                href={`/reviews/${review.id}`}
                 className="mt-3 inline-block text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Read Full Review

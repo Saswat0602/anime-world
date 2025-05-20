@@ -22,11 +22,11 @@ const StaffSection: React.FC<StaffSectionProps> = ({ staff }) => {
           View All
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {staff.slice(0, 8).map((edge) => (
-          <div 
-            key={edge.node.id} 
+          <div
+            key={edge.node.id}
             className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden flex"
           >
             <div className="w-16 h-20 flex-shrink-0">
@@ -38,7 +38,7 @@ const StaffSection: React.FC<StaffSectionProps> = ({ staff }) => {
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             <div className="p-3 flex-grow">
               <h4 className="font-medium truncate text-gray-900 dark:text-white">
                 {edge.node.name.full}
