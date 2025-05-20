@@ -4,7 +4,7 @@ import React from 'react';
 import { useAnimeDetailsQuery } from '@/redux/api/detailsApi';
 import { Metadata } from 'next';
 import Head from 'next/head';
-import { SkeletonLoader } from '@/components/loaders';
+import { AnimeDetailSkeleton, SkeletonLoader } from '@/components/loaders';
 import AnimeOverview from '@/components/DetailsComponent/AnimeOverview';
 import CharactersSection from '@/components/DetailsComponent/CharactersSection';
 import StaffSection from '@/components/DetailsComponent/StaffSection';
@@ -72,7 +72,7 @@ const AnimeDetailsPage = ({ params }: Props) => {
   const animeData:any = data?.data?.Media;
 
   if (isLoading) {
-    return <SkeletonLoader variant="banner" />;
+    return <AnimeDetailSkeleton />;
   }
 
   if (error || !animeData) {
