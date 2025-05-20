@@ -36,7 +36,7 @@ export default function HomePage() {
   }, [trendingAnimeData, seasonalAnimeData]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 mt-16">
       <section className="mb-12">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Trending Now</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">

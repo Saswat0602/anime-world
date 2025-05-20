@@ -29,7 +29,7 @@ export function AnimeListLayout({
   showRank
 }: AnimeListLayoutProps) {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-10">
       <FilterBar title={title} />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative">
         {allAnime.map((anime, index) => (

@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ onSearch }: HeroSectionProps) {
   return (
-    <section className="relative mb-16 rounded-3xl overflow-hidden   dark:from-black dark:to-gray-900 dark:text-white p-8 md:p-16 transition-colors">
+    <section className="relative mt-20 mb-16 rounded-3xl overflow-hidden   dark:from-black dark:to-gray-900 dark:text-white p-8 md:p-16 transition-colors">
       <div className="absolute inset-0 bg-gradient-to-r from-slate-100 to-slate-100/10 dark:from-black dark:to-gray-900 z-0 transition-colors"></div>
 
       <div className="absolute right-0 top-0 h-full w-1/2 z-0">
