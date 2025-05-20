@@ -3,9 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MediaRelationEdge } from '@/types/animeDetails';
 
 interface RelationsSectionProps {
-  relations: any[];
+  relations: MediaRelationEdge[];
 }
 
 const RelationsSection: React.FC<RelationsSectionProps> = ({ relations }) => {

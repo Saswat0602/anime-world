@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Star, Calendar, Clock, Award } from 'lucide-react';
+import { Star, Calendar, Award } from 'lucide-react';
+import type { Media } from '@/types/animeDetails';
 
 interface AnimeOverviewProps {
-  anime: any;
+  anime: Media;
 }
 
 const AnimeOverview: React.FC<AnimeOverviewProps> = ({ anime }) => {

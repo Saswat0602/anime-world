@@ -3,9 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { StaffEdge } from '@/types/animeDetails';
 
 interface StaffSectionProps {
-  staff: any[];
+  staff: StaffEdge[];
 }
 
 const StaffSection: React.FC<StaffSectionProps> = ({ staff }) => {

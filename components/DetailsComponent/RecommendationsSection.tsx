@@ -3,9 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Recommendation } from '@/types/animeDetails';
 
 interface RecommendationsSectionProps {
-  recommendations: any[];
+  recommendations: Recommendation[];
 }
 
 const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recommendations }) => {

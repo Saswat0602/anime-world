@@ -3,9 +3,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CharacterEdge } from '@/types/animeDetails';
 
 interface CharactersSectionProps {
-  characters: any[];
+  characters: CharacterEdge[];
 }
 
 const CharactersSection: React.FC<CharactersSectionProps> = ({ characters }) => {

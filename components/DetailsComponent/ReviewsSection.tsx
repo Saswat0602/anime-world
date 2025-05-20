@@ -4,11 +4,11 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
+import { Review } from '@/types/animeDetails';
 
 interface ReviewsSectionProps {
-  reviews: any[];
+  reviews: Review[];
 }
-
 const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
   if (!reviews || reviews.length === 0) {
     return null;
