@@ -58,7 +58,7 @@ export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) =>
               className={`object-cover transition-transform duration-300 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               sizes="(max-width: 768px) 40vw, (max-width: 1200px) 25vw, 12vw"
               priority={index < 6}
-              onLoadingComplete={handleImageLoad}
+              onLoad={handleImageLoad}
               style={{
                 transform: isHovered
                   ? `rotateX(${15}deg) rotateY(${15}deg)`
