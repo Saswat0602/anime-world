@@ -169,7 +169,7 @@ export const ANIME_DETAILS_QUERY = `
           amount
         }
       }
-      reviews(perPage: 3, sort: RATING_DESC) {
+      reviews(perPage: 10, sort: RATING_DESC) {
         nodes {
           id
           summary
