@@ -3,6 +3,7 @@
 import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsivePie } from '@nivo/pie';
+import { useTheme } from 'next-themes';
 
 interface StatsSectionProps {
   stats: {
@@ -12,6 +13,9 @@ interface StatsSectionProps {
 }
 
 const StatsSection: React.FC<StatsSectionProps> = ({ stats }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   if (!stats || (!stats.scoreDistribution?.length && !stats.statusDistribution?.length)) {
     return null;
   }
@@ -38,32 +42,56 @@ const StatsSection: React.FC<StatsSectionProps> = ({ stats }) => {
     value: item.amount
   }));
 
-  const COLORS = ['#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12', '#1abc9c'];
+  const COLORS = ['#3B82F6', '#10B981', '#8B5CF6', '#EF4444', '#F59E0B', '#06B6D4'];
+
+  const commonTheme = {
+    text: {
+      fill: isDark ? '#E5E7EB' : '#374151',
+      fontSize: 12,
+    },
+    grid: {
+      line: {
+        stroke: isDark ? '#374151' : '#E5E7EB',
+      },
+    },
+    axis: {
+      ticks: {
+        text: {
+          fill: isDark ? '#9CA3AF' : '#6B7280',
+        },
+      },
+    },
+  };
 
   return (
     <section id="stats" className="mb-16">
-      <h2 className="text-2xl font-bold mb-6">Stats</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Statistics</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Score Distribution */}
         {scoreChartData.length > 0 && (
-          <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-xl font-medium mb-4 text-center">Score Distribution</h3>
-            <div className="h-64 w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Score Distribution</h3>
+            <div className="h-[300px] w-full">
               <ResponsiveBar
                 data={scoreChartData}
                 keys={['users']}
                 indexBy="score"
-                margin={{ top: 10, right: 20, bottom: 40, left: 40 }}
+                margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
                 padding={0.3}
-                colors={{ scheme: 'nivo' }}
+                colors={['#3B82F6']}
+                borderRadius={4}
+                borderWidth={0}
+                enableGridY={true}
+                enableGridX={false}
                 axisBottom={{
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
                   legend: 'Score',
                   legendPosition: 'middle',
-                  legendOffset: 32
+                  legendOffset: 40,
+                  ...commonTheme.axis,
                 }}
                 axisLeft={{
                   tickSize: 5,
@@ -71,11 +99,14 @@ const StatsSection: React.FC<StatsSectionProps> = ({ stats }) => {
                   tickRotation: 0,
                   legend: 'Users',
                   legendPosition: 'middle',
-                  legendOffset: -40
+                  legendOffset: -50,
+                  ...commonTheme.axis,
                 }}
+                theme={commonTheme}
                 tooltip={({ id, value }) => (
-                  <div className="bg-gray-900 text-sm text-white p-2 rounded">
-                    {id}: {value.toLocaleString()} users
+                  <div className="bg-white dark:bg-gray-800 text-sm p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div className="font-medium text-gray-900 dark:text-white">Score {id}</div>
+                    <div className="text-blue-600 dark:text-blue-400">{value.toLocaleString()} users</div>
                   </div>
                 )}
               />
@@ -85,28 +116,30 @@ const StatsSection: React.FC<StatsSectionProps> = ({ stats }) => {
 
         {/* Watch Status */}
         {statusData.length > 0 && (
-          <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-xl font-medium mb-4 text-center">Watch Status</h3>
-            <div className="h-64 w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Watch Status</h3>
+            <div className="h-[300px] w-full">
               <ResponsivePie
                 data={statusData}
-                margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-                innerRadius={0.5}
+                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                innerRadius={0.6}
                 padAngle={0.7}
-                cornerRadius={3}
+                cornerRadius={4}
                 activeOuterRadiusOffset={8}
                 colors={COLORS}
-                borderWidth={1}
-                borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+                borderWidth={0}
+                enableArcLinkLabels={true}
                 arcLinkLabelsSkipAngle={10}
-                arcLinkLabelsTextColor="#ccc"
+                arcLinkLabelsTextColor={isDark ? '#9CA3AF' : '#6B7280'}
                 arcLinkLabelsThickness={2}
                 arcLinkLabelsColor={{ from: 'color' }}
                 arcLabelsSkipAngle={10}
-                arcLabelsTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+                arcLabelsTextColor={isDark ? '#E5E7EB' : '#374151'}
+                theme={commonTheme}
                 tooltip={({ datum }) => (
-                  <div className="bg-gray-900 text-sm text-white p-2 rounded">
-                    {datum.label}: {datum.value.toLocaleString()} users
+                  <div className="bg-white dark:bg-gray-800 text-sm p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div className="font-medium text-gray-900 dark:text-white">{datum.label}</div>
+                    <div className="text-blue-600 dark:text-blue-400">{datum.value.toLocaleString()} users</div>
                   </div>
                 )}
               />
