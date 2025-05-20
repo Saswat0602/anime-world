@@ -108,7 +108,7 @@ const AnimeDetailsPage = ({ params }: Props) => {
         />
       </Head> */}
 
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
         <AnimeHeroSection anime={animeData} />
         
         <main className="container mx-auto px-4 py-8">
@@ -119,7 +119,7 @@ const AnimeDetailsPage = ({ params }: Props) => {
             
             <div className="lg:col-span-3">
               <div id="overview" className="mb-10">
-                <div className="prose prose-lg max-w-none text-gray-200" 
+                <div className="prose prose-lg max-w-none dark:prose-invert" 
                      dangerouslySetInnerHTML={{ __html: animeData.description || '' }} />
               </div>
               
