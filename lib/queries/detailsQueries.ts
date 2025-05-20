@@ -31,7 +31,7 @@ export const ANIME_DETAILS_QUERY = `
         medium
         color
       }
-      bannerImage
+      
       genres
       tags {
         name
@@ -41,7 +41,7 @@ export const ANIME_DETAILS_QUERY = `
         isMediaSpoiler
         userId
       }
-      synonyms
+      
       averageScore
       meanScore
       popularity
@@ -77,7 +77,7 @@ export const ANIME_DETAILS_QUERY = `
             type
             format
             status
-            bannerImage
+            
             coverImage {
               large
             }

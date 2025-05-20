@@ -23,35 +23,22 @@ export const UPCOMING_NEXT_SEASON_QUERY = `
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios {
           edges {
             isMain

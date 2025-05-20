@@ -17,42 +17,26 @@ export const TRENDING_ANIME_QUERY = `
           native
           userPreferred
         }
-        description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
-        favourites
         isAdult
-        source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -95,39 +79,26 @@ export const UPCOMING_ANIME_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -169,39 +140,26 @@ export const NEW_RELEASES_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -243,39 +201,26 @@ export const SEASONAL_ANIME_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -317,39 +262,26 @@ export const YEARLY_ANIME_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -391,39 +323,26 @@ export const POPULAR_ANIME_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -465,39 +384,26 @@ export const MOST_FAVORITED_QUERY = `
         description
         format
         status
-        episodes
+        
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 

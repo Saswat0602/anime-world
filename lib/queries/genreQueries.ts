@@ -31,35 +31,22 @@ export const ANIME_BY_GENRE_QUERY = `
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 
@@ -105,35 +92,22 @@ export const ANIME_BY_STUDIO_QUERY = `
         duration
         season
         seasonYear
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
+
         coverImage {
           extraLarge
           large
           medium
           color
         }
-        bannerImage
+        
         genres
-        synonyms
+        
         averageScore
         popularity
         favourites
         isAdult
         source
-        rankings {
-          rank
-          type
-          allTime
-        }
+
         studios { 
           edges { 
             isMain 

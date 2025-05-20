@@ -12,17 +12,11 @@ export const convertToAnime = (media: AniListMedia): Anime => {
         title: media.title.userPreferred || media.title.english || media.title.romaji || '',
         title_english: media.title.english || undefined,
         title_japanese: media.title.native || undefined,
-        title_synonyms: media.synonyms || [],
         type: media.format || 'Unknown',
         source: media.source || 'Unknown',
         episodes: media.episodes || undefined,
         status: media.status || 'Unknown',
         airing: media.status === 'RELEASING',
-        aired: {
-            from: media.startDate ? `${media.startDate.year}-${media.startDate.month}-${media.startDate.day}` : '',
-            to: media.endDate && media.endDate.year ? `${media.endDate.year}-${media.endDate.month}-${media.endDate.day}` : undefined,
-            string: formatAiredString(media.startDate, media.endDate)
-        },
         nextAiringEpisode: media.nextAiringEpisode || undefined,
         duration: media.duration ? `${media.duration} min per ep` : 'Unknown',
         rating: media.isAdult ? 'R+ - Mild Nudity' : 'PG-13 - Teens 13 or older',

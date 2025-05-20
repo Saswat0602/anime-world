@@ -43,11 +43,6 @@ export interface Anime {
   episodes?: number;
   status: string;
   airing: boolean;
-  aired: {
-    from: string;
-    to?: string;
-    string: string;
-  };
   duration: string;
   rating?: string;
   score?: number;
@@ -181,9 +176,8 @@ export interface AniListMedia {
     medium: string | null;
     color: string | null;
   };
-  bannerImage: string | null;
+  bannerImage?: string | null;
   genres: string[] | null;
-  synonyms: string[] | null;
   averageScore: number | null;
   popularity: number | null;
   favourites: number | null;
