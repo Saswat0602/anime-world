@@ -13,6 +13,8 @@ import AnimeHeroSection from '@/components/DetailsComponent/AnimeHeroSection';
 import ErrorDisplay from '@/components/ui/error-display';
 import RecommendationsSection from '@/components/DetailsComponent/RecommendationsSection';
 import ReviewsSection from '@/components/DetailsComponent/ReviewsSection';
+import StatsSection from '@/components/DetailsComponent/StatsSection';
+import StreamingSection from '@/components/DetailsComponent/StreamingSection';
 
 interface Props {
   params: Promise<{
@@ -130,8 +132,8 @@ const AnimeDetailsPage = ({ params }: Props) => {
               <RelationsSection relations={animeData.relations?.edges || []} />
               <RecommendationsSection recommendations={animeData.recommendations?.nodes || []} />
               <ReviewsSection reviews={animeData.reviews?.nodes || []} />
-              {/* <StatsSection stats={animeData.stats} />
-              <StreamingSection episodes={animeData.streamingEpisodes || []} /> */}
+              <StatsSection stats={animeData.stats} />
+              <StreamingSection episodes={animeData.streamingEpisodes || []} />
             </div>
           </div>
         </main>

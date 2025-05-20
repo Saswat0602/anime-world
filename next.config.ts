@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         hostname: 's4.anilist.co',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'img1.ak.crunchyroll.com',
+        pathname: '**',
+      },
     ],
   },
   reactStrictMode: true,
