@@ -1,4 +1,3 @@
-// GraphQL query for getting anime details
 export const ANIME_DETAILS_QUERY = `
   query ($id: Int) {
     Media(id: $id, type: ANIME) {
@@ -34,16 +33,29 @@ export const ANIME_DETAILS_QUERY = `
       }
       bannerImage
       genres
+      tags {
+        name
+        description
+        rank
+        isGeneralSpoiler
+        isMediaSpoiler
+        userId
+      }
       synonyms
       averageScore
+      meanScore
       popularity
       favourites
       isAdult
       source
+      countryOfOrigin
       rankings {
         rank
         type
         allTime
+        context
+        year
+        season
       }
       studios {
         edges {
@@ -63,6 +75,51 @@ export const ANIME_DETAILS_QUERY = `
               userPreferred
             }
             type
+            format
+            status
+            bannerImage
+            coverImage {
+              large
+            }
+          }
+        }
+      }
+      characters(sort: [ROLE, RELEVANCE], perPage: 10) {
+        edges {
+          role
+          node {
+            id
+            name {
+              full
+              native
+            }
+            image {
+              large
+            }
+          }
+          voiceActors(language: JAPANESE) {
+            id
+            name {
+              full
+            }
+            image {
+              large
+            }
+          }
+        }
+      }
+      staff(perPage: 10) {
+        edges {
+          role
+          node {
+            id
+            name {
+              full
+              native
+            }
+            image {
+              large
+            }
           }
         }
       }
@@ -70,11 +127,69 @@ export const ANIME_DETAILS_QUERY = `
         title
         url
         site
+        thumbnail
       }
       trailer {
         id
         site
+        thumbnail
       }
+      externalLinks {
+        site
+        url
+        icon
+        color
+      }
+      nextAiringEpisode {
+        airingAt
+        timeUntilAiring
+        episode
+      }
+      recommendations(perPage: 10, sort: RATING_DESC) {
+        nodes {
+          mediaRecommendation {
+            id
+            title {
+              userPreferred
+            }
+            coverImage {
+              large
+            }
+            type
+          }
+        }
+      }
+      stats {
+        scoreDistribution {
+          score
+          amount
+        }
+        statusDistribution {
+          status
+          amount
+        }
+      }
+      reviews(perPage: 3, sort: RATING_DESC) {
+        nodes {
+          id
+          summary
+          rating
+          ratingAmount
+          user {
+            name
+            avatar {
+              large
+            }
+          }
+        }
+      }
+      mediaListEntry {
+        id
+        status
+        score
+        progress
+      }
+      siteUrl
     }
   }
-`; 
+`;
