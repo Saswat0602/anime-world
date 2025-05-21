@@ -31,7 +31,6 @@ export function AnimeListLayout({
   hasMore,
   showRank,
   isFetching,
-  isLoading,
 }: AnimeListLayoutProps) {
   console.log(loadedAnimeIds, "loadedAnimeIds");
 

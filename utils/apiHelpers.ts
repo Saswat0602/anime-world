@@ -34,8 +34,8 @@ export const convertToAnime = (media: AniListMedia): Anime => {
         images: {
             jpg: {
                 image_url: media.coverImage.medium || '',
-                small_image_url: media.coverImage.medium || undefined,
-                large_image_url: media.coverImage.large || undefined
+                small_image_url: media.coverImage.large || undefined,
+                large_image_url: media.coverImage.extraLarge || undefined,
             }
         },
         bannerImage: media.bannerImage || "",
