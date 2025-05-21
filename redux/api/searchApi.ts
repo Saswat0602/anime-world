@@ -5,7 +5,7 @@ import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
 
 export const searchApi = createApi({
   reducerPath: 'searchApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api/anilist' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://graphql.anilist.co' }),
   endpoints: (builder) => ({
     searchAnime: builder.query<AnimeResponse | null, { query: string; page?: number }>({
       query: ({ query, page = 1 }) => ({
@@ -13,22 +13,31 @@ export const searchApi = createApi({
         method: 'POST',
         body: {
           query: SEARCH_ANIME_QUERY,
-          variables: { search: query, page, perPage: 18 }
+          variables: {
+            search: query,
+            page,
+            perPage: 18
+          }
         },
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
+          'Accept': 'application/json',
         },
       }),
       transformResponse: (response: AniListAnimeResponse) => {
-        const animeList = response.data?.Page?.media
-          .filter(anime => !anime.genres?.includes('Hentai'))
-          .map(convertToAnime) ?? [];
-        const pagination = convertPagination(response.data?.Page?.pageInfo);
-        return animeList.length ? { data: animeList, pagination } : null;
+        if (response.data && response.data.Page) {
+          const animeList = response.data.Page.media
+            .filter(anime => !(anime.genres?.includes("Hentai")))
+            .map(convertToAnime);
+          return {
+            data: animeList,
+            pagination: convertPagination(response.data.Page.pageInfo)
+          };
+        }
+        return null;
       },
     }),
   }),
 });
 
-export const { useSearchAnimeQuery } = searchApi;
+export const { useSearchAnimeQuery } = searchApi; 

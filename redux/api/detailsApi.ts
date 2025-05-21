@@ -1,3 +1,4 @@
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AnimeDetailsResponse } from '@/types/animeDetails';
 import { ANIME_DETAILS_QUERY } from '@/lib/queries/detailsQueries';
@@ -5,7 +6,7 @@ import { ANIME_DETAILS_QUERY } from '@/lib/queries/detailsQueries';
 export const detailsApi = createApi({
   reducerPath: 'detailsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api/anilist',
+    baseUrl: 'https://graphql.anilist.co',
   }),
   endpoints: (builder) => ({
     animeDetails: builder.query<AnimeDetailsResponse['data']['Media'], string>({
