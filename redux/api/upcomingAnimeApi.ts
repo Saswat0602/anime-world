@@ -25,7 +25,7 @@ export const upComingAnimeApi = createApi({
         method: 'POST',
         body: {
           query: UPCOMING_NEXT_SEASON_QUERY,
-          variables: { page, perPage: 12 },
+          variables: { page, perPage: 18 },
         },
       }),
       transformResponse: (response: AniListAnimeResponse) => {

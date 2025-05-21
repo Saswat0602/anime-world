@@ -16,6 +16,7 @@ interface AnimeCardProps {
 export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const imageUrl = anime?.images?.jpg?.large_image_url || "/zoro.jpg";
   const title = anime?.title_english ? anime?.title_english : anime?.title || "Unknown Title";
@@ -26,7 +27,9 @@ export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) =>
       onLoad();
     }
   };
-
+  const handleImageError = () => {
+    setImgError(true);
+  };
 
   return (
     <motion.div
@@ -51,20 +54,26 @@ export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) =>
       <Link href={ROUTES.ANIME.DETAIL(anime.mal_id)}>
         <div className="overflow-hidden rounded-lg">
           <div className="relative aspect-[3/4] w-full">
-            <Image
-              src={imageUrl}
-              alt={title}
-              fill
-              className={`object-cover transition-transform duration-300 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              sizes="(max-width: 768px) 40vw, (max-width: 1200px) 25vw, 12vw"
-              priority={index < 6}
-              onLoad={handleImageLoad}
-              style={{
-                transform: isHovered
-                  ? `rotateX(${15}deg) rotateY(${15}deg)`
-                  : "rotateX(0) rotateY(0)",
-              }}
-            />
+            {!imageLoaded && (
+              <div className="absolute inset-0 animate-pulse rounded-lg" style={{ backgroundColor: anime.color || '#2563eb' }} />
+            )}
+            {!imgError && (
+              <Image
+                src={imageUrl}
+                alt={title}
+                fill
+                className={`object-cover transition-opacity duration-500 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                sizes="(max-width: 768px) 40vw, (max-width: 1200px) 25vw, 12vw"
+                loading="lazy"
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                style={{
+                  transform: isHovered
+                    ? `rotateX(${15}deg) rotateY(${15}deg)`
+                    : "rotateX(0) rotateY(0)",
+                }}
+              />
+            )}
           </div>
         </div>
       </Link>

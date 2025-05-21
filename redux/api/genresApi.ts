@@ -43,7 +43,7 @@ export const genresApi = createApi({
           variables: { 
             genre: genreId,
             page, 
-            perPage: 10 
+            perPage: 18 
           }
         },
         headers: {
@@ -72,7 +72,7 @@ export const genresApi = createApi({
           variables: { 
             studioId,
             page, 
-            perPage: 10 
+            perPage: 18 
           }
         },
         headers: {

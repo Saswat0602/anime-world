@@ -16,7 +16,7 @@ export const searchApi = createApi({
           variables: {
             search: query,
             page,
-            perPage: 10
+            perPage: 18
           }
         },
         headers: {
