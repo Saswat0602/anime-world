@@ -15,6 +15,9 @@ type AnimeListLayoutProps = {
   loadMoreRef: RefObject<HTMLDivElement | null>;
   hasMore: boolean;
   showRank?: boolean;
+  isLoading?: boolean;
+  isFetching?: boolean;
+
 
 };
 
@@ -26,8 +29,12 @@ export function AnimeListLayout({
   pendingItemsCount,
   loadMoreRef,
   hasMore,
-  showRank
+  showRank,
+  isFetching,
+  isLoading,
 }: AnimeListLayoutProps) {
+  console.log(loadedAnimeIds, "loadedAnimeIds");
+
   return (
     <div className="container mx-auto px-4 py-10">
       <FilterBar title={title} />
@@ -45,7 +52,11 @@ export function AnimeListLayout({
 
             {!loadedAnimeIds.has(anime.mal_id) && (
               <div className="absolute inset-0">
-                <AnimeCardSkeleton />
+                {isFetching ? <AnimeCardSkeleton /> : (
+                  <div className="absolute inset-0 animate-pulse rounded-lg" style={{ backgroundColor: anime.color || '#2563eb' }} />
+
+                )}
+
               </div>
             )}
           </div>

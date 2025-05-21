@@ -18,7 +18,7 @@ export default function TrendingPage() {
     baseQueryParams: {}, 
   });
 
-  const pendingItemsCount = isFetching || isLoading ? 6 : 0;
+  const pendingItemsCount = 12;
 
   return (
     <AnimeListLayout
@@ -29,6 +29,8 @@ export default function TrendingPage() {
       pendingItemsCount={pendingItemsCount}
       loadMoreRef={loadMoreRef}
       hasMore={hasMore}
+      isLoading={isLoading} 
+      isFetching={isFetching}
     />
   );
 }

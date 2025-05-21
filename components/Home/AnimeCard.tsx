@@ -54,7 +54,7 @@ export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) =>
       <Link href={ROUTES.ANIME.DETAIL(anime.mal_id)}>
         <div className="overflow-hidden rounded-lg">
           <div className="relative aspect-[3/4] w-full">
-            {!imageLoaded && (
+            {imageLoaded && (
               <div className="absolute inset-0 animate-pulse rounded-lg" style={{ backgroundColor: anime.color || '#2563eb' }} />
             )}
             {!imgError && (
