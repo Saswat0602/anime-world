@@ -8,7 +8,6 @@ interface CardHoverProps {
 
 const CardHover: React.FC<CardHoverProps> = ({ anime }) => {
 
-  console.log(anime?.nextAiringEpisode, "anime");
 
   const getEmoji = (score: number) => {
     if (score >= 80) return "🙂";

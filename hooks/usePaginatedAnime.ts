@@ -33,6 +33,7 @@ export function usePaginatedAnime<T extends PaginationParams>({
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+
   const queryParams = {
     ...baseQueryParams,
     page,
@@ -66,13 +67,13 @@ export function usePaginatedAnime<T extends PaginationParams>({
     }
 
     observerRef.current = new IntersectionObserver(
+
       (entries) => {
         const shouldLoadMore =
           entries[0].isIntersecting &&
           !isLoading &&
           !isFetching &&
           hasMore &&
-          navigator.onLine &&
           !error;
 
         if (shouldLoadMore) {
