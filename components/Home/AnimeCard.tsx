@@ -18,7 +18,7 @@ export const AnimeCard = ({ anime, index, onLoad, showRank }: AnimeCardProps) =>
   const [isHovered, setIsHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const imageUrl = anime?.images?.jpg?.image_url || "/zoro.jpg";
+  const imageUrl = anime?.images?.jpg?.large_image_url || "/zoro.jpg";
   const title = anime?.title_english ? anime?.title_english : anime?.title || "Unknown Title";
 
   const handleImageLoad = () => {

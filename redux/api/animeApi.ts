@@ -3,16 +3,11 @@ import type { AnimeResponse, AniListAnimeResponse } from '@/types/types';
 import { TRENDING_ANIME_QUERY, SEASONAL_ANIME_QUERY } from '@/lib/queries/fetchAnime';
 import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
 
-const token = process.env.NEXT_PUBLIC_TOKEN;
-
 export const animeApi = createApi({
   reducerPath: 'animeApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://graphql.anilist.co',
+    baseUrl: '/api/anilist', // using Next.js API route
     prepareHeaders: (headers) => {
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
       headers.set('Content-Type', 'application/json');
       headers.set('Accept', 'application/json');
       return headers;
