@@ -9,6 +9,7 @@ export const ANIME_DETAILS_QUERY = `
         userPreferred
       }
       description
+      bannerImage
       format
       status
       episodes
