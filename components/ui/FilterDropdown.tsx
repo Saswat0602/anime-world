@@ -19,16 +19,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
     }) => {
         const [isOpen, setIsOpen] = useState(false);
         const dropdownRef = useRef<HTMLDivElement>(null);
-        const [isMobile, setIsMobile] = useState(false);
 
-        useEffect(() => {
-            const checkMobile = () => {
-                setIsMobile(window.innerWidth < 768);
-            };
-            checkMobile();
-            window.addEventListener('resize', checkMobile);
-            return () => window.removeEventListener('resize', checkMobile);
-        }, []);
+     
 
         const displayValue = useMemo(() => {
             if (!multiSelect || !Array.isArray(value) || value.length === 0) {
