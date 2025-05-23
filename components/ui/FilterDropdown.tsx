@@ -138,19 +138,19 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
                 >
                     <span>{option}</span>
                     {isOptionSelected(option) && (
-                        <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                     )}
                 </button>
             ));
         }, [options, isOptionSelected, toggleOption]);
 
         const buttonClasses =
-            "flex items-center justify-between w-full px-4 py-2 text-sm bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none text-gray-700 dark:text-gray-300";
+            "flex items-center justify-between w-full min-w-[140px] px-4 py-2 text-sm bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none text-gray-700 dark:text-gray-300";
 
         return (
             <div
                 ref={dropdownRef}
-                className="relative"
+                className="relative w-full"
             >
                 <button
                     onClick={toggleDropdown}
@@ -160,14 +160,14 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
                     aria-haspopup="listbox"
                     aria-expanded={isOpen}
                 >
-                    <span className="truncate">{displayValue}</span>
+                    <span className="truncate flex-1">{displayValue}</span>
                     {remainderCount > 0 && (
-                        <div className="ml-1 text-xs bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-1 rounded-sm flex items-center justify-center">
+                        <div className="ml-1 text-xs bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-1 rounded-sm flex items-center justify-center flex-shrink-0">
                             +{remainderCount}
                         </div>
                     )}
                     <ChevronDown
-                        className={`w-4 h-4 ml-2 transition-transform text-gray-700 dark:text-gray-300 ${isOpen ? "rotate-180" : ""
+                        className={`w-4 h-4 ml-2 transition-transform text-gray-700 dark:text-gray-300 flex-shrink-0 ${isOpen ? "rotate-180" : ""
                             }`}
                     />
                 </button>
