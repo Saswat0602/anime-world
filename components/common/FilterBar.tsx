@@ -109,91 +109,99 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
       <div className="mb-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{title}</h1>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:gap-6">
-          <div className="lg:col-span-1 flex items-center space-x-2">
-            <div className="w-full">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300 hidden sm:block">
+        {/* Mobile Search + Filter Toggle */}
+        <div className="flex items-end gap-2 mb-4 lg:hidden">
+          <div className="flex-1">
+            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
+              Search
+            </div>
+            <SearchInput value={searchQuery} onChange={handleSearchChange} />
+          </div>
+          <button
+            onClick={toggleFiltersVisible}
+            className={`flex-shrink-0 p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
+                ? 'bg-blue-500 border-blue-600 text-white'
+                : 'bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            aria-label="Toggle filters"
+            aria-expanded={mobileFiltersVisible}
+          >
+            <List className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-6 gap-4">
+            <div className="col-span-1">
+              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
                 Search
               </div>
               <SearchInput value={searchQuery} onChange={handleSearchChange} />
             </div>
 
-            <div className="lg:hidden flex items-end">
-              <button
-                onClick={toggleFiltersVisible}
-                className={`p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
-                  ? 'bg-blue-500 border-blue-600 text-white'
-                  : 'bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                aria-label="Toggle filters"
-                aria-expanded={mobileFiltersVisible}
-              >
-                <List className="w-5 h-5" color={mobileFiltersVisible ? "white" : "currentColor"} />
-              </button>
-            </div>
-          </div>
-
-          <div className="hidden lg:flex lg:col-span-5 lg:gap-6">
-            <div className="w-full lg:w-auto flex-grow px-2">
+            <div className="col-span-1">
               <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Genres</div>
               <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect />
             </div>
 
-            <div className="w-full lg:w-auto flex-grow px-2">
+            <div className="col-span-1">
               <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Year</div>
               <YearFilter value={selectedYear} onChange={handleYearChange} />
             </div>
 
-            <div className="w-full lg:w-auto flex-grow px-2">
+            <div className="col-span-1">
               <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Season</div>
               <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
             </div>
 
-            <div className="w-full lg:w-auto flex-grow px-2">
+            <div className="col-span-1">
               <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Format</div>
               <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect />
             </div>
 
-            <div className="w-full lg:w-auto flex-grow px-2">
+            <div className="col-span-1">
               <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Airing Status</div>
               <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
             </div>
           </div>
+        </div>
 
-          {mobileFiltersVisible && (
-            <div
-              className="lg:hidden overflow-x-auto flex flex-row gap-4 pb-2 scrollbar-hide"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        {/* Mobile Filters Dropdown */}
+        {mobileFiltersVisible && (
+          <div className="lg:hidden">
+            <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide " style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <div className="min-w-[180px]">
+              <div className="flex-shrink-0 min-w-[180px]">
                 <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Genres</div>
                 <GenreFilter value={selectedGenre} onChange={handleGenreChange} multiSelect />
               </div>
 
-              <div className="min-w-[140px]">
+              <div className="flex-shrink-0 min-w-[140px]">
                 <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Year</div>
                 <YearFilter value={selectedYear} onChange={handleYearChange} />
               </div>
 
-              <div className="min-w-[140px]">
+              <div className="flex-shrink-0 min-w-[140px]">
                 <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Season</div>
                 <SeasonFilter value={selectedSeason} onChange={handleSeasonChange} />
               </div>
 
-              <div className="min-w-[180px]">
+              <div className="flex-shrink-0 min-w-[180px]">
                 <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Format</div>
                 <FormatFilter value={selectedFormat} onChange={handleFormatChange} multiSelect />
               </div>
 
-              <div className="min-w-[160px]">
+              <div className="flex-shrink-0 min-w-[160px]">
                 <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">Airing Status</div>
                 <AiringStatusFilter value={selectedStatus} onChange={handleStatusChange} />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
+      {/* Active Filter Tags */}
       {activeFilterTags.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <div className="flex items-center text-gray-700 dark:text-gray-300">
