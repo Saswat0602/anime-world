@@ -30,7 +30,7 @@ const AnimeHeroSection: React.FC<HeroSectionProps> = ({ anime }) => {
         <div className="relative flex flex-col md:flex-row -mt-32 z-10">
           <div className="w-40 h-56 md:w-48 md:h-64 flex-shrink-0 rounded overflow-hidden border-4 border-gray-200 dark:border-gray-800 shadow-lg">
             <Image
-              src={anime.coverImage.extraLarge}
+              src={anime.coverImage.large}
               alt={anime.title.userPreferred}
               width={192}
               height={256}

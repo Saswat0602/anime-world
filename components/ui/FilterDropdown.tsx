@@ -19,7 +19,16 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
     }) => {
         const [isOpen, setIsOpen] = useState(false);
         const dropdownRef = useRef<HTMLDivElement>(null);
-        const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+        const [isMobile, setIsMobile] = useState(false);
+
+        useEffect(() => {
+            const checkMobile = () => {
+                setIsMobile(window.innerWidth < 768);
+            };
+            checkMobile();
+            window.addEventListener('resize', checkMobile);
+            return () => window.removeEventListener('resize', checkMobile);
+        }, []);
 
         const displayValue = useMemo(() => {
             if (!multiSelect || !Array.isArray(value) || value.length === 0) {
@@ -41,26 +50,29 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
             return 0;
         }, [multiSelect, value]);
 
-        const toggleDropdown = useCallback(() => {
+        const toggleDropdown = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
             setIsOpen((prev) => !prev);
         }, []);
 
-        const handleMouseEnter = () => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            setIsOpen(true);
-        };
-
-        const handleMouseLeave = () => {
-            timeoutRef.current = setTimeout(() => {
-                setIsOpen(false);
-            }, 150);
-        };
-
         useEffect(() => {
-            return () => {
-                if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                    setIsOpen(false);
+                }
             };
-        }, []);
+
+            if (isOpen) {
+                document.addEventListener('mousedown', handleClickOutside as EventListener);
+                document.addEventListener('touchstart', handleClickOutside as EventListener);
+            }
+
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside as EventListener);
+                document.removeEventListener('touchstart', handleClickOutside as EventListener);
+            };
+        }, [isOpen]);
 
         const isOptionSelected = useCallback(
             (option: string) => {
@@ -115,8 +127,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
             return options.map((option) => (
                 <button
                     key={option}
-                    onClick={() => toggleOption(option)}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none flex justify-between items-center text-gray-700 dark:text-gray-300"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleOption(option);
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none flex justify-between items-center text-gray-700 dark:text-gray-300"
                     role="option"
                     aria-selected={isOptionSelected(option)}
                 >
@@ -134,12 +150,11 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
         return (
             <div
                 ref={dropdownRef}
-                className="relative z-20"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                className="relative"
             >
                 <button
                     onClick={toggleDropdown}
+                    onTouchEnd={toggleDropdown}
                     className={buttonClasses}
                     type="button"
                     aria-haspopup="listbox"
@@ -166,10 +181,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = React.memo(
                             exit={{ opacity: 0, y: -4 }}
                             transition={{ duration: 0.2 }}
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                            className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-[500px] overflow-y-auto"
+                            className="fixed md:absolute z-[100] w-[calc(100vw-2rem)] md:w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-[300px] overflow-y-auto left-4 md:left-0"
                             role="listbox"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
                         >
                             <div className="py-1">{optionsList}</div>
                         </motion.div>

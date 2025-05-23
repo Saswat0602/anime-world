@@ -118,7 +118,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
               <SearchInput value={searchQuery} onChange={handleSearchChange} />
             </div>
 
-            <div className="lg:hidden flex items-end pb-1">
+            <div className="lg:hidden flex items-end">
               <button
                 onClick={toggleFiltersVisible}
                 className={`p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
