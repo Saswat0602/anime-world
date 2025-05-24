@@ -41,7 +41,6 @@ export function usePaginatedAnime<T extends PaginationParams>({
 
   const { data, isLoading, isFetching, error } = useQueryHook(queryParams);
 
-  console.log(isLoading, isFetching,"isLoading, isFetching");
 
   const handleAnimeLoaded = useCallback((animeId: number) => {
     setLoadedAnimeIds((prev) => new Set(prev).add(animeId));
