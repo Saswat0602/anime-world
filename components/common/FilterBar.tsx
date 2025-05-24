@@ -24,7 +24,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
   const toggleFiltersVisible = () => setMobileFiltersVisible((prev) => !prev);
 
-  const handleSearchChange = useCallback((value: string) => setSearchQuery(value), []);
+  const handleSearchChange = (value: string) => setSearchQuery(value)
   const handleGenreChange = useCallback((value: string | string[]) => {
     setSelectedGenre(Array.isArray(value) ? value : [value]);
   }, []);
