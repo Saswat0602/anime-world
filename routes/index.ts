@@ -2,6 +2,7 @@
 export const ROUTES = {
     HOME: "/Home",
     TEST: "/test",
+    My_WATCHLIST: "/watchlist",
 
     ANIME: {
         ROOT: "/anime",

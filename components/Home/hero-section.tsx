@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import { Search, Play, Star, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { ROUTES } from "@/routes";
+import Image from "next/image";
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -9,7 +12,7 @@ interface HeroSectionProps {
 
 const topSearches = [
   "One Piece",
-  "The Apothecary Diaries", 
+  "The Apothecary Diaries",
   "Wind Breaker Season 2",
   "Fire Force Season 3",
   "Attack on Titan",
@@ -35,7 +38,7 @@ export function HeroSection({ onSearch }: HeroSectionProps) {
       {/* Hero Image */}
       <div className="absolute right-0 top-0 h-full w-1/2 z-0">
         <div className="relative w-full h-full">
-          <img
+          <Image
             src="/heroImage.webp"
             alt="Anime characters"
             className="w-full h-full object-cover object-center"
@@ -99,17 +102,22 @@ export function HeroSection({ onSearch }: HeroSectionProps) {
         </div>
 
         {/* CTA buttons */}
-        <div className="flex flex-wrap gap-4 mb-12">
+        <Link
+          href={ROUTES.HOME}
+
+          className="flex flex-wrap gap-4 mb-12">
           <button className="flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white font-medium py-3 px-6 rounded-2xl transition-all duration-200 hover:scale-105">
             <Play size={18} />
             Explore Now
           </button>
-          
-          <button className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-6 rounded-2xl transition-all duration-200">
+
+          <Link
+            href={ROUTES.My_WATCHLIST}
+            className="flex items-center gap-2 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-6 rounded-2xl transition-all duration-200">
             <Star size={18} />
             My Watchlist
-          </button>
-        </div>
+          </Link>
+        </Link>
 
         {/* Stats */}
         <div className="flex flex-wrap gap-8 text-gray-600 dark:text-gray-400">
