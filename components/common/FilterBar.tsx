@@ -11,9 +11,10 @@ import {
 } from '../FilterComponents';
 import { FilterBarProps, FilterState } from '@/types/filterTypes';
 import { List, Tag } from 'lucide-react';
+import { useGlobal } from '@/context/GlobalContext';
 
 export function FilterBar({ title, onFilterChange }: FilterBarProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const { searchQuery, setSearchQuery } = useGlobal();
   const [selectedGenre, setSelectedGenre] = useState<string[]>(['Any']);
   const [selectedYear, setSelectedYear] = useState('Any');
   const [selectedSeason, setSelectedSeason] = useState('Any');

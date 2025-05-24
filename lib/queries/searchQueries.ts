@@ -1,60 +1,62 @@
 // GraphQL query for searching anime
 export const SEARCH_ANIME_QUERY = `
-  query ($page: Int, $perPage: Int, $search: String) {
-    Page(page: $page, perPage: $perPage) {
+    query SearchAnime(
+    $page: Int = 1,
+    $search: String,
+    $type: MediaType = ANIME,
+    $isAdult: Boolean = false,
+    $sort: [MediaSort] = [SEARCH_MATCH]
+  ) {
+    Page(page: $page, perPage: 20) {
       pageInfo {
         total
+        perPage
         currentPage
         lastPage
         hasNextPage
-        perPage
       }
-      media(type: ANIME, search: $search) {
+      media(
+        search: $search,
+        type: $type,
+        isAdult: $isAdult,
+        sort: $sort
+      ) {
         id
         title {
-          romaji
-          english
-          native
           userPreferred
         }
-        description
-        format
-        status
-        episodes
-        duration
-        season
-        seasonYear
-
         coverImage {
           extraLarge
           large
-          medium
           color
         }
-        
+        startDate {
+          year
+          month
+          day
+        }
+        endDate {
+          year
+          month
+          day
+        }
+        bannerImage
+        season
+        seasonYear
+        description
+        type
+        format
+        status(version: 2)
+        episodes
+        duration
         genres
-        
         averageScore
         popularity
-        favourites
-        isAdult
-        source
-
-        studios { 
-          edges { 
-            isMain 
-            node { 
-              id 
-              name 
-            } 
-          } 
-        }
-        nextAiringEpisode {
-          airingAt
-          timeUntilAiring
-          episode
-        }           
       }
     }
   }
-`; 
+
+`;
+
+
+

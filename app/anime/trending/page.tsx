@@ -3,6 +3,7 @@
 import { useTrendingAnimeQuery } from '@/redux/api/animeApi';
 import { usePaginatedAnime } from '@/hooks/usePaginatedAnime';
 import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
+import { useGlobal } from '@/context/GlobalContext';
 
 export default function TrendingPage() {
   const {
@@ -15,9 +16,10 @@ export default function TrendingPage() {
     handleAnimeLoaded,
   } = usePaginatedAnime({
     useQueryHook: useTrendingAnimeQuery,
-    baseQueryParams: {}, 
+    baseQueryParams: {},
   });
-
+  const { searchQuery } = useGlobal();
+  console.log(searchQuery, "--------")
   const pendingItemsCount = 12;
 
   return (
@@ -29,7 +31,7 @@ export default function TrendingPage() {
       pendingItemsCount={pendingItemsCount}
       loadMoreRef={loadMoreRef}
       hasMore={hasMore}
-      isLoading={isLoading} 
+      isLoading={isLoading}
       isFetching={isFetching}
     />
   );
