@@ -48,6 +48,8 @@ const WatchListCard: React.FC<WatchListCardProps> = ({ anime, type = 'watching' 
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <Image 
+          width={300} 
+          height={400}
           src={anime.image} 
           alt={anime.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

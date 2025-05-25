@@ -1,5 +1,3 @@
-import { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -21,6 +19,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'img1.ak.crunchyroll.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com', 
         pathname: '**',
       },
     ],

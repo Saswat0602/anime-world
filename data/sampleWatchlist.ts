@@ -10,7 +10,7 @@ export const sampleAnime = {
       watchedEpisodes: 8,
       rating: 68,
       genres: ["action", "adventure"],
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&h=400&fit=crop",
       description: "Beryl Gardinant, a self-proclaimed humble old man, is a sword instructor at his dojo in a rural, backwater village..."
     },
     {
@@ -23,7 +23,7 @@ export const sampleAnime = {
       watchedEpisodes: 19,
       rating: 87,
       genres: ["drama", "mystery"],
-      image: "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=300&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&h=400&fit=crop",
       description: "The second season of Kusuriya no Hitorigoto. Maomao and Jinshi face palace intrigue..."
     },
     {
@@ -49,7 +49,7 @@ export const sampleAnime = {
       totalEpisodes: 12,
       rating: 78,
       genres: ["action", "drama"],
-      image: "https://images.unsplash.com/photo-1578632767196-d6b1d2b3b7d4?w=300&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&h=400&fit=crop",
       description: "The third season of Enen no Shouboutai. Shinra and the team are about to uncover..."
     },
     {
@@ -60,7 +60,7 @@ export const sampleAnime = {
       totalEpisodes: 11,
       rating: 76,
       genres: ["mystery"],
-      image: "https://images.unsplash.com/photo-1607603750916-9c21bb64a531?w=300&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&h=400&fit=crop",
       description: "The second season of Shoushimin Series. The second season will focus on two new cases..."
     }
   ],
@@ -73,7 +73,7 @@ export const sampleAnime = {
       totalEpisodes: 13,
       rating: 73,
       genres: ["drama", "mystery"],
-      image: "https://images.unsplash.com/photo-1578632767196-dd2b2e6b2d5a?w=300&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&h=400&fit=crop",
       description: "Welcome to Kowloon Walled City: a dystopian townscape where the people are brimming..."
     }
   ]
