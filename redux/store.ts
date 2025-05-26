@@ -1,14 +1,13 @@
-import { searchApi } from './api/searchApi';
 import { configureStore } from '@reduxjs/toolkit';
 import searchReducer from './features/searchSlice';
-import { animeApi, detailsApi, genresApi, top100AnimeApi, upComingAnimeApi } from './api';
+import { animeApi, detailsApi, genresApi, searchAnimeApi, top100AnimeApi, upComingAnimeApi } from './api';
 
 export const store = configureStore({
   reducer: {
     search: searchReducer,
     [animeApi.reducerPath]: animeApi.reducer,
     [detailsApi.reducerPath]: detailsApi.reducer,
-    [searchApi.reducerPath]: searchApi.reducer,
+    [searchAnimeApi.reducerPath]: searchAnimeApi.reducer,
     [genresApi.reducerPath]: genresApi.reducer,
     [upComingAnimeApi.reducerPath]: upComingAnimeApi.reducer, 
     [top100AnimeApi.reducerPath]: top100AnimeApi.reducer,
@@ -17,7 +16,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat(
       animeApi.middleware,
       detailsApi.middleware,
-      searchApi.middleware,
+      searchAnimeApi.middleware,
       genresApi.middleware,
       upComingAnimeApi.middleware,
       top100AnimeApi.middleware

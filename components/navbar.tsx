@@ -63,10 +63,6 @@ export function Navbar() {
                 )}
               </Link>
             ))}
-            <Link
-              href={ROUTES.ANIME.FILTTER}>
-              FILTER SCREEN
-            </Link>
           </div>
 
           {/* Theme + Mobile Menu Toggle */}

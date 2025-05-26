@@ -1,19 +1,20 @@
+// redux/api/searchAnimeApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { AnimeResponse, AniListAnimeResponse } from '@/types/types';
+import { AniListAnimeResponse, AnimeResponse } from '@/types/types';
+import { convertToAnime, convertPagination } from '@/utils/apiHelpers';
 import { SEARCH_ANIME_QUERY } from '@/lib/queries/searchQueries';
-import { convertPagination, convertToAnime } from '@/utils/apiHelpers';
 
-export const searchApi = createApi({
-  reducerPath: 'searchApi',
+export const searchAnimeApi = createApi({
+  reducerPath: 'searchAnimeApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/api/anilist' }),
   endpoints: (builder) => ({
-    searchAnime: builder.query<AnimeResponse | null, { query: string; page?: number }>({
-      query: ({ query, page = 1 }) => ({
+    searchAnime: builder.query<AnimeResponse | null, { page: number; search: string }>({
+      query: ({ page, search }) => ({
         url: '',
         method: 'POST',
         body: {
           query: SEARCH_ANIME_QUERY,
-          variables: { search: query, page, perPage: 18 }
+          variables: { page, perPage: 24, search },
         },
         headers: {
           'Content-Type': 'application/json',
@@ -22,7 +23,7 @@ export const searchApi = createApi({
       }),
       transformResponse: (response: AniListAnimeResponse) => {
         const animeList = response.data?.Page?.media
-          .filter(anime => !anime.genres?.includes('Hentai'))
+          .filter((anime) => !anime.genres?.includes('Hentai'))
           .map(convertToAnime) ?? [];
         const pagination = convertPagination(response.data?.Page?.pageInfo);
         return animeList.length ? { data: animeList, pagination } : null;
@@ -31,4 +32,4 @@ export const searchApi = createApi({
   }),
 });
 
-export const { useSearchAnimeQuery } = searchApi;
+export const { useSearchAnimeQuery } = searchAnimeApi;

@@ -1,52 +1,37 @@
-// 'use client';
+// app/anime/filter/page.tsx
+'use client';
 
-// import { useTrendingAnimeQuery } from '@/redux/api/animeApi';
-// import { usePaginatedAnime } from '@/hooks/usePaginatedAnime';
-// import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
-// import { useGlobal } from '@/context/GlobalContext';
+import { useSearchParams } from 'next/navigation';
+import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
+import { useSearchAnime } from '@/hooks/useSearchAnime';
 
-// export default function TrendingPage() {
-//   const {
-//     allAnime,
-//     loadedAnimeIds,
-//     hasMore,
-//     loadMoreRef,
-//     isLoading,
-//     isFetching,
-//     handleAnimeLoaded,
-//   } = usePaginatedAnime({
-//     useQueryHook: useTrendingAnimeQuery,
-//     baseQueryParams: {},
-//   });
-//   const { searchQuery } = useGlobal();
-//   console.log(searchQuery, "--------")
-//   const pendingItemsCount = 12;
+export default function FilterPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search') ?? '';
 
-//   return (
-//     <AnimeListLayout
-//       title="Trending Anime"
-//       allAnime={allAnime}
-//       loadedAnimeIds={loadedAnimeIds}
-//       handleAnimeLoaded={handleAnimeLoaded}
-//       pendingItemsCount={pendingItemsCount}
-//       loadMoreRef={loadMoreRef}
-//       hasMore={hasMore}
-//       isLoading={isLoading}
-//       isFetching={isFetching}
-//     />
-//   );
-// }
+  const {
+    allAnime,
+    loadedAnimeIds,
+    hasMore,
+    loadMoreRef,
+    isLoading,
+    isFetching,
+    handleAnimeLoaded,
+  } = useSearchAnime(search);
 
+  const pendingItemsCount = isFetching || isLoading ? 6 : 0;
 
-import React from 'react'
-
-const filterPage = () => {
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-red-600'>
-      TestFilter
-      
-    </div>
-  )
+    <AnimeListLayout
+      title={`Search results for "${search}"`}
+      allAnime={allAnime}
+      loadedAnimeIds={loadedAnimeIds}
+      handleAnimeLoaded={handleAnimeLoaded}
+      pendingItemsCount={pendingItemsCount}
+      loadMoreRef={loadMoreRef}
+      hasMore={hasMore}
+      isLoading={isLoading}
+      isFetching={isFetching}
+    />
+  );
 }
-
-export default filterPage
