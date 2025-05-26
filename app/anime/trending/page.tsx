@@ -3,7 +3,8 @@
 import { useTrendingAnimeQuery } from '@/redux/api/animeApi';
 import { usePaginatedAnime } from '@/hooks/usePaginatedAnime';
 import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
-import { useGlobal } from '@/context/GlobalContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export default function TrendingPage() {
   const {
@@ -18,7 +19,7 @@ export default function TrendingPage() {
     useQueryHook: useTrendingAnimeQuery,
     baseQueryParams: {},
   });
-  const { searchQuery } = useGlobal();
+  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
   console.log(searchQuery, "--------")
   const pendingItemsCount = 12;
 

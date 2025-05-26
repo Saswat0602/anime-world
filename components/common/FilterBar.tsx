@@ -11,10 +11,13 @@ import {
 } from '../FilterComponents';
 import { FilterBarProps, FilterState } from '@/types/filterTypes';
 import { List, Tag } from 'lucide-react';
-import { useGlobal } from '@/context/GlobalContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setSearchQuery } from '@/redux/features/searchSlice';
 
 export function FilterBar({ title, onFilterChange }: FilterBarProps) {
-  const { searchQuery, setSearchQuery } = useGlobal();
+  const dispatch = useDispatch();
+  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
   const [selectedGenre, setSelectedGenre] = useState<string[]>(['Any']);
   const [selectedYear, setSelectedYear] = useState('Any');
   const [selectedSeason, setSelectedSeason] = useState('Any');
@@ -24,7 +27,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
   const toggleFiltersVisible = () => setMobileFiltersVisible((prev) => !prev);
 
-  const handleSearchChange = (value: string) => setSearchQuery(value)
+  const handleSearchChange = (value: string) => dispatch(setSearchQuery(value));
   const handleGenreChange = useCallback((value: string | string[]) => {
     setSelectedGenre(Array.isArray(value) ? value : [value]);
   }, []);

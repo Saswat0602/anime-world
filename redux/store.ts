@@ -1,10 +1,11 @@
 import { searchApi } from './api/searchApi';
 import { configureStore } from '@reduxjs/toolkit';
-
+import searchReducer from './features/searchSlice';
 import { animeApi, detailsApi, genresApi, top100AnimeApi, upComingAnimeApi } from './api';
 
 export const store = configureStore({
   reducer: {
+    search: searchReducer,
     [animeApi.reducerPath]: animeApi.reducer,
     [detailsApi.reducerPath]: detailsApi.reducer,
     [searchApi.reducerPath]: searchApi.reducer,

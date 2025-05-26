@@ -1,8 +1,10 @@
 'use client'
 
-import { useGlobal } from "@/context/GlobalContext";
 import { Search } from "lucide-react";
 import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setSearchQuery } from "@/redux/features/searchSlice";
 
 interface SearchBarProps {
   placeholder?: string;
@@ -11,13 +13,14 @@ interface SearchBarProps {
 export function SearchBar({
   placeholder = "Search anime..."
 }: SearchBarProps) {
-  const { searchQuery, setSearchQuery } = useGlobal();
+  const dispatch = useDispatch();
+  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
+      dispatch(setSearchQuery(e.target.value));
     },
-    [setSearchQuery]
+    [dispatch]
   );
 
   const triggerSearch = useCallback(() => {
