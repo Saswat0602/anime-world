@@ -55,26 +55,22 @@ export function HeroSection() {
         </div>
 
         {/* Search bar */}
-        <div className="mb-6">
-          <div className="relative bg-white dark:bg-slate-800 border rounded-2xl p-4 hover:shadow-lg transition-all">
-            <div className="flex items-center gap-4">
-              <Search className="text-gray-400 dark:text-gray-500" size={18} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
-                placeholder="Search anime, manga..."
-                className="flex-1 bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 outline-none text-base"
-              />
-              <button
-                onClick={handleSearchSubmit}
-                className="bg-gradient-to-r from-violet-500 to-purple-900 text-white px-6 py-2 rounded-xl font-medium hover:scale-105 transition-all"
-              >
-                Search
-              </button>
-            </div>
-          </div>
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border rounded-2xl p-3 hover:shadow-lg transition-all">
+          <Search className="text-gray-400 dark:text-gray-500 ml-2" size={18} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
+            placeholder="Search anime, manga..."
+            className="w-[90%] bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 outline-none px-2 py-2 text-base"
+          />
+          <button
+            onClick={handleSearchSubmit}
+            className="bg-gradient-to-r from-violet-500 to-purple-900 text-white px-4 py-2 rounded-xl font-medium hover:scale-105 transition-all"
+          >
+            Search
+          </button>
         </div>
 
         {/* Trending */}
