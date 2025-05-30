@@ -89,7 +89,6 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
     }),
     [searchQuery, selectedGenre, selectedYear, selectedSeason, selectedFormat, selectedStatus]
   );
-console.log(searchQuery,"searchQuery inisde the fiulyer")
   useMemo(() => {
     onFilterChange?.(filterState);
   }, [filterState, onFilterChange]);
@@ -107,7 +106,6 @@ console.log(searchQuery,"searchQuery inisde the fiulyer")
     if (selectedStatus !== 'Any') tags.push({ type: 'status', value: selectedStatus });
     return tags;
   }, [selectedGenre, selectedYear, selectedSeason, selectedFormat, selectedStatus]);
-  console.log(activeFilterTags,"=activeFilterTagss")
 
   return (
     <div className="mb-6">

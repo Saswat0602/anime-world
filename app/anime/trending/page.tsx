@@ -20,7 +20,6 @@ export default function TrendingPage() {
     baseQueryParams: {},
   });
   const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
-  console.log(searchQuery, "--------")
   const pendingItemsCount = 12;
 
   return (

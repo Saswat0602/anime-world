@@ -1,16 +1,41 @@
-import { FilterComponentProps, SearchInputProps } from "@/types/filterTypes";
+'use client'
+
+import { FilterComponentProps } from "@/types/filterTypes";
 import { ChangeEvent, useCallback } from "react";
 import FilterDropdown from "./ui/FilterDropdown";
 import { Search } from 'lucide-react';
+import { useDebouncedCallback } from "use-debounce";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+interface SearchInputProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
+    const router = useRouter();
+
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             onChange(e.target.value);
         },
         [onChange]
     );
+
+    const debouncedNavigateToFilter = useDebouncedCallback((term: string) => {
+        const trimmedTerm = term.trim();
+        if (trimmedTerm) {
+            router.push(`/anime/filter?search=${encodeURIComponent(trimmedTerm)}`);
+        } else {
+            router.back();
+        }
+    }, 300);
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const term = e.target.value;
+        handleChange(e);
+        debouncedNavigateToFilter(term);
+    };
 
     return (
         <div className="relative">
@@ -20,11 +45,11 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
             <input
                 type="search"
                 className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-300 text-gray-900 placeholder-gray-400 
-                   focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 rounded-md
-                   dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
+          focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 rounded-md
+          dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-500"
                 placeholder="Search anime..."
                 value={value}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 aria-label="Search anime"
             />
         </div>

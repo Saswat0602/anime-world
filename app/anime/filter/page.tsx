@@ -1,9 +1,8 @@
-// app/anime/filter/page.tsx
 'use client';
 
 import { useSearchParams } from 'next/navigation';
 import { AnimeListLayout } from '@/components/Layouts/AnimeListLayout';
-import { useSearchAnime } from '@/hooks/useSearchAnime';
+import { useSearchPaginatedAnime } from '@/hooks/useSearchAnime';
 
 export default function FilterPage() {
   const searchParams = useSearchParams();
@@ -17,7 +16,7 @@ export default function FilterPage() {
     isLoading,
     isFetching,
     handleAnimeLoaded,
-  } = useSearchAnime(search);
+  } = useSearchPaginatedAnime({ search });
 
   const pendingItemsCount = isFetching || isLoading ? 6 : 0;
 

@@ -8,9 +8,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ROUTES } from "@/routes";
 import { Menu, X } from "lucide-react";
+import { setSearchQuery } from '@/redux/features/searchSlice';
+import { useDispatch } from "react-redux";
+
 
 export function Navbar() {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
@@ -48,6 +53,9 @@ export function Navbar() {
               <Link
                 key={link.path}
                 href={link.path}
+                onClick={() => {
+                  dispatch(setSearchQuery(""));
+                }}
                 className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${pathname === link.path
                   ? "text-sky-700 dark:text-sky-300"
                   : "text-slate-700 hover:scale-105 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
