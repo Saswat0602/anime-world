@@ -1,17 +1,16 @@
-'use client';
-
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, ChevronRight, Star, TrendingUp, Users } from 'lucide-react';
-import { Recommendation } from '@/types/animeDetails';
+import { RecommendationNode } from '@/types/animeDetails';
 
 interface RecommendationsSectionProps {
-  recommendations: Recommendation[];
+  recommendations: RecommendationNode[];
 }
 
 const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recommendations }) => {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  console.log(recommendations,"recommendations")
 
   if (!recommendations || recommendations.length === 0) {
     return null;
@@ -94,17 +93,7 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recomme
                     </div>
                   </div>
 
-                  {/* Rating Badge */}
-                  {node.mediaRecommendation.averageScore && (
-                    <div className="absolute top-2 right-2 flex items-center space-x-1 px-2 py-1 bg-black/50 backdrop-blur-sm rounded-full">
-                      <Star size={10} className="text-yellow-400 fill-current" />
-                      <span className="text-xs text-white font-medium">
-                        {node.mediaRecommendation.averageScore}%
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Recommendation Rating */}
+                  
                   {node.rating && (
                     <div className="absolute bottom-2 left-2 flex items-center space-x-1 px-2 py-1 bg-pink-500/80 backdrop-blur-sm rounded-full">
                       <Users size={10} className="text-white" />
@@ -113,8 +102,6 @@ const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({ recomme
                       </span>
                     </div>
                   )}
-
-                  {/* Hover Content */}
                   <div className="absolute inset-x-0 bottom-0 p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <h4 className="font-bold text-white text-sm mb-2 line-clamp-2">
                       {node.mediaRecommendation.title.userPreferred}

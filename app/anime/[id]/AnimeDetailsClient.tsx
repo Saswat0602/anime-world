@@ -37,6 +37,7 @@ const AnimeDetailsClient = ({ id }: Props) => {
           <div className="lg:col-span-3">
             <div id="overview" className="mb-16">
               <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl overflow-hidden">
+                {/* Header */}
                 <div className="relative p-6 pb-4 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-500/20 to-purple-500/20 rounded-full blur-2xl"></div>
                   <h2 className="relative text-2xl lg:text-3xl font-black bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">

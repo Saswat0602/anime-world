@@ -215,6 +215,7 @@ export interface RecommendationConnection {
 }
 
 export interface RecommendationNode {
+    rating: number;
     mediaRecommendation: {
         id: number;
         title: {
@@ -224,6 +225,10 @@ export interface RecommendationNode {
             large: string;
         };
         type: string;
+        genres: string[];
+        averageScore: number;
+
+
     };
 }
 

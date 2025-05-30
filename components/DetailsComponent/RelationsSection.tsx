@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { GitBranch, ChevronRight, Star, Play } from 'lucide-react';
+import { GitBranch, ChevronRight} from 'lucide-react';
 import { MediaRelationEdge } from '@/types/animeDetails';
 
 interface RelationsSectionProps {
@@ -43,20 +43,7 @@ const RelationsSection: React.FC<RelationsSectionProps> = ({ relations }) => {
     }
   };
 
-  const getFormatIcon = (format: string) => {
-    switch (format) {
-      case 'TV':
-      case 'TV_SHORT':
-        return <Play size={12} className="text-blue-500" />;
-      case 'MOVIE':
-        return <Star size={12} className="text-yellow-500" />;
-      case 'MANGA':
-      case 'NOVEL':
-        return <GitBranch size={12} className="text-green-500" />;
-      default:
-        return <Play size={12} className="text-gray-500" />;
-    }
-  };
+
 
   return (
     <section id="relations" className="mb-16">
