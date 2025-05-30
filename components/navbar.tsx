@@ -33,6 +33,9 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
+            onClick={() => {
+              dispatch(setSearchQuery(""));
+            }}
             className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
           >
             <Image

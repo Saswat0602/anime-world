@@ -23,7 +23,7 @@ export const SEARCH_ANIME_QUERY = `
       ) {
         id
         title {
-          userPreferred
+          english
         }
         coverImage {
           extraLarge
