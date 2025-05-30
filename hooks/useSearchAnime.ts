@@ -24,6 +24,7 @@ export function useSearchPaginatedAnime({
   const [hasMore, setHasMore] = useState(true);
   const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
   const [isSearching, setIsSearching] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -31,16 +32,33 @@ export function useSearchPaginatedAnime({
   // Run the query with current page and search
   const { data, isLoading, isFetching, error } = useSearchAnimeQuery(
     { page, search },
-    { skip: !search || isSearching }
+    { skip: !search }
   );
 
   // Reset when search changes
   useEffect(() => {
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Reset states
     setPage(initialPage);
     setAllAnime([]);
     setLoadedAnimeIds(new Set());
     setHasMore(true);
     setIsSearching(true);
+
+    // Set a small timeout to prevent rapid API calls
+    searchTimeoutRef.current = setTimeout(() => {
+      setIsSearching(false);
+    }, 300);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
   }, [search, initialPage]);
 
   // Append new data
