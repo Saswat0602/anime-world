@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Star, Calendar, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, Calendar, Award, Clock, Play, Users, Heart, ExternalLink, TrendingUp, Zap, Trophy, Eye } from 'lucide-react';
 import type { Media, FuzzyDate, Ranking } from '@/types/animeDetails';
 
 interface AnimeOverviewProps {
@@ -9,111 +9,205 @@ interface AnimeOverviewProps {
 }
 
 const AnimeOverview: React.FC<AnimeOverviewProps> = ({ anime }) => {
+  const [timeUntilNext, setTimeUntilNext] = useState<string>('');
+
   const formatDate = (date: FuzzyDate) => {
     if (!date.year) return 'TBA';
-    return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = date.month ? months[date.month - 1] : '';
+    const day = date.day ? String(date.day).padStart(2, '0') : '';
+    return `${month} ${day}, ${date.year}`.replace(/,\s*$/, '');
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      FINISHED: 'bg-green-600',
-      RELEASING: 'bg-blue-600',
-      NOT_YET_RELEASED: 'bg-yellow-600',
-      CANCELLED: 'bg-red-600',
-      HIATUS: 'bg-purple-600',
+  const getStatusConfig = (status: string) => {
+    const configs: Record<string, { color: string; bg: string; icon: React.ReactNode; pulse?: boolean }> = {
+      FINISHED: { color: 'text-emerald-400', bg: 'bg-emerald-500/20 border-emerald-500/30', icon: <Trophy size={14} /> },
+      RELEASING: { color: 'text-blue-400', bg: 'bg-blue-500/20 border-blue-500/30', icon: <Zap size={14} />, pulse: true },
+      NOT_YET_RELEASED: { color: 'text-amber-400', bg: 'bg-amber-500/20 border-amber-500/30', icon: <Clock size={14} /> },
+      CANCELLED: { color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30', icon: <Play size={14} /> },
+      HIATUS: { color: 'text-purple-400', bg: 'bg-purple-500/20 border-purple-500/30', icon: <Clock size={14} /> },
     };
-    return colors[status] || 'bg-gray-600';
+    return configs[status] || { color: 'text-gray-400', bg: 'bg-gray-500/20 border-gray-500/30', icon: <Clock size={14} /> };
   };
 
   const nextEpisode = anime.nextAiringEpisode;
-  const daysUntilNext = nextEpisode ? Math.floor(nextEpisode.timeUntilAiring / 86400) : null;
-  const hoursUntilNext = nextEpisode ? Math.floor((nextEpisode.timeUntilAiring % 86400) / 3600) : null;
+
+  // Update countdown timer
+  useEffect(() => {
+    if (!nextEpisode) return;
+
+    const updateCountdown = () => {
+      const now = Math.floor(Date.now() / 1000);
+      const remaining = nextEpisode.timeUntilAiring;
+
+      if (remaining <= 0) {
+        setTimeUntilNext('Available now!');
+        return;
+      }
+
+      const days = Math.floor(remaining / 86400);
+      const hours = Math.floor((remaining % 86400) / 3600);
+      const minutes = Math.floor((remaining % 3600) / 60);
+
+      if (days > 0) {
+        setTimeUntilNext(`${days}d ${hours}h ${minutes}m`);
+      } else if (hours > 0) {
+        setTimeUntilNext(`${hours}h ${minutes}m`);
+      } else {
+        setTimeUntilNext(`${minutes}m`);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, [nextEpisode]);
+
+  const statusConfig = getStatusConfig(anime.status);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-      <div className="p-5 space-y-4">
-        <div className="flex items-center justify-center space-x-2">
-          <Star className="w-5 h-5 text-yellow-400" />
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">
-            {anime.averageScore ? `${anime.averageScore / 10} / 10` : 'N/A'}
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">({anime.popularity.toLocaleString()} users)</span>
-          </span>
-        </div>
+    <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-gray-700/50 shadow-2xl overflow-hidden">
+      {/* Header Section with Score */}
+      <div className="relative p-6 pb-4 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/20 to-purple-500/20 rounded-full blur-2xl"></div>
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Status</h3>
-          <div className="flex items-center text-gray-900 dark:text-white">
-            <span className={`w-3 h-3 rounded-full mr-2 ${getStatusColor(anime.status)}`}></span>
-            <span>{anime.status.replace(/_/g, ' ')}</span>
+        <div className="relative flex items-center justify-center mb-4">
+          <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/30 dark:border-gray-700/50">
+            <div className="flex items-center space-x-2">
+              <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                {anime.averageScore ? `${(anime.averageScore / 10).toFixed(1)}` : 'N/A'}
+              </span>
+            </div>
+            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+            <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
+              <Users size={14} />
+              <span>{anime.popularity?.toLocaleString() || '0'}</span>
+            </div>
           </div>
         </div>
 
+        {/* Status Badge */}
+        <div className="flex justify-center">
+          <div className={`flex items-center space-x-2 px-4 py-2 rounded-full border backdrop-blur-sm ${statusConfig.bg} ${statusConfig.pulse ? 'animate-pulse' : ''}`}>
+            <span className={statusConfig.color}>{statusConfig.icon}</span>
+            <span className={`text-sm font-medium ${statusConfig.color}`}>
+              {anime.status.replace(/_/g, ' ')}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Grid */}
+      <div className="p-6 space-y-6">
+
+        {/* Next Episode Countdown */}
         {nextEpisode && (
-          <div>
-            <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Next Episode</h3>
-            <p className="text-gray-900 dark:text-white">
-              EP {nextEpisode.episode} airing in {daysUntilNext}d {hoursUntilNext}h
-            </p>
+          <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl p-4 border border-blue-500/30">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-blue-400 mb-1">Next Episode</h3>
+                <p className="text-lg font-bold text-gray-900 dark:text-white">
+                  Episode {nextEpisode.episode}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Airing in</p>
+                <p className="text-lg font-bold text-blue-400">{timeUntilNext}</p>
+              </div>
+            </div>
           </div>
         )}
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Format</h3>
-          <p className="text-gray-900 dark:text-white">{anime.format.replace(/_/g, ' ')}</p>
-        </div>
+        {/* Info Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Episodes</h3>
-          <p className="text-gray-900 dark:text-white">{anime.episodes || '?'} × {anime.duration || '?'} min</p>
-        </div>
+          {/* Format & Episodes */}
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50">
+            <div className="flex items-center space-x-2 mb-2">
+              <Play size={16} className="text-indigo-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Format</h3>
+            </div>
+            <p className="text-gray-900 dark:text-white font-medium">
+              {anime.format?.replace(/_/g, ' ') || 'N/A'}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {anime.episodes || '?'} episodes × {anime.duration || '?'} min
+            </p>
+          </div>
 
-        <div className="flex items-center space-x-1">
-          <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          <h3 className="font-medium text-gray-600 dark:text-gray-400">Aired</h3>
-        </div>
-        <p className="pl-5 text-gray-900 dark:text-white">
-          {formatDate(anime.startDate)} to {anime.status === 'FINISHED' ? formatDate(anime.endDate) : 'Present'}
-        </p>
+          {/* Season */}
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50">
+            <div className="flex items-center space-x-2 mb-2">
+              <Calendar size={16} className="text-green-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Season</h3>
+            </div>
+            <p className="text-gray-900 dark:text-white font-medium">
+              {anime.season ? `${anime.season.charAt(0).toUpperCase()}${anime.season.slice(1).toLowerCase()} ${anime.seasonYear}` : 'N/A'}
+            </p>
+          </div>
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Season</h3>
-          <p className="text-gray-900 dark:text-white">
-            {anime.season ? `${anime.season.charAt(0).toUpperCase()}${anime.season.slice(1).toLowerCase()} ${anime.seasonYear}` : 'N/A'}
-          </p>
-        </div>
+          {/* Aired */}
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50">
+            <div className="flex items-center space-x-2 mb-2">
+              <Calendar size={16} className="text-purple-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Aired</h3>
+            </div>
+            <p className="text-gray-900 dark:text-white font-medium">
+              {formatDate(anime.startDate)}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              to {anime.status === 'FINISHED' ? formatDate(anime.endDate) : 'Present'}
+            </p>
+          </div>
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Studios</h3>
-          <div className="flex flex-wrap gap-1">
-            {anime.studios.edges
-              .filter((edge) => edge.isMain)
-              .map((edge) => (
-                <span
-                  key={edge.node.id}
-                  className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
-                >
-                  {edge.node.name}
-                </span>
-              ))}
+          {/* Source */}
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50">
+            <div className="flex items-center space-x-2 mb-2">
+              <Eye size={16} className="text-orange-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Source</h3>
+            </div>
+            <p className="text-gray-900 dark:text-white font-medium">
+              {anime.source?.replace(/_/g, ' ') || 'Original'}
+            </p>
           </div>
         </div>
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Source</h3>
-          <p className="text-gray-900 dark:text-white">
-            {anime.source?.replace(/_/g, ' ') || 'Original'}
-          </p>
-        </div>
+        {/* Studios */}
+        {anime.studios?.edges?.length > 0 && (
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50">
+            <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">Studios</h3>
+            <div className="flex flex-wrap gap-2">
+              {anime.studios.edges
+                .filter((edge) => edge.isMain)
+                .map((edge) => (
+                  <span
+                    key={edge.node.id}
+                    className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm rounded-full font-medium hover:scale-105 transition-transform cursor-pointer"
+                  >
+                    {edge.node.name}
+                  </span>
+                ))}
+            </div>
+          </div>
+        )}
 
-        {anime.rankings.length > 0 && (
-          <div>
-            <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Rankings</h3>
-            <div className="space-y-1">
-              {anime.rankings.slice(0, 2).map((ranking: Ranking, index: number) => (
-                <div key={index} className="flex items-center text-gray-900 dark:text-white">
-                  <Award className="w-4 h-4 text-yellow-500 mr-1" />
-                  <span>
-                    #{ranking.rank} {ranking.context} {ranking.year ? `(${ranking.year})` : ''}
+        {/* Rankings */}
+        {anime.rankings?.length > 0 && (
+          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-2xl p-4 border border-yellow-500/30">
+            <div className="flex items-center space-x-2 mb-3">
+              <Trophy size={16} className="text-yellow-500" />
+              <h3 className="font-semibold text-yellow-600 dark:text-yellow-400">Rankings</h3>
+            </div>
+            <div className="space-y-2">
+              {anime.rankings.slice(0, 3).map((ranking: Ranking, index: number) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    {ranking.rank}
+                  </div>
+                  <span className="text-gray-900 dark:text-white font-medium">
+                    {ranking.context} {ranking.year ? `(${ranking.year})` : ''}
                   </span>
                 </div>
               ))}
@@ -121,26 +215,26 @@ const AnimeOverview: React.FC<AnimeOverviewProps> = ({ anime }) => {
           </div>
         )}
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Popularity</h3>
-          <p className="text-gray-900 dark:text-white">#{anime.popularity.toLocaleString()}</p>
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50 text-center">
+            <div className="flex items-center justify-center space-x-2 mb-1">
+              <TrendingUp size={16} className="text-blue-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Popularity</h3>
+            </div>
+            <p className="text-xl font-bold text-blue-500">#{anime.popularity?.toLocaleString() || '0'}</p>
+          </div>
+
+          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 dark:border-gray-700/50 text-center">
+            <div className="flex items-center justify-center space-x-2 mb-1">
+              <Heart size={16} className="text-pink-500" />
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300">Favorites</h3>
+            </div>
+            <p className="text-xl font-bold text-pink-500">{anime.favourites?.toLocaleString() || '0'}</p>
+          </div>
         </div>
 
-        <div>
-          <h3 className="font-medium text-gray-600 dark:text-gray-400 mb-1">Favorites</h3>
-          <p className="text-gray-900 dark:text-white">{anime.favourites.toLocaleString()}</p>
-        </div>
 
-        <div className="pt-2">
-          <a
-            href={anime.siteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition"
-          >
-            View on AniList
-          </a>
-        </div>
       </div>
     </div>
   );
