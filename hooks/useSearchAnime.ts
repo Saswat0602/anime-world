@@ -23,12 +23,16 @@ export function useSearchPaginatedAnime({
   const [allAnime, setAllAnime] = useState<Anime[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
+  const [isSearching, setIsSearching] = useState(false);
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Run the query with current page and search
-  const { data, isLoading, isFetching, error } = useSearchAnimeQuery({ page, search });
+  const { data, isLoading, isFetching, error } = useSearchAnimeQuery(
+    { page, search },
+    { skip: !search || isSearching }
+  );
 
   // Reset when search changes
   useEffect(() => {
@@ -36,11 +40,16 @@ export function useSearchPaginatedAnime({
     setAllAnime([]);
     setLoadedAnimeIds(new Set());
     setHasMore(true);
+    setIsSearching(true);
   }, [search, initialPage]);
 
   // Append new data
   useEffect(() => {
-    if (!data?.data) return;
+    if (!data?.data) {
+      setHasMore(false);
+      setIsSearching(false);
+      return;
+    }
 
     setAllAnime((prev) => {
       const newAnimeMap = new Map(prev.map((anime) => [anime.mal_id, anime]));
@@ -53,10 +62,18 @@ export function useSearchPaginatedAnime({
     });
 
     setHasMore(!!data.pagination?.has_next_page);
+    setIsSearching(false);
   }, [data]);
 
   // Intersection Observer for infinite scrolling
   useEffect(() => {
+    if (!hasMore || !search || isSearching) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
@@ -68,7 +85,8 @@ export function useSearchPaginatedAnime({
           !isLoading &&
           !isFetching &&
           hasMore &&
-          !error;
+          !error &&
+          !isSearching;
 
         if (shouldLoadMore) {
           setPage((prev) => prev + 1);
@@ -83,7 +101,7 @@ export function useSearchPaginatedAnime({
     return () => {
       observerRef.current?.disconnect();
     };
-  }, [isLoading, isFetching, hasMore, error]);
+  }, [isLoading, isFetching, hasMore, error, search, isSearching]);
 
   // Utility for tracking loaded images or items
   const handleAnimeLoaded = useCallback((animeId: number) => {
@@ -100,5 +118,6 @@ export function useSearchPaginatedAnime({
     isLoading,
     isFetching,
     handleAnimeLoaded,
+    isSearching,
   };
 }
