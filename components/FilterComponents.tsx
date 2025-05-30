@@ -27,7 +27,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
         if (trimmedTerm) {
             router.push(`/anime/filter?search=${encodeURIComponent(trimmedTerm)}`);
         } else {
-            router.back();
+            router.push(`/Home`);
         }
     }, 300);
 
