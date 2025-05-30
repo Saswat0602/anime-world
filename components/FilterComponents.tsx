@@ -5,7 +5,7 @@ import { ChangeEvent, useCallback } from "react";
 import FilterDropdown from "./ui/FilterDropdown";
 import { Search } from 'lucide-react';
 import { useDebouncedCallback } from "use-debounce";
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface SearchInputProps {
     value: string;
