@@ -228,7 +228,9 @@ export interface RecommendationNode {
 }
 
 export interface Recommendation {
+    rating: number;
     mediaRecommendation: {
+        averageScore: number;
         id: number;
         title: {
             userPreferred: string;
@@ -237,6 +239,7 @@ export interface Recommendation {
             large: string;
         };
         type: string;
+        genres: string[];
     };
 }
 

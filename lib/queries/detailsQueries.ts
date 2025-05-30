@@ -32,7 +32,6 @@ export const ANIME_DETAILS_QUERY = `
         medium
         color
       }
-      
       genres
       tags {
         name
@@ -42,7 +41,6 @@ export const ANIME_DETAILS_QUERY = `
         isMediaSpoiler
         userId
       }
-      
       averageScore
       meanScore
       popularity
@@ -78,7 +76,6 @@ export const ANIME_DETAILS_QUERY = `
             type
             format
             status
-            
             coverImage {
               large
             }
@@ -148,6 +145,7 @@ export const ANIME_DETAILS_QUERY = `
       }
       recommendations(perPage: 10, sort: RATING_DESC) {
         nodes {
+          rating
           mediaRecommendation {
             id
             title {
@@ -157,6 +155,8 @@ export const ANIME_DETAILS_QUERY = `
               large
             }
             type
+            averageScore
+            genres
           }
         }
       }
