@@ -6,6 +6,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/routes';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setSearchQuery } from '@/redux/features/searchSlice';
 
 const topSearches = [
   "One Piece", "The Apothecary Diaries", "Wind Breaker Season 2",
@@ -13,17 +16,20 @@ const topSearches = [
 ];
 
 export function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const dispatch = useDispatch();
+  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
   const router = useRouter();
 
   const handleSearchSubmit = () => {
-    if (searchQuery.trim()) {
-      router.push(`${ROUTES.ANIME.FILTTER}?search=${encodeURIComponent(searchQuery.trim())}`);
+    const trimmedQuery = searchQuery.trim();
+    dispatch(setSearchQuery(trimmedQuery));
+    if (trimmedQuery) {
+      router.push(`${ROUTES.ANIME.FILTTER}?search=${encodeURIComponent(trimmedQuery)}`);
     }
   };
 
   const handleTopSearchClick = (title: string) => {
-    setSearchQuery(title);
+    dispatch(setSearchQuery(title));
     router.push(`${ROUTES.ANIME.FILTTER}?search=${encodeURIComponent(title)}`);
   };
 
@@ -60,7 +66,7 @@ export function HeroSection() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
             onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
             placeholder="Search anime, manga..."
             className="w-[90%] bg-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 outline-none px-2 py-2 text-base"
