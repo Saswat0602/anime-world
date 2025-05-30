@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Star, Calendar, Award, Clock, Play, Users, Heart, ExternalLink, TrendingUp, Zap, Trophy, Eye } from 'lucide-react';
+import { Star, Calendar, Clock, Play, Users, Heart, TrendingUp, Zap, Trophy, Eye } from 'lucide-react';
 import type { Media, FuzzyDate, Ranking } from '@/types/animeDetails';
 
 interface AnimeOverviewProps {
@@ -37,9 +37,7 @@ const AnimeOverview: React.FC<AnimeOverviewProps> = ({ anime }) => {
     if (!nextEpisode) return;
 
     const updateCountdown = () => {
-      const now = Math.floor(Date.now() / 1000);
       const remaining = nextEpisode.timeUntilAiring;
-
       if (remaining <= 0) {
         setTimeUntilNext('Available now!');
         return;
