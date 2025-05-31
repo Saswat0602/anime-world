@@ -39,13 +39,14 @@ export function Navbar() {
   return (
     <>
       <motion.nav
-        className={`fixed w-full top-0 z-50 transition-all duration-500 ${isScrolled
+        className={`fixed w-full top-0 z-50 transition-all duration-500 border-b-2 border-gray-400 dark:border-gray-800 ${isScrolled
           ? 'bg-white/60 dark:bg-slate-950/60 backdrop-blur-md shadow-lg shadow-black/5'
-          : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md'
+          : 'bg-white/40 dark:bg-slate-950/40 backdrop-blur-md '
           }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
+
       >
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
