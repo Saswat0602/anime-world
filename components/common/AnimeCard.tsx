@@ -2,9 +2,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Anime } from "@/types/types";
-import CardHover from "./CardHover";
 import { motion } from "framer-motion";
 import { ROUTES } from '@/routes';
+import CardHover from './CardHover';
 
 interface AnimeCardProps {
   anime: Anime;
