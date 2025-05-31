@@ -1,11 +1,11 @@
 'use client';
 
 import { Anime } from '@/types/types';
-import { AnimeCard } from '@/components/Home/AnimeCard';
-import { AnimeCardSkeleton } from '@/components/Home/AnimeCardSkeleton';
 import { RefObject } from 'react';
 import { FilterBar } from '../common/FilterBar';
 import EmptyScreen from '../common/EmptyScreen';
+import { AnimeCard } from '../common/AnimeCard';
+import { AnimeCardSkeleton } from '../common/AnimeCardSkeleton';
 
 type AnimeListLayoutProps = {
   title: string;

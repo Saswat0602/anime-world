@@ -1,8 +1,8 @@
 'use client';
 
+import { AnimeCard } from '@/components/common/AnimeCard';
+import { AnimeCardSkeleton } from '@/components/common/AnimeCardSkeleton';
 import { useTrendingAnimeQuery, useSeasonalAnimeQuery } from '@/redux/api/animeApi';
-import { AnimeCard } from '@/components/Home/AnimeCard';
-import { AnimeCardSkeleton } from '@/components/Home/AnimeCardSkeleton';
 import { useEffect, useState } from 'react';
 
 const getCurrentSeason = () => {
