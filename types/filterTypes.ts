@@ -4,6 +4,7 @@ export type FilterDropdownProps = {
     value: string | string[];
     onChange: (value: string | string[]) => void;
     multiSelect?: boolean;
+    className?: string;
 };
 
 export type SearchInputProps = {
@@ -15,6 +16,8 @@ export type FilterComponentProps = {
     value: string | string[];
     onChange: (value: string | string[]) => void;
     multiSelect?: boolean;
+    className?: string;
+
 };
 
 

@@ -147,138 +147,202 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
     return tags;
   }, [filterState]);
 
-  return (
-    <div className="mb-6">
-      <h2 className="my-3 text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-500 via-blue-500 to-purple-500 text-transparent bg-clip-text text-center sm:text-left">
-        {title}
-      </h2>
-      <div className="mb-4">
-        <div className="flex items-end gap-2 mb-4 lg:hidden">
-          <div className="flex-1">
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Search
-            </div>
-            <SearchInput value={searchQuery} onChange={handleSearchChange} />
-          </div>
-          <button
-            onClick={toggleFiltersVisible}
-            className={`flex-shrink-0 p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
-                ? 'bg-blue-500 border-blue-600 text-white'
-                : 'bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-              }`}
-            aria-label="Toggle filters"
-            aria-expanded={mobileFiltersVisible}
-          >
-            <List className="w-5 h-5" />
-          </button>
+return (
+  <div className="mb-8">
+    {/* Title with refined gradient */}
+    <h2 className="mb-6 text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-700 via-blue-600 to-indigo-600 dark:from-slate-300 dark:via-blue-400 dark:to-indigo-400 text-transparent bg-clip-text text-center sm:text-left">
+      {title}
+    </h2>
+    
+    <div className="space-y-6">
+      {/* Mobile Search and Filter Toggle */}
+      <div className="flex items-end gap-3 lg:hidden">
+        <div className="flex-1">
+          <label className="block mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+            Search
+          </label>
+          <SearchInput 
+            value={searchQuery} 
+            onChange={handleSearchChange}
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
         </div>
-
-        {/* Desktop Filters */}
-        <div className="hidden lg:grid grid-cols-6 gap-4">
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Search
-            </div>
-            <SearchInput value={searchQuery} onChange={handleSearchChange} />
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Genres
-            </div>
-            <GenreFilter value={filterState.genre} onChange={handleGenreChange} multiSelect />
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Year
-            </div>
-            <YearFilter value={filterState.year} onChange={handleYearChange} />
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Season
-            </div>
-            <SeasonFilter value={filterState.season} onChange={handleSeasonChange} />
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Format
-            </div>
-            <FormatFilter value={filterState.format} onChange={handleFormatChange} multiSelect />
-          </div>
-          <div>
-            <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-              Airing Status
-            </div>
-            <AiringStatusFilter value={filterState.status} onChange={handleStatusChange} />
-          </div>
-        </div>
-
-        {/* Mobile Filters */}
-        {mobileFiltersVisible && (
-          <div className="lg:hidden flex overflow-x-auto gap-4 pb-2 scrollbar-hide">
-            <div className="flex-shrink-0 min-w-[180px]">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-                Genres
-              </div>
-              <GenreFilter value={filterState.genre} onChange={handleGenreChange} multiSelect />
-            </div>
-            <div className="flex-shrink-0 min-w-[140px]">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-                Year
-              </div>
-              <YearFilter value={filterState.year} onChange={handleYearChange} />
-            </div>
-            <div className="flex-shrink-0 min-w-[140px]">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-                Season
-              </div>
-              <SeasonFilter value={filterState.season} onChange={handleSeasonChange} />
-            </div>
-            <div className="flex-shrink-0 min-w-[180px]">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-                Format
-              </div>
-              <FormatFilter value={filterState.format} onChange={handleFormatChange} multiSelect />
-            </div>
-            <div className="flex-shrink-0 min-w-[160px]">
-              <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
-                Airing Status
-              </div>
-              <AiringStatusFilter value={filterState.status} onChange={handleStatusChange} />
-            </div>
-          </div>
-        )}
+        <button
+          onClick={toggleFiltersVisible}
+          className={`group flex-shrink-0 p-3 rounded-xl transition-all duration-200 ${
+            mobileFiltersVisible
+              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+              : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+          }`}
+          aria-label="Toggle filters"
+          aria-expanded={mobileFiltersVisible}
+        >
+          <List className={`w-5 h-5 transition-transform duration-200 ${mobileFiltersVisible ? 'rotate-180' : 'group-hover:scale-110'}`} />
+        </button>
       </div>
 
-      {/* Active Filter Tags */}
-      {activeFilterTags.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <div className="flex items-center text-gray-700 dark:text-gray-300">
+      {/* Desktop Filters */}
+      <div className="hidden lg:grid grid-cols-6 gap-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Search
+          </label>
+          <SearchInput 
+            value={searchQuery} 
+            onChange={handleSearchChange}
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Genres
+          </label>
+          <GenreFilter 
+            value={filterState.genre} 
+            onChange={handleGenreChange} 
+            multiSelect 
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Year
+          </label>
+          <YearFilter 
+            value={filterState.year} 
+            onChange={handleYearChange}
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Season
+          </label>
+          <SeasonFilter 
+            value={filterState.season} 
+            onChange={handleSeasonChange}
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Format
+          </label>
+          <FormatFilter 
+            value={filterState.format} 
+            onChange={handleFormatChange} 
+            multiSelect 
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Airing Status
+          </label>
+          <AiringStatusFilter 
+            value={filterState.status} 
+            onChange={handleStatusChange}
+            className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+      </div>
+
+      {/* Mobile Filters with smooth animation */}
+      <div className={`lg:hidden transition-all duration-300 ease-in-out ${
+        mobileFiltersVisible 
+          ? 'max-h-96 opacity-100' 
+          : 'max-h-0 opacity-0 overflow-hidden'
+      }`}>
+        <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide">
+          <div className="flex-shrink-0 min-w-[200px] space-y-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Genres
+            </label>
+            <GenreFilter 
+              value={filterState.genre} 
+              onChange={handleGenreChange} 
+              multiSelect 
+              className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+          <div className="flex-shrink-0 min-w-[150px] space-y-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Year
+            </label>
+            <YearFilter 
+              value={filterState.year} 
+              onChange={handleYearChange}
+              className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+          <div className="flex-shrink-0 min-w-[150px] space-y-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Season
+            </label>
+            <SeasonFilter 
+              value={filterState.season} 
+              onChange={handleSeasonChange}
+              className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+          <div className="flex-shrink-0 min-w-[200px] space-y-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Format
+            </label>
+            <FormatFilter 
+              value={filterState.format} 
+              onChange={handleFormatChange} 
+              multiSelect 
+              className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+          <div className="flex-shrink-0 min-w-[180px] space-y-2">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Airing Status
+            </label>
+            <AiringStatusFilter 
+              value={filterState.status} 
+              onChange={handleStatusChange}
+              className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Active Filter Tags with enhanced styling */}
+    {activeFilterTags.length > 0 && (
+      <div className="mt-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center text-slate-600 dark:text-slate-400 mr-2">
             <Tag className="w-4 h-4 mr-1" />
+            <span className="text-sm font-medium">Active filters:</span>
           </div>
           {activeFilterTags.map((tag, index) => (
             <div
               key={`${tag.type}-${tag.value}-${index}`}
-              className="flex items-center bg-blue-100 text-blue-800 dark:bg-blue-600 dark:text-white px-3 py-1 rounded-md text-sm"
+              className="group flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-lg text-sm font-medium border border-blue-200 dark:border-blue-800 transition-all duration-200 hover:bg-blue-200 dark:hover:bg-blue-800/40"
             >
-              {tag.value}
+              <span>{tag.value}</span>
               <button
                 onClick={() => handleRemoveFilter(tag.type, tag.value)}
-                className="ml-2 hover:text-gray-500 dark:hover:text-gray-200"
+                className="ml-2 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 transition-colors duration-200 group-hover:scale-110"
                 aria-label={`Remove ${tag.value}`}
               >
-                ×
+                <span className="text-lg leading-none">×</span>
               </button>
             </div>
           ))}
           <button
             onClick={handleClearAll}
-            className="flex items-center bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white px-3 py-1 rounded-md text-sm hover:bg-gray-300 dark:hover:bg-gray-600"
+            className="flex items-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-slate-300 dark:hover:bg-slate-600 hover:scale-105"
           >
-            Clear All ×
+            <span>Clear All</span>
+            <span className="ml-1 text-lg leading-none">×</span>
           </button>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 }
