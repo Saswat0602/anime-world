@@ -1,13 +1,18 @@
-// GraphQL query for searching anime
 export const SEARCH_ANIME_QUERY = `
-    query SearchAnime(
+  query SearchAnime(
     $page: Int = 1,
+    $perPage: Int = 24,
     $search: String,
+    $genres: [String],
+    $season: MediaSeason,
+    $seasonYear: Int,
+    $format_in: [MediaFormat],
+    $status: MediaStatus,
     $type: MediaType = ANIME,
     $isAdult: Boolean = false,
-    $sort: [MediaSort] = [SEARCH_MATCH]
+    $sort: [MediaSort] = [POPULARITY_DESC]
   ) {
-    Page(page: $page, perPage: 20) {
+    Page(page: $page, perPage: $perPage) {
       pageInfo {
         total
         perPage
@@ -19,11 +24,17 @@ export const SEARCH_ANIME_QUERY = `
         search: $search,
         type: $type,
         isAdult: $isAdult,
-        sort: $sort
+        sort: $sort,
+        genre_in: $genres,
+        season: $season,
+        seasonYear: $seasonYear,
+        format_in: $format_in,
+        status: $status
       ) {
         id
         title {
           english
+          romaji
         }
         coverImage {
           extraLarge
@@ -55,8 +66,4 @@ export const SEARCH_ANIME_QUERY = `
       }
     }
   }
-
 `;
-
-
-
