@@ -22,7 +22,6 @@ import {
   setStatus,
   clearAllFilters,
 } from '@/redux/features/filterSlice';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation'; // Import useRouter
 
 export function FilterBar({ title, onFilterChange }: FilterBarProps) {
@@ -90,48 +89,48 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
     [searchQuery, filterState]
   );
 
-useEffect(() => {
-  // Build query parameters
-  const params = new URLSearchParams();
+  useEffect(() => {
+    // Build query parameters
+    const params = new URLSearchParams();
 
-  if (searchQuery && searchQuery.trim() !== '') {
-    params.set('search', searchQuery);
-  }
+    if (searchQuery && searchQuery.trim() !== '') {
+      params.set('search', searchQuery);
+    }
 
-  if (filterState.genre[0] !== 'Any') {
-    filterState.genre.forEach((genre) => params.append('genres', genre));
-  }
+    if (filterState.genre[0] !== 'Any') {
+      filterState.genre.forEach((genre) => params.append('genres', genre));
+    }
 
-  if (filterState.year !== 'Any') {
-    params.set('year', filterState.year);
-  }
+    if (filterState.year !== 'Any') {
+      params.set('year', filterState.year);
+    }
 
-  if (filterState.season !== 'Any') {
-    params.set('season', filterState.season.toUpperCase());
-  }
+    if (filterState.season !== 'Any') {
+      params.set('season', filterState.season.toUpperCase());
+    }
 
-  if (filterState.format[0] !== 'Any') {
-    filterState.format.forEach((format) => params.append('format', format));
-  }
+    if (filterState.format[0] !== 'Any') {
+      filterState.format.forEach((format) => params.append('format', format));
+    }
 
-  if (filterState.status !== 'Any') {
-    params.set('airingStatus', filterState.status);
-  }
+    if (filterState.status !== 'Any') {
+      params.set('airingStatus', filterState.status);
+    }
 
-  const queryString = params.toString();
+    const queryString = params.toString();
 
-  // If there are no active filters or search input, do not update URL
-  if (!queryString) {
-    return;
-  }
+    // If there are no active filters or search input, do not update URL
+    if (!queryString) {
+      return;
+    }
 
-  // Only update URL if there is an active filter or search input
-  const newUrl = `/anime/filter?${queryString}`;
-  router.replace(newUrl, { scroll: false });
+    // Only update URL if there is an active filter or search input
+    const newUrl = `/anime/filter?${queryString}`;
+    router.replace(newUrl, { scroll: false });
 
-  // Optionally, trigger your filter callback
-  onFilterChange?.(currentFilterState);
-}, [searchQuery, filterState, onFilterChange, router]);
+    // Optionally, trigger your filter callback
+    onFilterChange?.(currentFilterState);
+  }, [searchQuery, filterState, onFilterChange, router]);
 
 
   const activeFilterTags = useMemo(() => {
@@ -150,8 +149,9 @@ useEffect(() => {
 
   return (
     <div className="mb-6">
-
-
+      <h2 className="my-3 text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-500 via-blue-500 to-purple-500 text-transparent bg-clip-text text-center sm:text-left">
+        {title}
+      </h2>
       <div className="mb-4">
         <div className="flex items-end gap-2 mb-4 lg:hidden">
           <div className="flex-1">
@@ -162,11 +162,10 @@ useEffect(() => {
           </div>
           <button
             onClick={toggleFiltersVisible}
-            className={`flex-shrink-0 p-2 border rounded-md focus:outline-none transition-colors duration-200 ${
-              mobileFiltersVisible
+            className={`flex-shrink-0 p-2 border rounded-md focus:outline-none transition-colors duration-200 ${mobileFiltersVisible
                 ? 'bg-blue-500 border-blue-600 text-white'
                 : 'bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-            }`}
+              }`}
             aria-label="Toggle filters"
             aria-expanded={mobileFiltersVisible}
           >
