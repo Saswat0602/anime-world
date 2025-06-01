@@ -1,5 +1,3 @@
-
-// redux/api/searchAnimeApi.ts - Updated with better caching
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { AniListAnimeResponse, AnimeResponse } from '@/types/types';
 import { convertToAnime, convertPagination } from '@/utils/apiHelpers';
@@ -51,8 +49,7 @@ export const searchAnimeApi = createApi({
         const pagination = convertPagination(response.data?.Page?.pageInfo);
         return animeList.length ? { data: animeList, pagination } : null;
       },
-      // Improve caching by creating consistent cache keys
-      serializeQueryArgs: ({ queryArgs }) => {
+      serializeQueryArgs: ({ queryArgs }: { queryArgs: any }) => {
         const normalized = {
           page: queryArgs.page,
           search: queryArgs.search || '',
@@ -64,7 +61,6 @@ export const searchAnimeApi = createApi({
         };
         return JSON.stringify(normalized);
       },
-      // Keep cached data for 5 minutes
       keepUnusedDataFor: 300,
     }),
   }),

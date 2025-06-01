@@ -1,7 +1,5 @@
-
-// hooks/useSearchPaginatedAnime.ts
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Anime, AnimeResponse } from '@/types/types';
+import { Anime } from '@/types/types';
 import { useSearchAnimeQuery } from '@/redux/api';
 
 type SearchFilters = {
@@ -14,73 +12,51 @@ type SearchFilters = {
 };
 
 export function useSearchPaginatedAnime(filters: SearchFilters) {
-  // State
   const [page, setPage] = useState(1);
   const [allAnime, setAllAnime] = useState<Anime[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loadedAnimeIds, setLoadedAnimeIds] = useState<Set<number>>(new Set());
-  
-  // Refs
+
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const currentFiltersRef = useRef<string>('');
 
-  // Create stable query parameters
-  const queryParams = useMemo(() => {
-    return {
-      page,
-      search: filters.search,
-      genres: filters.genres,
-      year: filters.year,
-      season: filters.season,
-      format: filters.format,
-      airingStatus: filters.airingStatus,
-    };
-  }, [page, filters.search, filters.genres, filters.year, filters.season, filters.format, filters.airingStatus]);
+  const queryParams = useMemo(() => ({
+    page,
+    search: filters.search,
+    genres: filters.genres,
+    year: filters.year,
+    season: filters.season,
+    format: filters.format,
+    airingStatus: filters.airingStatus,
+  }), [page, filters]);
 
-  // Create filter signature to detect changes
-  const filterSignature = useMemo(() => {
-    return JSON.stringify({
-      search: filters.search || '',
-      genres: filters.genres?.slice().sort() || [],
-      year: filters.year || '',
-      season: filters.season || '',
-      format: filters.format?.slice().sort() || [],
-      airingStatus: filters.airingStatus || '',
-    });
-  }, [filters]);
+  const filterSignature = useMemo(() => JSON.stringify({
+    search: filters.search || '',
+    genres: filters.genres?.slice().sort() || [],
+    year: filters.year || '',
+    season: filters.season || '',
+    format: filters.format?.slice().sort() || [],
+    airingStatus: filters.airingStatus || '',
+  }), [filters]);
 
-  // Determine if should skip query
-  const shouldSkip = useMemo(() => {
-    return !filters.search && 
-           (!filters.genres || filters.genres.length === 0) && 
-           !filters.year && 
-           !filters.season && 
-           (!filters.format || filters.format.length === 0) && 
-           !filters.airingStatus;
-  }, [filters]);
+  const shouldSkip = useMemo(() => (
+    !filters.search &&
+    (!filters.genres || filters.genres.length === 0) &&
+    !filters.year &&
+    !filters.season &&
+    (!filters.format || filters.format.length === 0) &&
+    !filters.airingStatus
+  ), [filters]);
 
-  // API Query with stable parameters
-  const { data, isLoading, isFetching, error } = useSearchAnimeQuery(
-    queryParams,
-    { 
-      skip: shouldSkip,
-      // Add serializeQueryArgs to prevent unnecessary refetches
-      serializeQueryArgs: ({ queryArgs }) => {
-        const { page, ...filters } = queryArgs;
-        return JSON.stringify({ page, ...filters });
-      },
-    }
-  );
+  const { data, isLoading, isFetching, error } = useSearchAnimeQuery(queryParams, {
+    skip: shouldSkip,
+  });
 
-  // Handle filter changes
+  // Reset state when filters change
   useEffect(() => {
-    const hasFiltersChanged = currentFiltersRef.current !== filterSignature;
-    
-    if (hasFiltersChanged) {
+    if (currentFiltersRef.current !== filterSignature) {
       currentFiltersRef.current = filterSignature;
-      
-      // Reset state for new filters
       setPage(1);
       setAllAnime([]);
       setLoadedAnimeIds(new Set());
@@ -91,48 +67,39 @@ export function useSearchPaginatedAnime(filters: SearchFilters) {
   // Handle data updates
   useEffect(() => {
     if (!data) {
-      if (data === null) {
-        setHasMore(false);
-      }
+      setHasMore(false);
       return;
     }
 
     const { data: newAnime, pagination } = data;
-    
+
     if (page === 1) {
-      // First page or new search
       setAllAnime(newAnime || []);
     } else {
-      // Subsequent pages - append data
-      setAllAnime(prevAnime => {
-        if (!newAnime?.length) return prevAnime;
-        
-        const existingIds = new Set(prevAnime.map(anime => anime.mal_id));
-        const uniqueNewAnime = newAnime.filter(anime => !existingIds.has(anime.mal_id));
-        
-        return uniqueNewAnime.length > 0 ? [...prevAnime, ...uniqueNewAnime] : prevAnime;
+      setAllAnime((prev) => {
+        if (!newAnime?.length) return prev;
+
+        const existingIds = new Set(prev.map((anime) => anime.mal_id));
+        const uniqueNewAnime = newAnime.filter((anime) => !existingIds.has(anime.mal_id));
+        return uniqueNewAnime.length > 0 ? [...prev, ...uniqueNewAnime] : prev;
       });
     }
 
     setHasMore(!!pagination?.has_next_page);
   }, [data, page]);
 
-  // Intersection Observer for infinite scroll
+  // Infinite scroll
   useEffect(() => {
-    // Clean up existing observer
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
-    // Don't set up observer if conditions aren't met
-    if (shouldSkip || !hasMore || isLoading || isFetching || error) {
-      return;
-    }
+    if (shouldSkip || !hasMore || isLoading || isFetching || error) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoading && !isFetching && !error) {
-          setPage(prevPage => prevPage + 1);
+          setPage((prev) => prev + 1);
         }
       },
       { threshold: 0.1, rootMargin: '100px' }
@@ -150,28 +117,18 @@ export function useSearchPaginatedAnime(filters: SearchFilters) {
     };
   }, [shouldSkip, hasMore, isLoading, isFetching, error]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+      observerRef.current?.disconnect();
     };
   }, []);
 
   const handleAnimeLoaded = useCallback((animeId: number) => {
-    setLoadedAnimeIds(prev => {
+    setLoadedAnimeIds((prev) => {
       if (prev.has(animeId)) return prev;
       return new Set([...prev, animeId]);
     });
   }, []);
-
-  // Debug log (remove in production)
-  useEffect(() => {
-    if (!shouldSkip) {
-      console.log('API Call:', { page, filters, shouldSkip });
-    }
-  }, [page, filterSignature, shouldSkip]);
 
   return {
     page,

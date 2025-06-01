@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AiringStatusFilter,
   FormatFilter,
@@ -150,28 +150,9 @@ useEffect(() => {
 
   return (
     <div className="mb-6">
-      {/* Navigation Bar */}
-      <nav className="flex justify-between items-center mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded-md shadow-sm">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h1>
-        <div className="flex gap-4">
-          <Link href="/" className="text-blue-600 hover:underline dark:text-blue-400">
-            Home
-          </Link>
-          <Link href="/trending" className="text-blue-600 hover:underline dark:text-blue-400">
-            Trending
-          </Link>
-          <Link href="/seasonal" className="text-blue-600 hover:underline dark:text-blue-400">
-            Seasonal
-          </Link>
-          <Link href="/top" className="text-blue-600 hover:underline dark:text-blue-400">
-            Top 100
-          </Link>
-        </div>
-      </nav>
 
-      {/* Search & Filters */}
+
       <div className="mb-4">
-        {/* Mobile Search & Filter Toggle */}
         <div className="flex items-end gap-2 mb-4 lg:hidden">
           <div className="flex-1">
             <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">

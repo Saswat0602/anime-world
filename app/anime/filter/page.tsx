@@ -8,7 +8,6 @@ import { useMemo } from 'react';
 export default function FilterPage() {
   const searchParams = useSearchParams();
 
-  // Create stable filter object that only changes when values actually change
   const filters = useMemo(() => {
     const search = searchParams.get('search')?.trim() || undefined;
     const genres = searchParams.getAll('genres').filter(g => g.trim());
