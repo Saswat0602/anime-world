@@ -27,8 +27,7 @@ const AnimeDetailsClient = ({ id }: Props) => {
   if (error || !animeData) return <ErrorDisplay message="Failed to load anime details" />;
 
   return (
-    // <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-    <div className="min-h-screen bg-red-600 text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <AnimeHeroSection anime={animeData} />
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

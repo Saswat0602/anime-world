@@ -13,7 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ThemeProvider defaultTheme="system" storageKey="anime-world-theme">
         <div className="flex min-h-screen flex-col">
           <Navbar />
-          <main className="flex-1 px-4 py-6">
+          <main className="flex-1 py-6">
             {children}
           </main>
           <Footer />
