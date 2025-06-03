@@ -23,18 +23,29 @@ import {
   clearAllFilters,
 } from '@/redux/features/filterSlice';
 import { useRouter } from 'next/navigation'; // Import useRouter
+import { useDebouncedCallback } from 'use-debounce';
 
 export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   const dispatch = useDispatch();
   const router = useRouter(); // Initialize router
   const filterState = useSelector((state: RootState) => state.filter);
-  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
+  const reduxSearchQuery = useSelector((state: RootState) => state.filter.searchQuery);
+  const [inputValue, setInputValue] = useState(reduxSearchQuery);
+
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
 
   const toggleFiltersVisible = () => setMobileFiltersVisible((prev) => !prev);
 
   // Update handlers
-  const handleSearchChange = (value: string) => dispatch(setSearchQuery(value));
+  const debouncedSetSearchQuery = useDebouncedCallback((value: string) => {
+    dispatch(setSearchQuery(value));
+  }, 400); // 400ms debounce delay
+
+  // Input change handler
+  const handleSearchChange = (value: string) => {
+    setInputValue(value);
+    debouncedSetSearchQuery(value);
+  };
   const handleGenreChange = (value: string | string[]) =>
     dispatch(setGenre(Array.isArray(value) ? value : [value]));
   const handleYearChange = (value: string | string[]) =>
@@ -79,22 +90,22 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
   // Compose current filter state
   const currentFilterState: FilterState = useMemo(
     () => ({
-      searchQuery,
+      reduxSearchQuery,
       genre: filterState.genre,
       year: filterState.year,
       season: filterState.season,
       format: filterState.format,
       status: filterState.status,
     }),
-    [searchQuery, filterState]
+    [reduxSearchQuery, filterState]
   );
 
   useEffect(() => {
     // Build query parameters
     const params = new URLSearchParams();
 
-    if (searchQuery && searchQuery.trim() !== '') {
-      params.set('search', searchQuery);
+    if (reduxSearchQuery && reduxSearchQuery.trim() !== '') {
+      params.set('search', reduxSearchQuery);
     }
 
     if (filterState.genre && filterState.genre.length > 0 && filterState.genre[0] !== 'Any') {
@@ -136,7 +147,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
     // Optionally, trigger your filter callback
     onFilterChange?.(currentFilterState);
-  }, [searchQuery, filterState, onFilterChange, router]);
+  }, [reduxSearchQuery, filterState, onFilterChange, router]);
 
 
   const activeFilterTags = useMemo(() => {
@@ -168,7 +179,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
               Search
             </label>
             <SearchInput
-              value={searchQuery}
+              value={inputValue}
               onChange={handleSearchChange}
               className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
             />
@@ -176,8 +187,8 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
           <button
             onClick={toggleFiltersVisible}
             className={`group flex-shrink-0 p-3 rounded-xl transition-all duration-200 ${mobileFiltersVisible
-                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+              : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
               }`}
             aria-label="Toggle filters"
             aria-expanded={mobileFiltersVisible}
@@ -193,7 +204,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
               Search
             </label>
             <SearchInput
-              value={searchQuery}
+              value={inputValue}
               onChange={handleSearchChange}
               className="transition-all duration-200 focus:ring-2 focus:ring-blue-500/20"
             />
@@ -254,8 +265,8 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
         {/* Mobile Filters with smooth animation */}
         <div className={`lg:hidden transition-all duration-300 ease-in-out ${mobileFiltersVisible
-            ? 'max-h-96 opacity-100'
-            : 'max-h-0 opacity-0 overflow-hidden'
+          ? 'max-h-96 opacity-100'
+          : 'max-h-0 opacity-0 overflow-hidden'
           }`}>
           <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide">
             <div className="flex-shrink-0 min-w-[200px] space-y-2">

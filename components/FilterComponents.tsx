@@ -14,29 +14,12 @@ interface SearchInputProps {
 }
 
 export const SearchInput = ({ value, onChange, className = "" }: SearchInputProps) => {
-    const router = useRouter();
-
     const handleChange = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
             onChange(e.target.value);
         },
         [onChange]
     );
-
-    const debouncedNavigateToFilter = useDebouncedCallback((term: string) => {
-        const trimmedTerm = term.trim();
-        if (trimmedTerm) {
-            router.push(`/anime/filter?search=${encodeURIComponent(trimmedTerm)}`);
-        } else {
-            router.push(`/Home`);
-        }
-    }, 300);
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const term = e.target.value;
-        handleChange(e);
-        debouncedNavigateToFilter(term);
-    };
 
     return (
         <div className="relative group">
@@ -53,7 +36,7 @@ export const SearchInput = ({ value, onChange, className = "" }: SearchInputProp
                 ${className}`}
                 placeholder="Search anime..."
                 value={value}
-                onChange={handleInputChange}
+                onChange={handleChange}
                 aria-label="Search anime"
             />
         </div>

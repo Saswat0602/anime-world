@@ -27,7 +27,7 @@ export type FilterBarProps = {
 };
 
 export type FilterState = {
-    searchQuery: string;
+    reduxSearchQuery: string;
     genre: string[];
     year: string;
     season: string;
