@@ -4,6 +4,7 @@ import { useTop100AnimeQuery } from '@/redux/api';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/routes';
 import { ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 interface Top100AnimeSectionProps {
     displayCount?: number;
@@ -81,11 +82,12 @@ export const Top100Home = ({ displayCount = 10 }: Top100AnimeSectionProps) => {
 
                         {/* Anime Image */}
                         <div className="flex-shrink-0 w-10 sm:w-16 h-14 sm:h-20 rounded-md sm:rounded-lg overflow-hidden border border-gray-300 dark:border-gray-500 group-hover:border-blue-500 dark:group-hover:border-blue-400 transition-colors duration-300">
-                            <img
-                                src={anime.images?.jpg?.image_url || anime.images?.webp?.image_url}
-                                alt={anime.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                                loading="lazy"
+                            <Image
+                            src={anime.images?.jpg?.image_url || anime.images?.webp?.image_url || "/zoro.png"}
+                            alt={anime.title || "Anime image"}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-110"
+                            loading="lazy"
                             />
                         </div>
 
