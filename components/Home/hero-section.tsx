@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setSearchQuery } from '@/redux/features/searchSlice';
+import { setSearchQuery } from '@/redux/features/filterSlice';
 
 const topSearches = [
   "One Piece", "The Apothecary Diaries", "Wind Breaker Season 2",
@@ -17,7 +17,8 @@ const topSearches = [
 
 export function HeroSection() {
   const dispatch = useDispatch();
-  const searchQuery = useSelector((state: RootState) => state.search.searchQuery);
+    const searchQuery = useSelector((state: RootState) => state.filter.searchQuery);
+  
   const router = useRouter();
 
   const handleSearchSubmit = () => {

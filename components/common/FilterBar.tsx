@@ -135,7 +135,7 @@ export function FilterBar({ title, onFilterChange }: FilterBarProps) {
 
     // If there are no active filters or search input and we're on filter page, navigate back to anime/home
     if (!queryString && isOnFilterPage) {
-      router.replace('/anime', { scroll: false });
+      router.replace('/Home', { scroll: false });
       return;
     }
 

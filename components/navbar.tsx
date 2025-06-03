@@ -8,8 +8,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ROUTES } from "@/routes";
 import { Menu, X } from "lucide-react";
-import { setSearchQuery } from '@/redux/features/searchSlice';
 import { useDispatch } from "react-redux";
+import { clearAllFilters } from "@/redux/features/filterSlice";
 
 
 export function Navbar() {
@@ -54,7 +54,7 @@ export function Navbar() {
             <Link
               href="/"
               onClick={() => {
-                dispatch(setSearchQuery(""));
+                dispatch(clearAllFilters());
               }}
               className="flex items-center space-x-2 transition-transform duration-200 hover:scale-105"
             >
@@ -76,7 +76,7 @@ export function Navbar() {
                 <Link
                   key={link.path}
                   href={link.path}
-                  onClick={() => dispatch(setSearchQuery(""))}
+                  onClick={() => dispatch(clearAllFilters())}
                   className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${pathname === link.path
                     ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"
@@ -153,7 +153,7 @@ export function Navbar() {
                       href={link.path}
                       onClick={() => {
                         setIsMenuOpen(false);
-                        dispatch(setSearchQuery(""));
+                        dispatch(clearAllFilters());
                       }}
                       className={`block px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${pathname === link.path
                         ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
