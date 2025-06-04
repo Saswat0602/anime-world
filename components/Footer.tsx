@@ -20,10 +20,10 @@ const FOOTER_DATA: FooterData = {
         { label: "Terms of Service", href: "/terms" }
     ],
     social: [
-        { icon: <Twitter size={20} className="text-blue-400" />, href: "https://twitter.com/otakurealm", label: "Twitter" },
-        { icon: <Instagram size={20} className="text-pink-400" />, href: "https://instagram.com/otakurealm", label: "Instagram" },
-        { icon: <MessageCircle size={20} className="text-indigo-400" />, href: "https://discord.gg/otakurealm", label: "Discord" },
-        { icon: <Code size={20} className="text-gray-300" />, href: "https://github.com/otakurealm", label: "GitHub" }
+        { icon: <Twitter size={20} className="text-blue-400" />, href: "#", label: "Twitter" },
+        { icon: <Instagram size={20} className="text-pink-400" />, href: "3", label: "Instagram" },
+        { icon: <MessageCircle size={20} className="text-indigo-400" />, href: "#", label: "Discord" },
+        { icon: <Code size={20} className="text-gray-300" />, href: "https://github.com/Saswat0602/anime-world", label: "GitHub" }
     ],
     apps: [
         { label: "App Store", href: "#" },
